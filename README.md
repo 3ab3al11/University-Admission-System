@@ -65,6 +65,51 @@ wwwroot/         Static CSS, JavaScript, images, and client libraries
 - Security response headers
 - Sensitive admin credentials loaded through .NET User Secrets or environment variables
 - Uploaded/generated documents excluded from source control
+## Screenshots
+
+<table>
+  <tr>
+    <td width="50%">
+      <img src="docs/screenshots/01-home.webp" alt="Arabic admission portal home page">
+      <p align="center"><b>Admission Portal Home</b></p>
+    </td>
+    <td width="50%">
+      <img src="docs/screenshots/02-login.webp" alt="User login page">
+      <p align="center"><b>Secure Login</b></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="docs/screenshots/03-admin-dashboard.webp" alt="Administrator dashboard">
+      <p align="center"><b>Admin Dashboard</b></p>
+    </td>
+    <td width="50%">
+      <img src="docs/screenshots/04-excel-import.webp" alt="Excel student records import">
+      <p align="center"><b>Official Records Import</b></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="docs/screenshots/05-college-management.webp" alt="College management page">
+      <p align="center"><b>College Management</b></p>
+    </td>
+    <td width="50%">
+      <img src="docs/screenshots/06-student-preferences.webp" alt="Eligible college preferences">
+      <p align="center"><b>Eligibility-Based Preferences</b></p>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%">
+      <img src="docs/screenshots/07-allocation-engine.webp" alt="Automated allocation engine">
+      <p align="center"><b>Automated Allocation Engine</b></p>
+    </td>
+    <td width="50%">
+      <img src="docs/screenshots/08-allocation-success.webp" alt="Allocation execution summary">
+      <p align="center"><b>Allocation Summary</b></p>
+    </td>
+  </tr>
+</table>
+
 
 ## Getting Started
 
