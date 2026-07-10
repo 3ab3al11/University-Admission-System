@@ -1,0 +1,127 @@
+@using Microsoft.Extensions.Localization
+@using ANU_Admissions.Resources
+@inject IStringLocalizer<SharedResource> L
+@model ANU_Admissions.ViewModels.NominationResultViewModel
+@{
+    ViewData["Title"] = L["NominationCardTitle"].Value;
+}
+
+<style>
+    .nomination-card {
+        max-width: 800px;
+        margin: 0 auto;
+        background: #fff;
+        border: 2px solid var(--primary-gold, #b8860b);
+        border-radius: 10px;
+        padding: 2.5rem;
+        box-shadow: 0 4px 18px rgba(0,0,0,.08);
+    }
+    .nomination-header {
+        text-align: center;
+        border-bottom: 2px solid var(--primary-gold, #b8860b);
+        padding-bottom: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    .nomination-header h2 { font-weight: 800; margin: .25rem 0 0; }
+    .nomination-title {
+        text-align: center;
+        font-size: 1.4rem;
+        font-weight: 800;
+        color: #065f46;
+        margin: 1rem 0 1.5rem;
+    }
+    .nomination-table { width: 100%; border-collapse: collapse; }
+    .nomination-table td {
+        padding: .7rem 1rem;
+        border-bottom: 1px solid #e5e7eb;
+        font-size: 1.05rem;
+    }
+    .nomination-table td.label { color: #6b7280; width: 40%; }
+    .nomination-table td.value { font-weight: 700; }
+    .college-highlight {
+        text-align: center;
+        background: #d1fae5;
+        border: 2px solid #10b981;
+        border-radius: 8px;
+        padding: 1rem;
+        margin: 1.5rem 0;
+        font-size: 1.25rem;
+        font-weight: 800;
+        color: #065f46;
+    }
+    .nomination-note {
+        margin-top: 1.5rem;
+        padding: 1rem;
+        border: 1px dashed #b8860b;
+        border-radius: 8px;
+        font-size: .95rem;
+        background: #fffbeb;
+    }
+    .nomination-footer {
+        margin-top: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        font-size: .9rem;
+        color: #6b7280;
+    }
+
+    /* Card always keeps a white background — even in dark mode — because it
+       is designed to be printed on paper. Text and inner panels stay readable
+       on the dark page around it. */
+    [data-bs-theme="dark"] .nomination-card { color: #111827; }
+
+    /* Print: show only the card */
+    @@media print {
+        body * { visibility: hidden; }
+        #nominationCardArea, #nominationCardArea * { visibility: visible; }
+        #nominationCardArea {
+            position: absolute; top: 0; right: 0; left: 0; margin: 0;
+        }
+        .no-print { display: none !important; }
+        .nomination-card { border-color: #000; box-shadow: none; }
+    }
+</style>
+
+<div class="d-flex justify-content-between align-items-center mb-3 no-print">
+    <a href="/Student/AllocationResult" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-right ms-2"></i> @L["Back"]
+    </a>
+    <button type="button" class="btn btn-primary-gold" onclick="window.print()">
+        <i class="bi bi-printer ms-2"></i> @L["PrintCardBtn"]
+    </button>
+</div>
+
+<div id="nominationCardArea">
+    <div class="nomination-card">
+        <div class="nomination-header">
+            <img src="~/images/logo.png" alt="@L["UniversityLogoAlt"]" style="height: 64px;" onerror="this.style.display='none'" />
+            <h2>@L["UniversityNameArOnly"]</h2>
+            <div class="text-muted">@L["UniversityNameEnOnly"]</div>
+        </div>
+
+        <div class="nomination-title">@L["NominationCardFor"]</div>
+
+        <table class="nomination-table">
+            <tr><td class="label">@L["OfficialFullName"]</td><td class="value">@Model.OfficialFullName</td></tr>
+            <tr><td class="label">@L["NationalId"]</td><td class="value">@Model.NationalId</td></tr>
+            <tr><td class="label">@L["SeatNumber"]</td><td class="value">@Model.SeatNumber</td></tr>
+            <tr><td class="label">@L["Section"]</td><td class="value">@Model.Section</td></tr>
+            <tr><td class="label">@L["OfficialEquivalentPctShort"]</td><td class="value">@Model.EquivalentPercentage%</td></tr>
+        </table>
+
+        <div class="college-highlight">
+            @L["NominatedForCollege"]<br />
+            @Model.CollegeName
+        </div>
+
+        <div class="nomination-note">
+            <strong>@L["AttendanceInstructionsLabel"]</strong>
+            @L["AttendanceInstructionsBody"]
+        </div>
+
+        <div class="nomination-footer">
+            <span>@L["NominationDate"]: @Model.AllocationDate.ToString("yyyy-MM-dd")</span>
+            <span>@L["IssueDate"]: @DateTime.Now.ToString("yyyy-MM-dd")</span>
+        </div>
+    </div>
+</div>

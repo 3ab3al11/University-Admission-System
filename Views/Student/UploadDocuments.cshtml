@@ -1,0 +1,128 @@
+@model ANU_Admissions.ViewModels.UploadDocumentsViewModel
+@{
+    ViewData["Title"] = "رفع المستندات";
+}
+
+<div class="mb-4">
+    <h2 class="fw-bold" style="color: var(--black-text);">
+        <i class="bi bi-cloud-upload text-gold ms-2"></i>
+        رفع المستندات المطلوبة
+    </h2>
+    <p class="text-muted">يرجى رفع المستندات التالية لإتمام عملية القبول</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- Info Alert -->
+        <div class="alert alert-info mb-4">
+            <i class="bi bi-info-circle ms-2"></i>
+            <strong>تعليمات هامة:</strong>
+            <ul class="mb-0 mt-2 pe-3">
+                <li>تأكد من وضوح الصور ووضوح البيانات</li>
+                <li>الحد الأقصى لحجم الملف: 5 ميجابايت</li>
+                <li>الصيغ المسموحة: JPG, PNG, PDF</li>
+            </ul>
+        </div>
+
+        <form asp-action="UploadDocuments" method="post" enctype="multipart/form-data">
+            <div class="card card-university">
+                <div class="card-body p-4">
+                    <!-- National ID Card (Required) -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-card-heading text-primary ms-2"></i>
+                            صورة بطاقة الرقم القومي
+                            <span class="text-danger">*</span>
+                        </label>
+                        <div class="upload-area border rounded p-4 text-center" style="background-color: #f8fafc; border-style: dashed !important;">
+                            <i class="bi bi-cloud-arrow-up text-gold" style="font-size: 3rem;"></i>
+                            <p class="mt-3 mb-2">اسحب الملف هنا أو اضغط لاختيار الملف</p>
+                            <input type="file" 
+                                   asp-for="NationalIdCard" 
+                                   class="form-control mt-2" 
+                                   accept="image/*,.pdf"
+                                   required>
+                            <span asp-validation-for="NationalIdCard" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Personal Photo (Optional) -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-person-badge text-success ms-2"></i>
+                            صورة شخصية
+                            <span class="badge bg-secondary">اختياري</span>
+                        </label>
+                        <div class="upload-area border rounded p-4 text-center" style="background-color: #f8fafc; border-style: dashed !important;">
+                            <i class="bi bi-cloud-arrow-up" style="font-size: 3rem; color: #6b7280;"></i>
+                            <p class="mt-3 mb-2">اسحب الملف هنا أو اضغط لاختيار الملف</p>
+                            <input type="file" 
+                                   asp-for="PersonalPhoto" 
+                                   class="form-control mt-2" 
+                                   accept="image/*">
+                            <span asp-validation-for="PersonalPhoto" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <!-- Nomination Paper (Optional) -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-file-earmark-text text-warning ms-2"></i>
+                            ورقة الترشيح
+                            <span class="badge bg-secondary">اختياري</span>
+                        </label>
+                        <div class="upload-area border rounded p-4 text-center" style="background-color: #f8fafc; border-style: dashed !important;">
+                            <i class="bi bi-cloud-arrow-up" style="font-size: 3rem; color: #6b7280;"></i>
+                            <p class="mt-3 mb-2">اسحب الملف هنا أو اضغط لاختيار الملف</p>
+                            <input type="file" 
+                                   asp-for="NominationPaper" 
+                                   class="form-control mt-2" 
+                                   accept="image/*,.pdf">
+                            <span asp-validation-for="NominationPaper" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Submit Button -->
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary-gold btn-lg">
+                            <i class="bi bi-check-circle ms-2"></i>
+                            رفع الملفات وإنهاء الطلب
+                        </button>
+                        <a href="/Student/AllocationResult" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-right ms-2"></i>
+                            رجوع
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <style>
+        .upload-area:hover {
+            background-color: #f1f5f9 !important;
+            cursor: pointer;
+        }
+        
+        input[type="file"]::-webkit-file-upload-button {
+            padding: 0.5rem 1rem;
+            border: 1px solid var(--primary-gold);
+            background-color: white;
+            color: var(--primary-gold);
+            border-radius: 0.375rem;
+            cursor: pointer;
+            margin-left: 0.5rem;
+        }
+        
+        input[type="file"]::-webkit-file-upload-button:hover {
+            background-color: var(--primary-gold);
+            color: white;
+        }
+    </style>
+}

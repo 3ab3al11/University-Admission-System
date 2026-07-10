@@ -1,0 +1,350 @@
+@using Microsoft.Extensions.Localization
+@using ANU_Admissions.Resources
+@inject IStringLocalizer<SharedResource> L
+@{
+    ViewData["Title"] = L["SystemControl"].Value;
+    var stats = ViewBag.Stats;
+    var admissionsOpen = ViewBag.AdmissionsOpen;
+    var recentLogs = ViewBag.RecentLogs as List<ANU_Admissions.Models.AuditLog>;
+    var gate = ViewBag.GateStatus as ANU_Admissions.Services.AdmissionsGateStatus;
+
+    // Map state → (Bootstrap colour, localized label) for the badge below.
+    // Falls back to ManualOpen wording if the status is missing for any reason.
+    string stateClass = "bg-secondary";
+    string stateLabel = L["AdmissionsManualOpenNoSchedule"].Value;
+    if (gate != null)
+    {
+        switch (gate.State)
+        {
+            case ANU_Admissions.Services.AdmissionsGateState.ManualClosed:
+                stateClass = "bg-danger";  stateLabel = L["AdmissionsClosedManually"].Value; break;
+            case ANU_Admissions.Services.AdmissionsGateState.ManualOpen:
+                stateClass = "bg-success"; stateLabel = L["AdmissionsManualOpenNoSchedule"].Value; break;
+            case ANU_Admissions.Services.AdmissionsGateState.NotStarted:
+                stateClass = "bg-warning text-dark"; stateLabel = L["AdmissionsNotStarted"].Value; break;
+            case ANU_Admissions.Services.AdmissionsGateState.Open:
+                stateClass = "bg-success"; stateLabel = L["AdmissionsOpenNow"].Value; break;
+            case ANU_Admissions.Services.AdmissionsGateState.Expired:
+                stateClass = "bg-secondary"; stateLabel = L["AdmissionsExpired"].Value; break;
+        }
+    }
+}
+
+<div class="mb-4">
+    <h2 class="fw-bold" style="color: var(--black-text);">
+        <i class="bi bi-gear text-danger ms-2"></i>
+        @L["SystemControl"]
+    </h2>
+    <p class="text-muted">@L["DangerousOps"]</p>
+</div>
+
+@if (TempData["AdminSuccess"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show">
+        <i class="bi bi-check-circle ms-2"></i>
+        @TempData["AdminSuccess"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (TempData["AdminError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show">
+        <i class="bi bi-x-circle ms-2"></i>
+        @TempData["AdminError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Admissions Status Toggle -->
+<div class="card card-university mb-4">
+    <div class="card-header bg-white">
+        <h5 class="mb-0 fw-bold">
+            <i class="bi bi-toggle-on ms-2"></i>
+            @L["AdmissionsStatus"]
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <h6>@L["CurrentStatus"]</h6>
+                @if (admissionsOpen)
+                {
+                    <h4 class="text-success"><i class="bi bi-unlock-fill ms-2"></i>@L["AdmissionsWord"] <strong>@L["AdmissionsOpenStrong"]</strong></h4>
+                    <p class="text-muted">@L["AdmissionsOpenDesc"]</p>
+                }
+                else
+                {
+                    <h4 class="text-danger"><i class="bi bi-lock-fill ms-2"></i>@L["AdmissionsWord"] <strong>@L["AdmissionsClosedStrong"]</strong></h4>
+                    <p class="text-muted">@L["AdmissionsClosedDesc"]</p>
+                }
+            </div>
+            <div class="col-md-4">
+                <form method="post" asp-action="ToggleAdmissions" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-lg w-100 @(admissionsOpen ? "btn-danger" : "btn-success")">
+                        <i class="bi bi-@(admissionsOpen ? "lock" : "unlock") ms-2"></i>
+                        @(admissionsOpen ? L["CloseWord"] : L["OpenWord"]) @L["AdmissionsWord"]
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        @* Schedule-aware state badge — visible alongside the master switch so
+           the admin can see at a glance what's actually being enforced. *@
+        <hr />
+        <div class="d-flex flex-wrap align-items-center gap-3">
+            <span class="badge @stateClass" style="font-size: 0.95rem;">@stateLabel</span>
+            @if (gate?.StartAt != null)
+            {
+                <small class="text-muted">@L["AdmissionsStartsAt"]: <strong>@gate.StartAt.Value.ToString("yyyy-MM-dd HH:mm")</strong></small>
+            }
+            @if (gate?.EndAt != null)
+            {
+                <small class="text-muted">@L["AdmissionsEndsAt"]: <strong>@gate.EndAt.Value.ToString("yyyy-MM-dd HH:mm")</strong></small>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Admissions Schedule -->
+<div class="card card-university mb-4">
+    <div class="card-header bg-white">
+        <h5 class="mb-0 fw-bold">
+            <i class="bi bi-calendar2-week ms-2"></i>
+            @L["AdmissionsSchedule"]
+        </h5>
+    </div>
+    <div class="card-body">
+        <p class="text-muted small mb-3">@L["AdmissionsScheduleHint"]</p>
+        <form method="post" asp-action="SetAdmissionsSchedule" class="row g-3 align-items-end">
+            @Html.AntiForgeryToken()
+            <div class="col-md-5">
+                <label class="form-label fw-bold">@L["StartDate"]</label>
+                <input type="datetime-local" name="startAt" class="form-control"
+                       value="@(gate?.StartAt?.ToString("yyyy-MM-ddTHH:mm"))" />
+            </div>
+            <div class="col-md-5">
+                <label class="form-label fw-bold">@L["EndDate"]</label>
+                <input type="datetime-local" name="endAt" class="form-control"
+                       value="@(gate?.EndAt?.ToString("yyyy-MM-ddTHH:mm"))" />
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary-gold w-100">
+                    <i class="bi bi-check-circle ms-1"></i> @L["SaveAdmissionsSchedule"]
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Statistics -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card card-university text-center">
+            <div class="card-body">
+                <i class="bi bi-people text-primary" style="font-size: 2rem;"></i>
+                <h4 class="mt-2 mb-0">@stats.ProfilesCount</h4>
+                <small class="text-muted">@L["Profiles"]</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-university text-center">
+            <div class="card-body">
+                <i class="bi bi-list-check text-info" style="font-size: 2rem;"></i>
+                <h4 class="mt-2 mb-0">@stats.PreferencesCount</h4>
+                <small class="text-muted">@L["Preferences"]</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card card-university text-center">
+            <div class="card-body">
+                <i class="bi bi-trophy text-warning" style="font-size: 2rem;"></i>
+                <h4 class="mt-2 mb-0">@stats.AllocationsCount</h4>
+                <small class="text-muted">@L["Allocations"]</small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reset Operations -->
+<div class="card card-university mb-4 border-danger">
+    <div class="card-header bg-danger text-white">
+        <h5 class="mb-0 fw-bold">
+            <i class="bi bi-exclamation-triangle ms-2"></i>
+            @L["DeleteOpsTitle"]
+        </h5>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-secondary small mb-3">
+            <i class="bi bi-shield-exclamation ms-1"></i>
+            @L["DeleteOpsNote"]
+        </div>
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="border rounded p-3">
+                    <h6 class="fw-bold">@L["DeleteAllocationsTitle"]</h6>
+                    <p class="text-muted small mb-3">@L["DeleteAllocationsDesc"]</p>
+                    <button type="button" class="btn btn-outline-danger w-100" data-bs-toggle="modal" data-bs-target="#confirmResetAllocations">
+                        <i class="bi bi-trash ms-2"></i>
+                        @L["DeleteAllocationsTitle"] (@stats.AllocationsCount)
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="border rounded p-3">
+                    <h6 class="fw-bold">@L["DeletePreferencesTitle"]</h6>
+                    <p class="text-muted small mb-3">@L["DeletePreferencesDesc"]</p>
+                    <button type="button" class="btn btn-outline-warning w-100" data-bs-toggle="modal" data-bs-target="#confirmResetPreferences">
+                        <i class="bi bi-trash ms-2"></i>
+                        @L["DeletePreferencesTitle"] (@stats.PreferencesCount)
+                    </button>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="border rounded p-3 bg-danger bg-opacity-10">
+                    <h6 class="fw-bold text-danger">@L["ResetEverythingTitle"]</h6>
+                    <p class="text-muted small mb-3">@L["ResetEverythingDesc"]</p>
+                    <button type="button" class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#confirmResetEverything">
+                        <i class="bi bi-exclamation-triangle ms-2"></i>
+                        @L["ResetSystem"]
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Audit Logs -->
+<div class="card card-university">
+    <div class="card-header bg-white">
+        <h5 class="mb-0 fw-bold">
+            <i class="bi bi-clock-history text-primary ms-2"></i>
+            @L["AuditLog"]
+        </h5>
+    </div>
+    <div class="card-body p-0">
+        @if (recentLogs != null && recentLogs.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover table-sm mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>@L["Operation"]</th>
+                            <th>@L["Details"]</th>
+                            <th>@L["User"]</th>
+                            <th>@L["Date"]</th>
+                            <th>IP</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var log in recentLogs)
+                        {
+                            <tr>
+                                <td><strong>@log.Action</strong></td>
+                                <td><small class="text-muted">@(log.Details ?? "-")</small></td>
+                                <td>@log.PerformedBy</td>
+                                <td><small>@log.PerformedAt.ToString("dd/MM HH:mm")</small></td>
+                                <td><small>@log.IpAddress</small></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="p-4 text-center text-muted">
+                <i class="bi bi-inbox"></i>
+                <p class="mb-0 mt-2">@L["NoLoggedOps"]</p>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Confirmation Modals -->
+<!-- Reset Allocations Modal -->
+<div class="modal fade" id="confirmResetAllocations" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title">@L["ConfirmDelete"]</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="fw-bold">@L["ConfirmDeleteAllAllocations"]</p>
+                <p class="text-danger">⚠️ <strong>@stats.AllocationsCount @L["AllocationUnit"]</strong></p>
+                <p class="text-muted small">@L["CannotUndo"]</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                <form method="post" asp-action="ResetAllocations" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger">@L["ConfirmDelete"]</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reset Preferences Modal -->
+<div class="modal fade" id="confirmResetPreferences" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning text-dark">
+                <h5 class="modal-title">@L["ConfirmDelete"]</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="fw-bold">@L["ConfirmDeleteAllPreferences"]</p>
+                <p class="text-warning">⚠️ <strong>@stats.PreferencesCount @L["PreferenceWord"]</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                <form method="post" asp-action="ResetPreferences" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-warning">@L["ConfirmDelete"]</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Reset Everything Modal -->
+<div class="modal fade" id="confirmResetEverything" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-danger">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title"><i class="bi bi-exclamation-triangle ms-2"></i>@L["VeryDangerousOp"]</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-danger">
+                    <h5 class="alert-heading">⚠️ @L["WillBeDeleted"]</h5>
+                    <ul>
+                        <li><strong>@stats.AllocationsCount</strong> @L["AllocationUnit"]</li>
+                        <li><strong>@stats.PreferencesCount</strong> @L["PreferenceWord"]</li>
+                    </ul>
+                    <hr>
+                    <p class="mb-0"><strong>@L["ProfilesKept", (object)stats.ProfilesCount]</strong></p>
+                </div>
+                <p class="text-danger fw-bold">@L["CannotUndo"]</p>
+                <p>@L["UseForNewCycle"]</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@L["Cancel"]</button>
+                <form method="post" asp-action="ResetEverything" class="d-inline">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-danger btn-lg">
+                        <i class="bi bi-exclamation-triangle ms-2"></i>
+                        @L["ConfirmFullReset"]
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

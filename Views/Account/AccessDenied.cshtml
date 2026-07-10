@@ -1,0 +1,40 @@
+@using Microsoft.Extensions.Localization
+@using ANU_Admissions.Resources
+@inject IStringLocalizer<SharedResource> L
+@{
+    ViewData["Title"] = L["AccessDeniedTitle"].Value;
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-lg-6">
+        <div class="card card-university">
+            <div class="card-body p-5 text-center">
+                <i class="bi bi-shield-exclamation text-danger" style="font-size: 5rem; margin-bottom: 1.5rem;"></i>
+
+                <h2 class="fw-bold mb-3" style="color: var(--black-text);">
+                    @L["AccessDeniedTitle"]
+                </h2>
+
+                <p class="text-muted fs-5 mb-4">
+                    @L["AccessDeniedSub"]
+                </p>
+
+                <div class="alert alert-warning text-start">
+                    <i class="bi bi-info-circle ms-2"></i>
+                    @L["AccessDeniedHint"]
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a href="/Account/Login" class="btn btn-primary-gold btn-lg">
+                        <i class="bi bi-box-arrow-in-right ms-2"></i>
+                        @L["LoginBtn"]
+                    </a>
+                    <a href="/" class="btn btn-outline-secondary">
+                        <i class="bi bi-house ms-2"></i>
+                        @L["GoHome"]
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

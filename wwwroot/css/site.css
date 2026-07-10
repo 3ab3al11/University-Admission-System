@@ -1,0 +1,387 @@
+/* Arabic Font Support */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700&display=swap');
+
+/* =================================================================
+ * Theme variables. Light is the default; dark is opt-in via the
+ * [data-bs-theme="dark"] attribute on <html> (Bootstrap 5.3 convention).
+ * Every component below uses these variables — never hardcoded colors —
+ * so theme switching is a single attribute flip, no per-page overrides.
+ * ================================================================= */
+:root,
+[data-bs-theme="light"] {
+  --primary-gold: #D4AF37;
+  --hover-gold: #B88A1E;
+  --black-text: #111111;
+  --bg-light: #F8F9FB;
+  --border-gray: #E5E7EB;
+  --card-bg: #ffffff;
+  --navbar-bg: #ffffff;
+  --muted-text: #6c757d;
+  --bs-primary: #D4AF37;
+  --bs-primary-rgb: 212, 175, 55;
+}
+
+[data-bs-theme="dark"] {
+  --primary-gold: #E5C45A;       /* lighter gold for contrast on dark */
+  --hover-gold: #D4AF37;
+  --black-text: #F1F3F5;         /* now the "main text" color, light */
+  --bg-light: #0f1419;           /* page background */
+  --border-gray: #2a3441;
+  --card-bg: #1a2230;
+  --navbar-bg: #131a24;
+  --muted-text: #9aa4b1;
+  --bs-primary: #E5C45A;
+  --bs-primary-rgb: 229, 196, 90;
+  --bs-body-bg: #0f1419;
+  --bs-body-color: #F1F3F5;
+  --bs-border-color: #2a3441;
+  --bs-secondary-bg: #1a2230;
+  --bs-tertiary-bg: #131a24;
+  --bs-emphasis-color: #ffffff;
+}
+
+/* Dark-mode component refinements — keep readable contrast on tables,
+   forms, alerts, and the print pages (printing always uses light). */
+[data-bs-theme="dark"] .card-university,
+[data-bs-theme="dark"] .card { background-color: var(--card-bg); border-color: var(--border-gray); }
+[data-bs-theme="dark"] .navbar { background-color: var(--navbar-bg) !important; }
+[data-bs-theme="dark"] .table { --bs-table-bg: var(--card-bg); --bs-table-color: var(--black-text); --bs-table-border-color: var(--border-gray); }
+[data-bs-theme="dark"] .table-light, [data-bs-theme="dark"] .table-light > th, [data-bs-theme="dark"] .table-light > td { background-color: var(--navbar-bg); color: var(--black-text); }
+[data-bs-theme="dark"] .form-control, [data-bs-theme="dark"] .form-select { background-color: #0f1722; color: var(--black-text); border-color: var(--border-gray); }
+[data-bs-theme="dark"] .form-control::placeholder { color: var(--muted-text); }
+[data-bs-theme="dark"] .text-muted { color: var(--muted-text) !important; }
+[data-bs-theme="dark"] .alert-info { background-color: #102a3f; color: #cde4f7; border-color: #1d3d56; }
+[data-bs-theme="dark"] .alert-warning { background-color: #3d2f0e; color: #f3e0a1; border-color: #5e4717; }
+[data-bs-theme="dark"] .alert-danger { background-color: #3a1212; color: #f4b9b9; border-color: #5a1c1c; }
+[data-bs-theme="dark"] .alert-success { background-color: #0f3823; color: #b8e6c8; border-color: #1c5a39; }
+[data-bs-theme="dark"] .alert-primary { background-color: #2d2510; color: #f0dca0; border-color: #4a3c1a; }
+[data-bs-theme="dark"] .badge.bg-secondary { background-color: #3a4452 !important; }
+[data-bs-theme="dark"] .table-secondary, [data-bs-theme="dark"] .table-secondary > td { background-color: #2a3441; color: var(--muted-text); }
+[data-bs-theme="dark"] .btn-outline-secondary { color: var(--black-text); border-color: var(--border-gray); }
+[data-bs-theme="dark"] .btn-outline-secondary:hover { background-color: var(--border-gray); color: var(--black-text); }
+[data-bs-theme="dark"] .bg-white, [data-bs-theme="dark"] .bg-light { background-color: var(--card-bg) !important; }
+[data-bs-theme="dark"] .navbar-text { color: var(--black-text) !important; }
+
+/* Theme toggle button look — same in both themes (gold accent). */
+.theme-toggle, .lang-toggle {
+  border: 1px solid var(--border-gray);
+  background: transparent;
+  color: var(--black-text);
+  border-radius: 50rem;
+  padding: 0.25rem 0.6rem;
+  line-height: 1;
+}
+.theme-toggle:hover, .lang-toggle:hover { border-color: var(--primary-gold); color: var(--primary-gold); }
+[data-bs-theme="dark"] .theme-toggle .bi-sun-fill,
+[data-bs-theme="light"] .theme-toggle .bi-moon-stars-fill { display: inline-block; }
+[data-bs-theme="dark"] .theme-toggle .bi-moon-stars-fill,
+[data-bs-theme="light"] .theme-toggle .bi-sun-fill { display: none; }
+
+/* Printing always uses light backgrounds so reports stay readable. */
+@media print {
+  :root, [data-bs-theme="dark"] {
+    --black-text: #111;
+    --bg-light: #fff;
+    --card-bg: #fff;
+    --border-gray: #999;
+    --navbar-bg: #fff;
+    --muted-text: #555;
+  }
+  body { background: #fff !important; color: #111 !important; }
+  .card, .card-university { background: #fff !important; color: #111 !important; }
+}
+
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+body {
+  font-family: 'Cairo', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--black-text);
+  background-color: var(--bg-light);
+  margin-bottom: 60px;
+}
+
+/* Custom Buttons */
+.btn-primary-gold {
+  background-color: var(--primary-gold);
+  border-color: var(--primary-gold);
+  color: #fff;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-primary-gold:hover,
+.btn-primary-gold:focus,
+.btn-primary-gold:active {
+  background-color: var(--hover-gold);
+  border-color: var(--hover-gold);
+  color: #fff;
+}
+
+.btn-outline-gold {
+  color: var(--primary-gold);
+  border-color: var(--primary-gold);
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-gold:hover {
+  background-color: var(--primary-gold);
+  color: #fff;
+}
+
+/* Card Style */
+.card-university {
+  background: var(--card-bg);
+  border: 1px solid var(--border-gray);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-university:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px rgba(212, 175, 55, 0.1);
+  border-color: var(--primary-gold);
+}
+
+/* Typography */
+.section-title {
+  color: var(--black-text);
+  font-weight: 700;
+  position: relative;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.section-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  /* RTL alignment */
+  width: 60px;
+  height: 4px;
+  background-color: var(--primary-gold);
+  border-radius: 2px;
+}
+
+/* Badges */
+.badge-status {
+  padding: 0.5em 1em;
+  border-radius: 50rem;
+  font-weight: 500;
+  font-size: 0.85em;
+}
+
+/* Navbar Tweaks */
+.navbar {
+  border-bottom: 2px solid var(--primary-gold) !important;
+  background-color: var(--navbar-bg) !important;
+}
+
+.navbar-brand {
+  color: var(--black-text) !important;
+}
+
+/* ------------------------------------------------------------------
+   Navbar action row (right-hand cluster).
+   `gap` is direction-agnostic, so spacing works in both LTR and RTL
+   without needing ms-*/me-* utilities on each child. Explicit flex
+   declaration so the row behaves the same even if a Bootstrap utility
+   on the same element is missing.
+   ------------------------------------------------------------------ */
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+  flex-wrap: wrap;
+}
+/* Strip any leftover Bootstrap margin utilities (ms-*/me-*/mx-*) on the
+   direct children so the row's spacing comes entirely from `gap`. */
+.navbar-actions > * {
+  margin-inline: 0 !important;
+}
+
+/* Buttons inside the navbar action row should be more compact than full-size
+   page buttons — otherwise they tower over the theme/lang chips. Applies to
+   both Sign in (outline) and Create account (filled). */
+.navbar-actions .btn {
+  padding: 0.4rem 0.9rem;
+  font-size: 0.9rem;
+}
+
+/* Dashboard: a quiet gold text link, not a heavy button. Soft tinted
+   background appears on hover so it stays discoverable without dominating
+   the row. */
+.navbar-link-gold {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.7rem;
+  color: var(--primary-gold);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0.4rem;
+  white-space: nowrap;
+  transition: background-color .15s ease, color .15s ease;
+}
+.navbar-link-gold:hover,
+.navbar-link-gold:focus-visible {
+  background: rgba(212, 175, 55, 0.10);
+  color: var(--primary-gold);
+  outline: none;
+}
+
+/* User dropdown trigger — ghost style: no border by default, soft pill
+   background appears on hover/open. Caret is provided by Bootstrap via
+   .dropdown-toggle. */
+.navbar-user-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.4rem 0.85rem;
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--black-text);
+  font-size: 0.9rem;
+  line-height: 1.1;
+  border-radius: 50rem;
+  max-width: 260px;
+  white-space: nowrap;
+  transition: background-color .15s ease, border-color .15s ease;
+}
+.navbar-user-toggle:hover,
+.navbar-user-toggle:focus-visible,
+.navbar-user-toggle.show {
+  background: rgba(0, 0, 0, 0.04);
+  border-color: var(--border-gray);
+  outline: none;
+}
+[data-bs-theme="dark"] .navbar-user-toggle:hover,
+[data-bs-theme="dark"] .navbar-user-toggle:focus-visible,
+[data-bs-theme="dark"] .navbar-user-toggle.show {
+  background: rgba(255, 255, 255, 0.05);
+}
+.navbar-user-toggle .bi-person-circle {
+  font-size: 1.25rem;
+  color: var(--primary-gold);
+  opacity: 0.85;
+  flex-shrink: 0;
+}
+.navbar-user-toggle .navbar-user-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 160px;
+}
+
+/* Email shown in the dropdown header. Word-wraps because real addresses
+   can be long. */
+.dropdown-menu .navbar-user-email {
+  font-weight: 600;
+  word-break: break-all;
+  color: var(--black-text);
+  font-size: 0.9rem;
+}
+
+/* Logout as a dropdown item. The form preserves POST + AntiForgeryToken;
+   only the visual treatment changes. Destructive tint on hover. */
+.navbar-logout-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  background: none;
+  border: 0;
+  color: var(--bs-danger, #dc3545);
+  font-weight: 600;
+}
+.navbar-logout-item:hover,
+.navbar-logout-item:focus-visible {
+  background: rgba(220, 53, 69, 0.08);
+  color: var(--bs-danger, #dc3545);
+  outline: none;
+}
+
+/* Navbar university logo — circular framing.
+   The PNG ships with a white background; just round the box so it reads as a
+   medallion in both light and dark mode. No image change, no layout change. */
+.navbar img[alt="University Logo"] {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: #ffffff; /* hides the dark navbar peeking at the corners */
+  padding: 2px;              /* tiny inset so the logo doesn't kiss the edge */
+}
+[data-bs-theme="dark"] .navbar img[alt="University Logo"] {
+  /* Subtle gold ring helps the white medallion sit on the dark navbar. */
+  box-shadow: 0 0 0 1px var(--primary-gold);
+}
+
+/* Form Controls */
+.form-control:focus,
+.form-check-input:focus {
+  border-color: var(--primary-gold);
+  box-shadow: 0 0 0 0.25rem rgba(212, 175, 55, 0.25);
+}
+
+.btn-link {
+  color: var(--primary-gold);
+}
+
+.text-gold {
+  color: var(--primary-gold) !important;
+}
+
+/* ============================================================
+   Student allocation pages — dark-mode overrides only.
+   Light mode is untouched: the original inline styles on the
+   markup keep their light backgrounds. These rules use !important
+   only because they need to beat element-level inline styles.
+   ============================================================ */
+[data-bs-theme="dark"] .card-status-accepted {
+  background-color: #052e1b !important;
+  border-color: #10b981 !important;
+  color: #ecfdf5;
+}
+[data-bs-theme="dark"] .card-status-pending {
+  background-color: #2a1f08 !important;
+  border-color: #f59e0b !important;
+  color: #fef3c7;
+}
+[data-bs-theme="dark"] .card-status-accepted .text-muted,
+[data-bs-theme="dark"] .card-status-pending .text-muted {
+  color: #cbd5e1 !important;
+}
+[data-bs-theme="dark"] .pref-item-accepted {
+  background-color: #052e1b !important;
+  border-color: #10b981 !important;
+  color: #ecfdf5;
+}
+[data-bs-theme="dark"] .pref-item-default {
+  background-color: var(--card-bg) !important;
+  border-color: var(--border-gray) !important;
+}
+[data-bs-theme="dark"] .card-result-success {
+  background: linear-gradient(135deg, #052e1b 0%, #111827 100%) !important;
+  color: #ecfdf5;
+}
+[data-bs-theme="dark"] .card-result-success h3 { color: #ecfdf5 !important; }
+[data-bs-theme="dark"] .card-result-failure {
+  background: linear-gradient(135deg, #3b0d0d 0%, #111827 100%) !important;
+  color: #fee2e2;
+}
+[data-bs-theme="dark"] .result-inner-panel {
+  background-color: var(--card-bg) !important;
+  color: var(--black-text);
+  border-color: var(--border-gray) !important;
+}

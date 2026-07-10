@@ -1,0 +1,88 @@
+@using Microsoft.Extensions.Localization
+@using ANU_Admissions.Resources
+@using ANU_Admissions.Helpers
+@inject IStringLocalizer<SharedResource> L
+@model ANU_Admissions.ViewModels.CollegeEditViewModel
+@{
+    ViewData["Title"] = L["DeleteCollegeConfirmTitle"].Value;
+}
+
+<div class="mb-4">
+    <h2 class="fw-bold text-danger">
+        <i class="bi bi-exclamation-triangle ms-2"></i>
+        @L["DeleteCollegeConfirmTitle"]
+    </h2>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card card-university border-danger">
+            <div class="card-body p-4">
+                <div class="alert alert-danger" role="alert">
+                    <h5 class="alert-heading">
+                        <i class="bi bi-exclamation-octagon ms-2"></i>
+                        @L["DeleteWarningHeading"]
+                    </h5>
+                    <p class="mb-1">@L["DeleteWillLead"]</p>
+                    <ul class="mb-0">
+                        <li>@L["DeleteEraseCollege"]</li>
+                        <li>@L["DeleteErasePrefs"] (<strong>@Model.PreferencesCount</strong> @L["PreferenceWord"]).</li>
+                        <li>@L["DeleteEraseAllocs"] (<strong>@Model.AllocationsCount</strong> @L["AcceptedStudentWord"]).</li>
+                    </ul>
+                    @if (Model.AllocationsCount > 0)
+                    {
+                        <hr />
+                        <p class="mb-0">@L["DeleteAllocNote"]</p>
+                    }
+                </div>
+
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <th style="width:200px;">@L["CollegeName"]</th>
+                            <td class="fw-bold">@DisplayHelper.CollegeName(Model.NameAr, Model.NameEn)</td>
+                        </tr>
+                        <tr>
+                            <th>@L["Code"]</th>
+                            <td><span class="badge bg-secondary">@Model.Code</span></td>
+                        </tr>
+                        <tr>
+                            <th>@L["Capacity"]</th>
+                            <td>@Model.Capacity</td>
+                        </tr>
+                        <tr>
+                            <th>@L["MinScore"]</th>
+                            <td>@Model.MinimumScore%</td>
+                        </tr>
+                        <tr>
+                            <th>@L["AllowedSections"]</th>
+                            <td>@DisplayHelper.AllowedSectionsLabel(L, Model.AllowedSections)</td>
+                        </tr>
+                        <tr>
+                            <th>@L["LinkedPreferences"]</th>
+                            <td><strong class="text-danger">@Model.PreferencesCount</strong></td>
+                        </tr>
+                        <tr>
+                            <th>@L["AcceptedCount"]</th>
+                            <td><strong class="text-danger">@Model.AllocationsCount</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <form asp-action="DeleteCollegeConfirmed" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.Id" />
+
+                    <div class="d-flex gap-2 justify-content-end mt-3">
+                        <a asp-action="ManageColleges" class="btn btn-outline-secondary">
+                            <i class="bi bi-arrow-right ms-2"></i> @L["Cancel"]
+                        </a>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash ms-2"></i> @L["ConfirmDeleteFinal"]
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+
+  <!-- Navbar / Layout -->
+  <data name="SiteTitle"><value>بوابة التسجيل والقبول الإلكتروني</value></data>
+  <data name="UniversityName"><value>جامعة أسيوط الأهلية</value></data>
+  <data name="Dashboard"><value>لوحة التحكم</value></data>
+  <data name="Login"><value>تسجيل الدخول</value></data>
+  <data name="Register"><value>إنشاء حساب جديد</value></data>
+  <data name="Logout"><value>تسجيل الخروج</value></data>
+  <data name="Back"><value>رجوع خطوة</value></data>
+  <data name="Language"><value>اللغة</value></data>
+  <data name="Arabic"><value>العربية</value></data>
+  <data name="English"><value>English</value></data>
+  <data name="ThemeLight"><value>الوضع الفاتح</value></data>
+  <data name="ThemeDark"><value>الوضع الداكن</value></data>
+  <data name="FooterRights"><value>جميع الحقوق محفوظة</value></data>
+
+  <!-- Student Dashboard -->
+  <data name="WelcomeDashboard"><value>مرحباً بك في لوحة التحكم</value></data>
+  <data name="WelcomeDashboardSub"><value>من هنا يمكنك متابعة حالة طلبك وإدارة بياناتك الشخصية</value></data>
+  <data name="ApplicationStatus"><value>حالة الطلب</value></data>
+  <data name="BasicInfo"><value>البيانات الأساسية</value></data>
+  <data name="FullName"><value>الاسم الكامل</value></data>
+  <data name="Email"><value>البريد الإلكتروني</value></data>
+  <data name="StudentPhone"><value>رقم موبايل الطالب</value></data>
+  <data name="ParentPhone"><value>رقم موبايل ولي الأمر</value></data>
+  <data name="Section"><value>الشعبة</value></data>
+  <data name="EquivalentPercentage"><value>النسبة المكافئة</value></data>
+  <data name="PreferencesCard"><value>اختيار الرغبات</value></data>
+  <data name="PreferencesCardSub"><value>حدد الكليات المفضلة</value></data>
+  <data name="StartSelection"><value>ابدأ الاختيار</value></data>
+  <data name="EditDataCard"><value>تعديل البيانات</value></data>
+  <data name="EditDataCardSub"><value>تحديث المعلومات الأساسية</value></data>
+  <data name="EditAction"><value>تعديل</value></data>
+  <data name="AllocationCard"><value>حالة التنسيق</value></data>
+  <data name="AllocationCardSub"><value>تابع نتيجة التخصيص</value></data>
+  <data name="ShowStatus"><value>عرض الحالة</value></data>
+  <data name="AttendanceCard"><value>إجراءات الحضور للجامعة</value></data>
+  <data name="AttendanceCardSub"><value>المستندات المطلوبة عند الحضور</value></data>
+  <data name="ShowInstructions"><value>عرض التعليمات</value></data>
+  <data name="AdmissionsClosed"><value>باب القبول والتنسيق مغلق حاليًا</value></data>
+  <data name="AdmissionsClosedSub"><value>لا يمكنك تعديل البيانات أو اختيار الرغبات في الوقت الحالي. يرجى متابعة إعلان الجامعة.</value></data>
+  <data name="AdmissionsClosedBadge"><value>باب القبول مغلق</value></data>
+  <data name="ClosedByAdmin"><value>مغلق من إدارة الجامعة</value></data>
+  <data name="PreferencesUnavailable"><value>اختيار الرغبات غير متاح حاليًا</value></data>
+  <data name="EditUnavailable"><value>تعديل البيانات غير متاح حاليًا</value></data>
+  <data name="UnavailableNow"><value>غير متاح حاليًا</value></data>
+  <data name="ClosedFromAdminShort"><value>تم إغلاق باب اختيار الرغبات من إدارة الجامعة.</value></data>
+
+  <!-- Preferences page -->
+  <data name="PreferencesTitle"><value>اختيار رغبات الكليات</value></data>
+  <data name="PreferencesIntro"><value>الكليات المتاحة والحد الأقصى للرغبات يتم تحديدهما تلقائيًا حسب شعبتك.</value></data>
+  <data name="AvailableColleges"><value>الكليات المتاحة لك</value></data>
+  <data name="BackToDashboard"><value>رجوع للوحة التحكم</value></data>
+  <data name="PreferencesClosedTitle"><value>باب اختيار الرغبات مغلق حاليًا</value></data>
+  <data name="PreferencesClosedBody"><value>لا يمكن إضافة أو تعديل الرغبات بعد إغلاق باب القبول من إدارة الجامعة.</value></data>
+
+  <!-- Application form -->
+  <data name="ApplicationFormTitle"><value>التقديم والتحقق من الهوية</value></data>
+  <data name="ApplicationFormIntro"><value>التحقق يتم عبر الرقم القومي ورقم الجلوس معًا. الدرجات تُجلب رسميًا من نتيجة الثانوية العامة ولا يتم إدخالها يدويًا.</value></data>
+  <data name="EditClosedTitle"><value>باب تعديل بيانات التقديم مغلق حاليًا</value></data>
+  <data name="EditClosedBody"><value>لا يمكن تعديل البيانات بعد إغلاق باب القبول من إدارة الجامعة.</value></data>
+
+  <!-- Admin -->
+  <data name="AdminDashboard"><value>لوحة تحكم الأدمن</value></data>
+  <data name="ManageColleges"><value>إدارة الكليات</value></data>
+  <data name="SystemControl"><value>التحكم في النظام</value></data>
+  <data name="CollegeResults"><value>تقارير نتائج الكليات</value></data>
+
+  <!-- Section display labels (the stored value stays Arabic; this is display only) -->
+  <data name="Section_Science"><value>علمي علوم</value></data>
+  <data name="Section_Math"><value>علمي رياضة</value></data>
+  <data name="Section_Literary"><value>أدبي</value></data>
+
+  <!-- Preferences (full) -->
+  <data name="PreferencesMaxHint"><value>يمكنك اختيار حتى {0} كليات حسب الأولوية.</value></data>
+  <data name="LoadError"><value>حدث خطأ في تحميل البيانات. يرجى المحاولة مرة أخرى.</value></data>
+  <data name="YourEquivalent"><value>نسبتك المكافئة:</value></data>
+  <data name="YourSection"><value>الشعبة:</value></data>
+  <data name="MinScoreRequired"><value>شرط النسبة المطلوبة لاختيار الكلية:</value></data>
+  <data name="YourSelectedPreferences"><value>رغباتك المختارة</value></data>
+  <data name="NoCollegeSelectedYet"><value>لم تختر أي كلية بعد</value></data>
+  <data name="SavePreferences"><value>حفظ الرغبات (تحديث)</value></data>
+  <data name="BackShort"><value>رجوع</value></data>
+  <data name="JsMaxColleges"><value>يمكنك اختيار {0} كليات كحد أقصى</value></data>
+  <data name="JsAtLeastOne"><value>يرجى اختيار كلية واحدة على الأقل</value></data>
+
+  <!-- Application form (full) -->
+  <data name="VerifiedLinkedMsg"><value>تم التحقق من هويتك وربط نتيجتك الرسمية. البيانات التالية رسمية ولا يمكن تعديلها.</value></data>
+  <data name="OfficialResult"><value>النتيجة الرسمية</value></data>
+  <data name="LabelName"><value>الاسم</value></data>
+  <data name="SeatNumber"><value>رقم الجلوس</value></data>
+  <data name="TotalScore"><value>المجموع</value></data>
+  <data name="MaxScore"><value>النهاية العظمى</value></data>
+  <data name="Percentage"><value>النسبة المئوية</value></data>
+  <data name="EquivalentForAllocation"><value>النسبة المكافئة للتنسيق</value></data>
+  <data name="StatusLabel"><value>الحالة</value></data>
+  <data name="ChoosePreferences"><value>اختيار الرغبات</value></data>
+  <data name="VerificationData"><value>بيانات التحقق</value></data>
+  <data name="NationalId"><value>الرقم القومي</value></data>
+  <data name="NationalIdPlaceholder"><value>14 رقمًا</value></data>
+  <data name="SeatNumberPlaceholder"><value>أدخل رقم الجلوس</value></data>
+  <data name="ChooseSection"><value>-- اختر الشعبة --</value></data>
+  <data name="ContactData"><value>بيانات التواصل</value></data>
+  <data name="PhoneNumber"><value>رقم الهاتف</value></data>
+  <data name="ParentPhoneNumber"><value>رقم هاتف ولي الأمر</value></data>
+  <data name="PhonePlaceholder"><value>11 رقمًا</value></data>
+  <data name="Address"><value>العنوان</value></data>
+  <data name="AddressPlaceholder"><value>العنوان (اختياري)</value></data>
+  <data name="EmailReadonlyHint"><value>البريد مرتبط بحسابك ولا يُعدّل من هنا.</value></data>
+  <data name="NoGradesEnteredHint"><value>لن تُدخل أي درجات. بعد التحقق، تُجلب نتيجتك الرسمية تلقائيًا وتُعرض للقراءة فقط.</value></data>
+  <data name="VerifyAndLink"><value>تحقق وربط النتيجة</value></data>
+
+  <!-- Admin Dashboard -->
+  <data name="AdminDashboardTitle"><value>لوحة تحكم الإدارة</value></data>
+  <data name="AdminDashboardSub"><value>إدارة ومراقبة نظام القبول والتنسيق</value></data>
+  <data name="TotalStudents"><value>إجمالي الطلاب</value></data>
+  <data name="CompletedProfile"><value>أكمل الملف</value></data>
+  <data name="ChosePreferences"><value>اختار رغبات</value></data>
+  <data name="Allocated"><value>تم التنسيق</value></data>
+  <data name="Pending"><value>قيد الانتظار</value></data>
+  <data name="RunAllocationTitle"><value>تشغيل التنسيق</value></data>
+  <data name="RunAllocationSub"><value>بدء عملية توزيع الطلاب على الكليات</value></data>
+  <data name="GoToAllocation"><value>الانتقال لصفحة التنسيق</value></data>
+  <data name="SystemControlSub"><value>عمليات الحذف وإدارة باب القبول</value></data>
+  <data name="GoToSystemControl"><value>الانتقال للوحة التحكم</value></data>
+  <data name="ImportTitle"><value>استيراد نتائج الثانوية الرسمية</value></data>
+  <data name="ImportSub"><value>رفع ملف Excel الرسمي وحساب النسب في السيرفر</value></data>
+  <data name="ImportPage"><value>صفحة الاستيراد</value></data>
+  <data name="ManageApplicants"><value>إدارة المتقدمين</value></data>
+  <data name="ApplicantUnit"><value>متقدم</value></data>
+  <data name="ShowList"><value>عرض القائمة</value></data>
+  <data name="ManageAllocation"><value>إدارة التنسيق</value></data>
+  <data name="AllocatedUnit"><value>تم تنسيقه</value></data>
+  <data name="ComingSoon"><value>قريباً</value></data>
+  <data name="CollegeUnit"><value>كلية</value></data>
+  <data name="CollegeResultsSub"><value>طباعة المقبولين لكل كلية</value></data>
+  <data name="OpenReports"><value>فتح التقارير</value></data>
+  <data name="LatestApplicants"><value>أحدث المتقدمين</value></data>
+  <data name="StudentName"><value>اسم الطالب</value></data>
+  <data name="ApplicationDate"><value>تاريخ التقديم</value></data>
+  <data name="NoApplicantsYet"><value>لا توجد طلبات بعد</value></data>
+  <data name="LatestAllocations"><value>أحدث التنسيقات</value></data>
+  <data name="Student"><value>الطالب</value></data>
+  <data name="College"><value>الكلية</value></data>
+  <data name="Total"><value>المجموع</value></data>
+  <data name="Date"><value>التاريخ</value></data>
+  <data name="NotAllocatedYet"><value>لم يتم التنسيق بعد</value></data>
+
+  <!-- Manage colleges -->
+  <data name="ManageCollegesSub"><value>تعديل بيانات الكليات والسعة والحد الأدنى المطلوب</value></data>
+  <data name="AddCollege"><value>إضافة كلية</value></data>
+  <data name="Code"><value>الكود</value></data>
+  <data name="CollegeName"><value>اسم الكلية</value></data>
+  <data name="Status"><value>الحالة</value></data>
+  <data name="Capacity"><value>السعة</value></data>
+  <data name="MinScorePercent"><value>الحد الأدنى %</value></data>
+  <data name="AllowedSections"><value>الشعب المسموحة</value></data>
+  <data name="PreferencesCount"><value>رغبات</value></data>
+  <data name="AllocationsCount"><value>تنسيقات</value></data>
+  <data name="Actions"><value>إجراءات</value></data>
+  <data name="VisibleToStudents"><value>ظاهرة للطلاب</value></data>
+  <data name="HiddenFromStudents"><value>مخفية عن الطلاب</value></data>
+  <data name="Edit"><value>تعديل</value></data>
+  <data name="HideFromStudents"><value>إخفاء عن الطلاب</value></data>
+  <data name="ShowToStudents"><value>إظهار للطلاب</value></data>
+  <data name="DeleteCollege"><value>حذف الكلية</value></data>
+
+  <!-- College form -->
+  <data name="EditCollegeTitle"><value>تعديل كلية</value></data>
+  <data name="AddCollegeTitle"><value>إضافة كلية جديدة</value></data>
+  <data name="CollegeNameAr"><value>اسم الكلية (عربي)</value></data>
+  <data name="CollegeNameEn"><value>اسم الكلية (إنجليزي)</value></data>
+  <data name="CollegeCode"><value>كود الكلية</value></data>
+  <data name="MinScoreHint"><value>الطالب اللي نسبته أقل من ده لا يقدر يختار الكلية.</value></data>
+  <data name="VisibleSwitchHint"><value>عند الإخفاء، الكلية لا تظهر للطالب ولا تدخل في التنسيق.</value></data>
+  <data name="AllowedSectionsHint"><value>الكلية تظهر فقط للطلاب في الشعب المختارة. (كلية المالية مخفية عن الطلاب بقاعدة خاصة بغض النظر عن هذا الإعداد.)</value></data>
+  <data name="Cancel"><value>إلغاء</value></data>
+  <data name="SaveChanges"><value>حفظ التعديلات</value></data>
+  <data name="AddCollegeBtn"><value>إضافة الكلية</value></data>
+
+  <!-- Delete college -->
+  <data name="DeleteCollegeConfirmTitle"><value>تأكيد حذف الكلية</value></data>
+  <data name="DeleteWarningHeading"><value>تحذير: هذا الإجراء لا يمكن التراجع عنه</value></data>
+  <data name="DeleteWillLead"><value>سيؤدي الحذف إلى:</value></data>
+  <data name="DeleteEraseCollege"><value>مسح الكلية من النظام نهائيًا.</value></data>
+  <data name="DeleteErasePrefs"><value>حذف كل الرغبات المرتبطة بها</value></data>
+  <data name="DeleteEraseAllocs"><value>حذف كل نتائج التنسيق الخاصة بها</value></data>
+  <data name="PreferenceWord"><value>رغبة</value></data>
+  <data name="AcceptedStudentWord"><value>طالب مقبول</value></data>
+  <data name="DeleteAllocNote"><value>الطلاب المقبولون في هذه الكلية سيصبحون بدون نتيجة تخصها. لن يتم تشغيل التنسيق تلقائيًا — يجب على الأدمن تشغيله يدويًا لاحقًا إذا رغب في إعادة توزيعهم.</value></data>
+  <data name="MinScore"><value>الحد الأدنى</value></data>
+  <data name="LinkedPreferences"><value>عدد الرغبات المرتبطة</value></data>
+  <data name="AcceptedCount"><value>عدد المقبولين</value></data>
+  <data name="ConfirmDeleteFinal"><value>تأكيد الحذف نهائيًا</value></data>
+  <data name="MustChooseSection"><value>يجب اختيار شعبة واحدة على الأقل</value></data>
+
+  <!-- System control -->
+  <data name="DangerousOps"><value>عمليات خطيرة - يرجى توخي الحذر</value></data>
+  <data name="AdmissionsStatus"><value>حالة باب القبول</value></data>
+  <data name="CurrentStatus"><value>الحالة الحالية:</value></data>
+  <data name="AdmissionsOpenStrong"><value>مفتوح</value></data>
+  <data name="AdmissionsClosedStrong"><value>مغلق</value></data>
+  <data name="AdmissionsOpenDesc"><value>الطلاب يمكنهم تقديم الطلبات واختيار الرغبات</value></data>
+  <data name="AdmissionsClosedDesc"><value>الطلاب لا يمكنهم تعديل البيانات</value></data>
+  <data name="AdmissionsWord"><value>باب القبول</value></data>
+  <data name="CloseWord"><value>إغلاق</value></data>
+  <data name="OpenWord"><value>فتح</value></data>
+  <data name="Profiles"><value>الملفات الشخصية</value></data>
+  <data name="Preferences"><value>الرغبات</value></data>
+  <data name="Allocations"><value>التنسيقات</value></data>
+  <data name="DeleteOpsTitle"><value>عمليات الحذف (خطيرة)</value></data>
+  <data name="DeleteOpsNote"><value>هذه العمليات تحذف بيانات تشغيلية فقط ولا يمكن التراجع عنها. لا يتم حذف: حسابات الطلاب وملفاتهم الشخصية، ولا قاعدة بيانات النتائج الرسمية المستوردة. استخدمها فقط عند بدء دورة قبول جديدة.</value></data>
+  <data name="DeleteAllocationsTitle"><value>حذف التنسيقات</value></data>
+  <data name="DeleteAllocationsDesc"><value>يحذف نتائج التنسيق فقط ويعيد ضبط حدود القبول للكليات. لا يحذف الرغبات ولا الملفات الشخصية.</value></data>
+  <data name="DeletePreferencesTitle"><value>حذف الرغبات</value></data>
+  <data name="DeletePreferencesDesc"><value>حذف جميع رغبات الطلاب</value></data>
+  <data name="ResetEverythingTitle"><value>إعادة تعيين كل شيء</value></data>
+  <data name="ResetEverythingDesc"><value>حذف الرغبات + التنسيقات (الملفات الشخصية تبقى)</value></data>
+  <data name="ResetSystem"><value>إعادة تعيين النظام</value></data>
+  <data name="AuditLog"><value>سجل العمليات الأخيرة</value></data>
+  <data name="Operation"><value>العملية</value></data>
+  <data name="Details"><value>التفاصيل</value></data>
+  <data name="User"><value>المستخدم</value></data>
+  <data name="NoLoggedOps"><value>لا توجد عمليات مسجلة</value></data>
+  <data name="ConfirmDelete"><value>تأكيد الحذف</value></data>
+  <data name="ConfirmDeleteAllAllocations"><value>هل أنت متأكد من حذف جميع التنسيقات؟</value></data>
+  <data name="CannotUndo"><value>هذا الإجراء لا يمكن التراجع عنه!</value></data>
+  <data name="ConfirmDeleteAllPreferences"><value>هل أنت متأكد من حذف جميع الرغبات؟</value></data>
+  <data name="VeryDangerousOp"><value>تحذير: عملية خطيرة جداً</value></data>
+  <data name="WillBeDeleted"><value>سيتم حذف:</value></data>
+  <data name="ProfilesKept"><value>الملفات الشخصية ({0}) ستبقى محفوظة</value></data>
+  <data name="UseForNewCycle"><value>استخدم هذه الوظيفة فقط لبدء دورة قبول جديدة</value></data>
+  <data name="ConfirmFullReset"><value>تأكيد إعادة التعيين الكاملة</value></data>
+  <data name="AllocationUnit"><value>تنسيق</value></data>
+
+  <!-- College results report -->
+  <data name="CollegeResultsSubtitle"><value>اختر كلية لعرض الطلاب المقبولين مرتبين من الأعلى إلى الأقل</value></data>
+  <data name="ChooseCollege"><value>-- اختر الكلية --</value></data>
+  <data name="ShowReport"><value>عرض التقرير</value></data>
+  <data name="NoResultsForCollege"><value>لا توجد نتائج متاحة لهذه الكلية حاليًا.</value></data>
+  <data name="PrintSavePdf"><value>طباعة / حفظ PDF</value></data>
+  <data name="PortalName"><value>نظام القبول والتنسيق الإلكتروني</value></data>
+  <data name="ReportFor"><value>تقرير نتيجة</value></data>
+  <data name="CollegeCapacity"><value>سعة الكلية</value></data>
+  <data name="HighestEquivalent"><value>أعلى نسبة مكافئة</value></data>
+  <data name="LowestEquivalent"><value>أقل نسبة مكافئة</value></data>
+  <data name="ReportDateTime"><value>تاريخ ووقت التقرير</value></data>
+  <data name="Rank"><value>الترتيب</value></data>
+  <data name="AcceptancePreference"><value>رغبة القبول</value></data>
+  <data name="AllocationDateCol"><value>تاريخ التخصيص</value></data>
+
+  <!-- Account form-field labels -->
+  <data name="Password"><value>كلمة المرور</value></data>
+  <data name="ConfirmPassword"><value>تأكيد كلمة المرور</value></data>
+  <data name="NewPassword"><value>كلمة المرور الجديدة</value></data>
+  <data name="RememberMe"><value>تذكرني</value></data>
+
+  <!-- Account / Auth -->
+  <data name="LoginTitle"><value>تسجيل الدخول</value></data>
+  <data name="LoginWelcome"><value>مرحباً بك في جامعة أسيوط الأهلية</value></data>
+  <data name="ForgotPasswordQ"><value>نسيت كلمة المرور؟</value></data>
+  <data name="LoginBtn"><value>تسجيل الدخول</value></data>
+  <data name="NoAccountQ"><value>ليس لديك حساب؟</value></data>
+  <data name="CreateAccountLink"><value>إنشاء حساب جديد</value></data>
+  <data name="RegisterTitle"><value>إنشاء حساب جديد</value></data>
+  <data name="RegisterSub"><value>انضم إلى جامعة أسيوط الأهلية</value></data>
+  <data name="FullNamePlaceholder"><value>الاسم الكامل</value></data>
+  <data name="StudentPhoneHint"><value>رقم موبايل الطالب (11 رقم يبدأ بـ 01)</value></data>
+  <data name="ParentPhoneHint"><value>رقم موبايل ولي الأمر (مطلوب) — يمكن استخدامه لحد 3 حسابات</value></data>
+  <data name="PasswordHint"><value>يجب أن تكون كلمة المرور على الأقل 8 أحرف وتحتوي حرف كبير وصغير ورقم ورمز خاص.</value></data>
+  <data name="CreateAccountBtn"><value>إنشاء الحساب</value></data>
+  <data name="AlreadyHaveAccountQ"><value>لديك حساب بالفعل؟</value></data>
+  <data name="ForgotPasswordTitle"><value>نسيت كلمة المرور</value></data>
+  <data name="ForgotPasswordSub"><value>أدخل بريدك الإلكتروني المسجل لإرسال تعليمات إعادة التعيين</value></data>
+  <data name="SendResetLink"><value>إرسال رابط إعادة التعيين</value></data>
+  <data name="BackToLogin"><value>رجوع لتسجيل الدخول</value></data>
+  <data name="ResetPasswordTitle"><value>إعادة تعيين كلمة المرور</value></data>
+  <data name="ResetPasswordSub"><value>أدخل كلمة المرور الجديدة</value></data>
+  <data name="SetNewPassword"><value>تعيين كلمة المرور الجديدة</value></data>
+  <data name="ForgotConfirmTitle"><value>تحقق من بريدك الإلكتروني</value></data>
+  <data name="ForgotConfirmBody"><value>إذا كان البريد الإلكتروني مسجلاً لدينا، سيتم إرسال تعليمات إعادة تعيين كلمة المرور إليه. يرجى مراجعة بريدك الإلكتروني واتباع الرابط.</value></data>
+  <data name="ResetConfirmTitle"><value>تم تغيير كلمة المرور بنجاح</value></data>
+  <data name="ResetConfirmBody"><value>يمكنك الآن تسجيل الدخول باستخدام كلمة المرور الجديدة.</value></data>
+  <data name="AccessDeniedTitle"><value>الوصول مرفوض</value></data>
+  <data name="AccessDeniedSub"><value>عذراً، ليس لديك صلاحية للوصول إلى هذه الصفحة</value></data>
+  <data name="AccessDeniedHint"><value>قد تحتاج إلى تسجيل الدخول بحساب آخر أو الاتصال بالإدارة للحصول على الصلاحيات المطلوبة.</value></data>
+  <data name="GoHome"><value>العودة للرئيسية</value></data>
+
+  <!-- Applicants list -->
+  <data name="ApplicantsTitle"><value>إدارة المتقدمين</value></data>
+  <data name="ApplicantsSub"><value>عرض وإدارة جميع الطلاب المتقدمين</value></data>
+  <data name="Search"><value>البحث</value></data>
+  <data name="SearchPlaceholder"><value>ابحث بالاسم، البريد، أو الرقم القومي</value></data>
+  <data name="FilterByStatus"><value>تصفية حسب الحالة</value></data>
+  <data name="All"><value>الكل</value></data>
+  <data name="StatusAllocated"><value>تم التنسيق</value></data>
+  <data name="StatusPending"><value>قيد المراجعة</value></data>
+  <data name="StatusIncomplete"><value>غير مكتمل</value></data>
+  <data name="StatusReadyForPrefs"><value>جاهز للرغبات</value></data>
+  <data name="SearchBtn"><value>بحث</value></data>
+  <data name="Results"><value>النتائج</value></data>
+  <data name="BackToDashboardShort"><value>العودة للوحة التحكم</value></data>
+  <data name="View"><value>عرض</value></data>
+  <data name="NoResults"><value>لا توجد نتائج</value></data>
+  <data name="PreferencesCol"><value>الرغبات</value></data>
+  <data name="ApplicantStatusCol"><value>الحالة</value></data>
+  <data name="ActionsCol"><value>الإجراءات</value></data>
+
+  <!-- Applicant details -->
+  <data name="ApplicantDetailsTitle"><value>تفاصيل المتقدم</value></data>
+  <data name="BackToList"><value>العودة للقائمة</value></data>
+  <data name="PersonalData"><value>البيانات الشخصية</value></data>
+  <data name="MobileNumber"><value>رقم الموبايل</value></data>
+  <data name="DateOfBirth"><value>تاريخ الميلاد</value></data>
+  <data name="Gender"><value>النوع</value></data>
+  <data name="City"><value>المدينة</value></data>
+  <data name="Governorate"><value>المحافظة</value></data>
+  <data name="AcademicData"><value>البيانات الأكاديمية</value></data>
+  <data name="HighSchoolName"><value>المدرسة الثانوية</value></data>
+  <data name="GraduationYear"><value>سنة التخرج</value></data>
+  <data name="CertificateType"><value>نوع الشهادة</value></data>
+  <data name="TotalScoreOverall"><value>المجموع الكلي</value></data>
+  <data name="PreferencesOfAllocation"><value>رغبات التنسيق</value></data>
+  <data name="NoPreferencesYet"><value>لم يختر الرغبات بعد</value></data>
+  <data name="AllocationResultLabel"><value>نتيجة التنسيق</value></data>
+  <data name="AllocationDateLabel"><value>تاريخ التنسيق</value></data>
+  <data name="DocumentsSubmittedLabel"><value>المستندات</value></data>
+  <data name="DocsUploaded"><value>تم الرفع</value></data>
+  <data name="DocsNotUploaded"><value>لم يتم الرفع</value></data>
+  <data name="NotAllocatedYetMsg"><value>لم يتم التنسيق بعد</value></data>
+  <data name="UploadedDocuments"><value>المستندات المرفوعة</value></data>
+  <data name="DocumentType"><value>نوع المستند</value></data>
+  <data name="FileName"><value>اسم الملف</value></data>
+  <data name="FileSize"><value>الحجم</value></data>
+  <data name="UploadDate"><value>تاريخ الرفع</value></data>
+  <data name="VerificationCol"><value>التحقق</value></data>
+  <data name="Verified"><value>موثق</value></data>
+  <data name="NoDocsYet"><value>لم يتم رفع مستندات بعد</value></data>
+
+  <!-- Run allocation -->
+  <data name="RunAllocationPageTitle"><value>تشغيل التنسيق الآلي</value></data>
+  <data name="RunAllocationPageSub"><value>توزيع الطلاب على الكليات بناءً على النسبة المكافئة والرغبات</value></data>
+  <data name="AllocationDoneOk"><value>تم التنسيق بنجاح!</value></data>
+  <data name="AllocationSummary"><value>ملخص التنسيق</value></data>
+  <data name="TotalRequests"><value>إجمالي الطلبات</value></data>
+  <data name="Accepted"><value>تم القبول</value></data>
+  <data name="Rejected"><value>غير مقبول</value></data>
+  <data name="ExecutionTime"><value>وقت التنفيذ</value></data>
+  <data name="ErrorLabel"><value>خطأ!</value></data>
+  <data name="AllocationAlgorithmTitle"><value>خوارزمية التنسيق الآلي</value></data>
+  <data name="AllocationAlgorithmSub"><value>سيتم ترتيب جميع الطلاب حسب النسبة المكافئة تنازلياً، ثم توزيعهم على الكليات حسب رغباتهم والسعة المتاحة</value></data>
+  <data name="HowItWorks"><value>آلية العمل:</value></data>
+  <data name="Step1Sort"><value>ترتيب الطلاب حسب النسبة المكافئة (الأعلى أولاً)</value></data>
+  <data name="Step2Assign"><value>لكل طالب: محاولة تعيينه لأول كلية في رغباته لها سعة متاحة</value></data>
+  <data name="Step3Cutoff"><value>حساب الحد الأدنى النهائي لكل كلية بعد التنسيق</value></data>
+  <data name="Step4Save"><value>حفظ النتائج وإشعار الطلاب</value></data>
+  <data name="StartAllocationNow"><value>بدء التنسيق الآن</value></data>
+  <data name="ConfirmStartAllocation"><value>هل أنت متأكد من بدء عملية التنسيق؟ هذا الإجراء سيؤثر على جميع الطلبات.</value></data>
+  <data name="ImportantAlerts"><value>تنبيهات هامة</value></data>
+  <data name="ReviewBeforeRunning"><value>تأكد من مراجعة جميع الطلبات قبل التشغيل</value></data>
+  <data name="AllocationIrreversible"><value>لا يمكن التراجع عن التنسيق بعد تنفيذه</value></data>
+  <data name="LastAllocationRun"><value>آخر عملية تنسيق</value></data>
+  <data name="NoAllocationRunYet"><value>لم يتم تشغيل التنسيق بعد</value></data>
+
+  <!-- Import official records -->
+  <data name="ImportPageTitle"><value>استيراد نتائج الثانوية العامة الرسمية</value></data>
+  <data name="ImportPageSub"><value>رفع ملف Excel الرسمي وحساب النسب في السيرفر</value></data>
+  <data name="CurrentOfficialRecordsCount"><value>عدد السجلات الرسمية الحالية</value></data>
+  <data name="EligibleSucceeded"><value>المؤهلين (ناجح)</value></data>
+  <data name="LastBatch"><value>آخر دفعة</value></data>
+  <data name="ImportAborted"><value>تم إلغاء الاستيراد</value></data>
+  <data name="ElapsedTime"><value>الزمن المستغرق</value></data>
+  <data name="ImportSucceeded"><value>تم الاستيراد بنجاح</value></data>
+  <data name="BatchLabel"><value>الدفعة</value></data>
+  <data name="MaxScoreLabel"><value>النهاية العظمى</value></data>
+  <data name="TimeLabel"><value>الزمن</value></data>
+  <data name="RowsRead"><value>قُرئ من الملف</value></data>
+  <data name="EligibleShort"><value>مؤهل (ناجح)</value></data>
+  <data name="NotEligible"><value>غير مؤهل</value></data>
+  <data name="MissingData"><value>بيانات ناقصة</value></data>
+  <data name="Duplicate"><value>مكرر</value></data>
+  <data name="FirstProblemRows"><value>أول الصفوف التي بها مشكلة</value></data>
+  <data name="RowNumber"><value>رقم الصف</value></data>
+  <data name="Reason"><value>السبب</value></data>
+  <data name="ImportFileExists"><value>يوجد ملف نتائج مستورد بالفعل. يجب حذف البيانات الحالية أولًا قبل رفع ملف جديد.</value></data>
+  <data name="CurrentRecordsLabel"><value>عدد السجلات الحالية</value></data>
+  <data name="CurrentBatchLabel"><value>الدفعة الحالية</value></data>
+  <data name="LastImportDate"><value>تاريخ آخر استيراد</value></data>
+  <data name="DeleteCurrentOfficial"><value>حذف نتائج الثانوية العامة الحالية</value></data>
+  <data name="UploadNewFile"><value>رفع ملف جديد</value></data>
+  <data name="ExcelFileHint"><value>الملف يحتوي على: رقم الجلوس، اسم الطالب، الدرجة، وحالة النجاح/الرسوب.</value></data>
+  <data name="MaxScoreHint"><value>للملف التجريبي الحالي: 700 · للملف النهائي: 320</value></data>
+  <data name="ImportBatchPlaceholder"><value>مثال: Aug-2024</value></data>
+  <data name="ImportBatchHint"><value>يساعدك تميّز الدفعات في سجل المراجعة</value></data>
+  <data name="AbortOnOverflowHint"><value>موصى به: لو لقي أي صف نسبته أكبر من 100% يلغي الاستيراد كاملاً (يعني MaxScore غلط)</value></data>
+  <data name="ServerComputesHint"><value>يتم حساب النسبة المكافئة في السيرفر تلقائيًا. الطلاب غير الناجحين (راسب/غياب) يُحفظون كـ "غير مؤهلين" للتقديم ولا يتم تجاهلهم.</value></data>
+  <data name="StartImport"><value>بدء الاستيراد</value></data>
+
+  <!-- Delete official records -->
+  <data name="DeleteOfficialTitle"><value>حذف بيانات النتائج الرسمية المستوردة</value></data>
+  <data name="DeleteOfficialSub"><value>عملية خطيرة — يرجى المراجعة بعناية قبل التأكيد</value></data>
+  <data name="CurrentState"><value>الوضع الحالي</value></data>
+  <data name="OfficialRecordsCount"><value>عدد سجلات النتائج الرسمية</value></data>
+  <data name="VerifiedStudentsCount"><value>طلاب تم التحقق منهم بهذه البيانات</value></data>
+  <data name="VerifiedPrefsCount"><value>رغبات لطلاب متحققين</value></data>
+  <data name="AllocationsCountLabel"><value>عدد التنسيقات</value></data>
+  <data name="DeleteBlockedMsg"><value>لا يمكن حذف بيانات النتائج الرسمية لأن هناك طلابًا تم التحقق منهم باستخدام هذه البيانات. يجب إعادة ضبط بيانات التقديم والتنسيق أولًا قبل حذف النتائج الرسمية.</value></data>
+  <data name="ResetVerifiedBtn"><value>إعادة ضبط بيانات التقديم والتحقق</value></data>
+  <data name="NoOfficialToDelete"><value>لا توجد بيانات نتائج مستوردة لحذفها.</value></data>
+  <data name="DeleteOfficialWarn"><value>سيتم حذف {0} سجل من النتائج الرسمية المستوردة من قاعدة البيانات نهائيًا. لن يتم حذف الطلاب أو الحسابات أو الكليات. هذا الإجراء لا يمكن التراجع عنه.</value></data>
+  <data name="DeleteOfficialConfirmJs"><value>تأكيد نهائي: حذف جميع بيانات النتائج الرسمية المستوردة؟</value></data>
+  <data name="ConfirmDeleteOfficialBtn"><value>تأكيد حذف نتائج الثانوية العامة الحالية</value></data>
+
+  <!-- Reset verified applications -->
+  <data name="ResetVerifiedTitle"><value>إعادة ضبط بيانات التقديم والتحقق</value></data>
+  <data name="ResetVerifiedSub"><value>فصل الطلاب عن النتائج الرسمية لإتاحة حذفها لاحقًا</value></data>
+  <data name="ResetWillDo"><value>سيتم تنفيذ الآتي:</value></data>
+  <data name="ResetItem1"><value>فصل {0} طالبًا متحققًا عن السجلات الرسمية (جعل الربط = لا شيء).</value></data>
+  <data name="ResetItem2"><value>مسح البيانات المنسوخة من السجل الرسمي داخل ملف الطالب: الرقم القومي، رقم الجلوس، المجموع، النسبة، النسبة المكافئة.</value></data>
+  <data name="ResetItem3"><value>حذف {0} رغبة و {1} تنسيق لهؤلاء الطلاب (سيعيدون التقديم من جديد).</value></data>
+  <data name="ResetItem4"><value>منع الطالب من الرغبات والنتيجة حتى يعيد التحقق.</value></data>
+  <data name="ResetSafeNote"><value>لن يتم حذف: حسابات المستخدمين، الكليات، حساب الأدمن، أو بيانات النتائج الرسمية المستوردة.</value></data>
+  <data name="ResetIrreversible"><value>هذا الإجراء لا يمكن التراجع عنه. سيحتاج الطلاب لإعادة إدخال الرقم القومي ورقم الجلوس للتحقق مرة أخرى.</value></data>
+  <data name="NoLinkedStudents"><value>لا يوجد طلاب مرتبطون بالنتائج الرسمية. لا حاجة لإعادة الضبط.</value></data>
+  <data name="ConfirmResetJs"><value>تأكيد نهائي: فصل {0} طالبًا عن النتائج الرسمية وحذف رغباتهم وتنسيقاتهم؟</value></data>
+  <data name="ConfirmResetBtn"><value>تأكيد إعادة ضبط بيانات التقديم والتحقق</value></data>
+
+  <!-- Generic / TempData -->
+  <data name="ErrCollegeNotFound"><value>الكلية غير موجودة</value></data>
+  <data name="ErrCodeTaken"><value>كود الكلية مستخدم بالفعل لكلية أخرى</value></data>
+  <data name="MsgCollegeAdded"><value>تم إضافة الكلية بنجاح</value></data>
+  <data name="MsgCollegeUpdated"><value>تم تعديل الكلية بنجاح</value></data>
+  <data name="MsgCollegeDeleted"><value>تم حذف كلية {0} وكل ارتباطاتها ({1} رغبة، {2} تنسيق).</value></data>
+  <data name="ErrCollegeDeleteFailed"><value>حدث خطأ أثناء حذف الكلية. لم يتم تنفيذ أي تغيير.</value></data>
+  <data name="MsgVisibilityChanged"><value>تم تغيير حالة {0} إلى: {1}</value></data>
+
+  <!-- AccountController messages -->
+  <data name="Acc_StudentPhoneTaken"><value>رقم موبايل الطالب مستخدم بالفعل في حساب آخر.</value></data>
+  <data name="Acc_ParentPhoneMaxed"><value>رقم موبايل ولي الأمر مستخدم في الحد الأقصى من الحسابات (3).</value></data>
+  <data name="Acc_AccountLocked"><value>تم قفل الحساب مؤقتًا بسبب محاولات دخول خاطئة متكررة. حاول مرة أخرى بعد 10 دقائق.</value></data>
+  <data name="Acc_InvalidCredentials"><value>البريد الإلكتروني أو كلمة المرور غير صحيحة</value></data>
+  <data name="Acc_ResetLinkInvalid"><value>رابط إعادة التعيين غير صالح أو ناقص.</value></data>
+  <data name="Acc_ResetLinkInvalidShort"><value>رابط إعادة التعيين غير صالح.</value></data>
+  <data name="Acc_ResetEmailSubject"><value>إعادة تعيين كلمة المرور - جامعة أسيوط الأهلية</value></data>
+  <data name="Acc_ResetEmailBody"><value>لإعادة تعيين كلمة المرور، افتح الرابط التالي:</value></data>
+
+  <!-- Identity error mappings -->
+  <data name="Id_DuplicateEmail"><value>هذا البريد الإلكتروني مستخدم بالفعل</value></data>
+  <data name="Id_InvalidEmail"><value>البريد الإلكتروني غير صحيح</value></data>
+  <data name="Id_PasswordTooShort"><value>كلمة المرور قصيرة جدًا</value></data>
+  <data name="Id_PasswordRequiresDigit"><value>كلمة المرور يجب أن تحتوي على رقم</value></data>
+  <data name="Id_PasswordRequiresUpper"><value>كلمة المرور يجب أن تحتوي على حرف كبير</value></data>
+  <data name="Id_PasswordRequiresLower"><value>كلمة المرور يجب أن تحتوي على حرف صغير</value></data>
+  <data name="Id_PasswordRequiresNonAlphanumeric"><value>كلمة المرور يجب أن تحتوي على رمز خاص (مثل @ أو !)</value></data>
+  <data name="Id_InvalidToken"><value>رابط إعادة التعيين غير صالح أو منتهي الصلاحية. اطلب رابطًا جديدًا.</value></data>
+  <data name="Id_Generic"><value>حدث خطأ، يرجى المحاولة مرة أخرى</value></data>
+
+  <!-- StudentController messages -->
+  <data name="St_AlreadyLinkedReadOnly"><value>حسابك مربوط مسبقًا بسجل رسمي ولا يمكن تغييره.</value></data>
+  <data name="St_TrackInvalid"><value>الشعبة المختارة غير صحيحة.</value></data>
+  <data name="St_IdentityLookupError"><value>حدث خطأ غير متوقع. حاول مرة أخرى أو تواصل مع المسؤول.</value></data>
+  <data name="St_NationalIdNotFound"><value>الرقم القومي غير موجود في بيانات الجامعة.</value></data>
+  <data name="St_SeatMismatch"><value>رقم الجلوس لا يطابق الرقم القومي.</value></data>
+  <data name="St_SeatNotInOfficial"><value>رقم الجلوس غير موجود في النتائج الرسمية.</value></data>
+  <data name="St_NotEligible"><value>هذا الطالب غير مؤهل للتقديم حسب النتيجة الرسمية.</value></data>
+  <data name="St_SeatLinkedElsewhere"><value>رقم الجلوس مرتبط بحساب آخر. برجاء التواصل مع الدعم.</value></data>
+  <data name="St_PhoneInUse"><value>رقم الهاتف مستخدم بالفعل. برجاء إدخال رقم آخر أو تركه فارغًا.</value></data>
+  <data name="St_SaveError"><value>حدث خطأ غير متوقع أثناء حفظ البيانات. حاول مرة أخرى أو تواصل مع المسؤول.</value></data>
+  <data name="St_VerifiedOk"><value>تم التحقق من هويتك وربط نتيجتك الرسمية بنجاح.</value></data>
+  <data name="St_MustCompleteProfile"><value>يجب إكمال نموذج التقديم أولًا!</value></data>
+  <data name="St_AlreadyAllocatedNoEdit"><value>تم إعلان نتيجة التنسيق ولا يمكن تعديل الرغبات بعد ذلك.</value></data>
+  <data name="St_PrefAtLeastOne"><value>يرجى اختيار كلية واحدة على الأقل</value></data>
+  <data name="St_PrefMax"><value>يمكنك اختيار {0} كليات كحد أقصى حسب شعبتك</value></data>
+  <data name="St_PrefNotAvailableForTrack"><value>اخترت كلية غير متاحة لشعبتك. يرجى الاختيار من الكليات المتاحة فقط.</value></data>
+  <data name="St_PrefCollegeHidden"><value>الكلية {0} مخفية حاليًا ولا يمكن اختيارها.</value></data>
+  <data name="St_PrefBelowMin"><value>لا يمكن اختيار كلية {0} لأن نسبتك أقل من الحد الأدنى المطلوب لهذه الكلية.</value></data>
+  <data name="St_PrefSavedOk"><value>تم حفظ رغباتك بنجاح، ويمكنك تعديلها قبل إغلاق باب التقديم.</value></data>
+  <data name="St_MustChoosePrefs"><value>يجب اختيار رغباتك أولًا!</value></data>
+  <data name="St_NoAllocationYet"><value>لم يتم تخصيص كلية لك بعد</value></data>
+  <data name="St_DocsUploadDisabled"><value>رفع المستندات إلكترونيًا غير متاح. يرجى إحضار المستندات الورقية الأصلية عند الحضور للجامعة.</value></data>
+  <data name="St_MustCompleteApplicationShort"><value>يجب استكمال نموذج التقديم أولًا</value></data>
+  <data name="St_MustChoosePrefsShort"><value>يجب اختيار رغبات الكليات أولًا</value></data>
+  <data name="St_AllocationNotAnnounced"><value>لم يتم إعلان نتيجة التنسيق بعد</value></data>
+  <data name="St_MustUploadDocs"><value>يجب رفع المستندات المطلوبة أولًا</value></data>
+  <data name="St_AdmissionsClosedSave"><value>باب القبول مغلق حاليًا ولا يمكن حفظ التعديلات.</value></data>
+
+  <!-- Allocation status display -->
+  <data name="AS_Allocated"><value>تم القبول</value></data>
+  <data name="AS_Confirmed"><value>تم التأكيد</value></data>
+  <data name="AS_Rejected"><value>مرفوض</value></data>
+  <data name="AS_Pending"><value>قيد الانتظار</value></data>
+
+  <!-- DataAnnotation messages (referenced from ViewModels by KEY) -->
+  <data name="DA_EmailRequired"><value>البريد الإلكتروني مطلوب</value></data>
+  <data name="DA_EmailInvalid"><value>البريد الإلكتروني غير صحيح</value></data>
+  <data name="DA_PasswordRequired"><value>كلمة المرور مطلوبة</value></data>
+  <data name="DA_NewPasswordRequired"><value>كلمة المرور الجديدة مطلوبة</value></data>
+  <data name="DA_PasswordsMustMatch"><value>كلمة المرور وتأكيدها غير متطابقتين</value></data>
+  <data name="DA_FullNameRequired"><value>الاسم الكامل مطلوب</value></data>
+  <data name="DA_StudentPhoneRequired"><value>رقم موبايل الطالب مطلوب</value></data>
+  <data name="DA_ParentPhoneRequired"><value>رقم موبايل ولي الأمر مطلوب</value></data>
+  <data name="DA_PhoneFormat"><value>رقم الموبايل يجب أن يكون 11 رقم ويبدأ بـ 01</value></data>
+  <data name="DA_PasswordMinLen"><value>يجب أن تكون {0} على الأقل {2} أحرف</value></data>
+  <data name="DA_NationalIdRequired"><value>الرقم القومي مطلوب</value></data>
+  <data name="DA_NationalIdFormat"><value>الرقم القومي يجب أن يكون 14 رقمًا</value></data>
+  <data name="DA_SeatNumberRequired"><value>رقم الجلوس مطلوب</value></data>
+  <data name="DA_SeatNumberInvalid"><value>رقم الجلوس غير صحيح</value></data>
+  <data name="DA_SectionRequired"><value>الشعبة مطلوبة</value></data>
+  <data name="DA_PhoneFormatPlain"><value>رقم الهاتف يجب أن يكون 11 رقمًا</value></data>
+  <data name="DA_ParentPhoneFormatPlain"><value>رقم هاتف ولي الأمر يجب أن يكون 11 رقمًا</value></data>
+  <data name="DA_AddressTooLong"><value>العنوان طويل جدًا</value></data>
+  <data name="DA_RegisteredEmail"><value>البريد الإلكتروني المسجل</value></data>
+  <data name="DA_StudentMobile"><value>رقم موبايل الطالب</value></data>
+  <data name="DA_ParentMobile"><value>رقم موبايل ولي الأمر</value></data>
+  <data name="DA_PrefAtLeastOne"><value>يرجى اختيار كلية واحدة على الأقل</value></data>
+
+  <!-- Admissions schedule (datetime window on top of the manual switch) -->
+  <data name="AdmissionsSchedule"><value>جدول مواعيد القبول</value></data>
+  <data name="AdmissionsScheduleHint"><value>عيّن ميعاد بداية وميعاد غلق التقديم. ميعاد البداية لازم يكون قبل ميعاد الغلق. سيب الحقلين فاضيين لو عايز ترجع للتحكم اليدوي فقط.</value></data>
+  <data name="StartDate"><value>ميعاد بداية القبول</value></data>
+  <data name="EndDate"><value>ميعاد غلق القبول</value></data>
+  <data name="SaveAdmissionsSchedule"><value>حفظ المواعيد</value></data>
+  <data name="InvalidAdmissionsSchedule"><value>موعد بداية القبول يجب أن يكون قبل موعد الغلق</value></data>
+  <data name="AdmissionsScheduleSaved"><value>تم حفظ مواعيد القبول بنجاح</value></data>
+  <data name="AdmissionsStartsAt"><value>سيتم فتح باب القبول في</value></data>
+  <data name="AdmissionsEndsAt"><value>ينتهي التقديم في</value></data>
+  <data name="AdmissionsNotStarted"><value>باب القبول لم يبدأ بعد</value></data>
+  <data name="AdmissionsOpenNow"><value>باب القبول مفتوح حاليًا</value></data>
+  <data name="AdmissionsExpired"><value>تم غلق باب القبول لانتهاء الموعد المحدد</value></data>
+  <data name="AdmissionsClosedManually"><value>باب القبول مغلق حاليًا من إدارة الجامعة</value></data>
+  <data name="AdmissionsManualOpenNoSchedule"><value>مفتوح يدويًا بدون مواعيد محددة</value></data>
+
+  <!-- Student dashboard notifications -->
+  <data name="NotificationsHeader"><value>إشعارات الجامعة</value></data>
+  <data name="NotifAdmissionOpen"><value>&lt;strong&gt;إعلان هام:&lt;/strong&gt; بدء فترة التقديم للعام الجامعي 2026-2027. يرجى استكمال نموذج التقديم في أقرب وقت.</value></data>
+  <data name="NotifDeadline"><value>&lt;strong&gt;تنبيه:&lt;/strong&gt; آخر موعد لتقديم الطلبات هو 30 يونيو 2026. تأكد من إرفاق جميع المستندات المطلوبة.</value></data>
+  <data name="NotifPrefsReminder"><value>&lt;strong&gt;تذكير:&lt;/strong&gt; لا تنسَ اختيار رغبات الكليات لإتمام عملية التنسيق. الرغبات المتاحة وعددها يتم تحديدها تلقائيًا حسب شعبتك.</value></data>
+
+  <!-- Allocation status page -->
+  <data name="AllocStatusTitle"><value>حالة التنسيق</value></data>
+  <data name="AllocStatusSub"><value>تتبع حالة طلبك ورغباتك المختارة</value></data>
+  <data name="AcceptedTitle"><value>تم قبولك!</value></data>
+  <data name="AcceptedSub"><value>تهانينا! تم تخصيص كلية لك</value></data>
+  <data name="AcceptedBadge"><value>تم القبول</value></data>
+  <data name="PendingTitle"><value>طلبك قيد التنسيق</value></data>
+  <data name="PendingSub"><value>سيتم الإعلان عن النتائج قريباً</value></data>
+  <data name="PendingBadge"><value>قيد التنسيق</value></data>
+  <data name="ApplicationSummary"><value>ملخص الطلب</value></data>
+  <data name="BasicInformation"><value>البيانات الأساسية</value></data>
+  <data name="EmailAddress"><value>البريد الإلكتروني</value></data>
+  <data name="SelectedPreferences"><value>الرغبات المختارة</value></data>
+  <data name="AcceptedHere"><value>تم القبول بها</value></data>
+  <data name="SubmissionDate"><value>تاريخ التقديم</value></data>
+  <data name="AcceptedCollege"><value>الكلية المقبول بها</value></data>
+  <data name="AllocationDate"><value>تاريخ التخصيص</value></data>
+  <data name="ViewFinalResult"><value>عرض النتيجة النهائية</value></data>
+  <data name="PrintNominationCard"><value>بطاقة الترشيح (للطباعة)</value></data>
+  <data name="AttendanceProcedures"><value>إجراءات الحضور للجامعة</value></data>
+  <data name="NextSteps"><value>الخطوات القادمة</value></data>
+  <data name="StepPrefsSubmitted"><value>تم تقديم الرغبات</value></data>
+  <data name="StepWaitingResult"><value>انتظار إعلان نتيجة التنسيق</value></data>
+  <data name="StepPrintCard"><value>بعد ظهور النتيجة، تتم طباعة بطاقة الترشيح</value></data>
+  <data name="StepAttendUniversity"><value>الحضور إلى مقر الجامعة بالمستندات الورقية الأصلية لاستكمال الإجراءات</value></data>
+  <data name="EmailNotifyResults"><value>سيتم إخطارك عبر البريد الإلكتروني عند الإعلان عن النتائج</value></data>
+  <data name="BackToDashboardFull"><value>العودة إلى لوحة التحكم</value></data>
+
+  <!-- Allocation result page -->
+  <data name="AllocResultTitle"><value>نتيجة التنسيق</value></data>
+  <data name="AllocResultSub"><value>تفاصيل الترشيح النهائي</value></data>
+  <data name="CongratsNominated"><value>مبروك! تم ترشيحك للقبول</value></data>
+  <data name="NominatedTo"><value>تم ترشيحك إلى:</value></data>
+  <data name="OfficialEquivalentPct"><value>نسبتك المكافئة الرسمية</value></data>
+  <data name="OfficialStudentInfo"><value>البيانات الرسمية للطالب</value></data>
+  <data name="OfficialFullName"><value>الاسم الرسمي</value></data>
+  <data name="OfficialEquivalentPctShort"><value>النسبة المكافئة الرسمية</value></data>
+  <data name="NominationDate"><value>تاريخ الترشيح</value></data>
+  <data name="AttendanceInstructionsLabel"><value>تعليمات الحضور:</value></data>
+  <data name="AttendanceInstructionsBody"><value>برجاء الحضور إلى مقر جامعة أسيوط الأهلية لاستكمال إجراءات القبول، مع إحضار المستندات الورقية الأصلية وبطاقة الترشيح المطبوعة. سيتم إعلان موعد الحضور من إدارة الجامعة.</value></data>
+  <data name="NotNominatedTitle"><value>لم يتم الترشيح</value></data>
+  <data name="NotNominatedBody"><value>للأسف، لم يتم ترشيحك لأي كلية في هذا الدور من التنسيق</value></data>
+  <data name="SecondPhaseNotice"><value>يمكنك متابعة الموقع لمعرفة مواعيد المرحلة الثانية من التنسيق</value></data>
+
+  <!-- Nomination card -->
+  <data name="NominationCardTitle"><value>بطاقة الترشيح</value></data>
+  <data name="NominationCardFor"><value>بطاقة ترشيح للقبول</value></data>
+  <data name="UniversityLogoAlt"><value>شعار الجامعة</value></data>
+  <data name="UniversityNameArOnly"><value>جامعة أسيوط الأهلية</value></data>
+  <data name="UniversityNameEnOnly"><value>Assiut National University</value></data>
+  <data name="PrintCardBtn"><value>طباعة البطاقة</value></data>
+  <data name="NominatedForCollege"><value>تم ترشيحك للقبول في</value></data>
+  <data name="IssueDate"><value>تاريخ الإصدار</value></data>
+
+  <!-- Public home page -->
+  <data name="HomePageTitle"><value>الصفحة الرئيسية</value></data>
+  <data name="HomeHeroTitle"><value>مرحباً بك في بوابة القبول الإلكتروني</value></data>
+  <data name="HomeHeroSubtitle"><value>نفتح لك أبواب التميز الأكاديمي في جامعة أسيوط الأهلية. انضم إلينا وكن جزءاً من مستقبل مشرق مع برامج أكاديمية معتمدة وكادر تعليمي متميز.</value></data>
+  <data name="StartApplicationNow"><value>ابدأ التقديم الآن!</value></data>
+  <data name="FeatureAccredTitle"><value>اعتماد أكاديمي</value></data>
+  <data name="FeatureAccredSub"><value>برامجنا الأكاديمية معتمدة محلياً ودولياً، مما يضمن لك مستقبلاً مهنياً مميزاً</value></data>
+  <data name="FeatureFacultyTitle"><value>كادر تعليمي متميز</value></data>
+  <data name="FeatureFacultySub"><value>أعضاء هيئة تدريس ذوو خبرة عالية وكفاءة علمية من أفضل الجامعات المحلية والدولية</value></data>
+  <data name="FeatureProgramsTitle"><value>برامج أكاديمية متنوعة</value></data>
+  <data name="FeatureProgramsSub"><value>مجموعة واسعة من التخصصات العلمية والإنسانية تلبي جميع احتياجات سوق العمل</value></data>
+  <data name="CollegeEng"><value>كلية الهندسة</value></data>
+  <data name="CollegePharm"><value>كلية الصيدلة</value></data>
+  <data name="CollegeDent"><value>كلية طب الأسنان</value></data>
+  <data name="CollegeMed"><value>كلية الطب</value></data>
+  <data name="CollegeLang"><value>كلية الألسن</value></data>
+  <data name="CollegeFinAdmin"><value>كلية العلوم المالية والإدارية</value></data>
+  <data name="CollegeCompAI"><value>كلية الحاسبات والذكاء الاصطناعي</value></data>
+  <data name="CtaReady"><value>هل أنت مستعد للانضمام إلينا؟</value></data>
+  <data name="CtaSubtitle"><value>سجل الآن وابدأ رحلتك الأكاديمية في جامعة أسيوط الأهلية</value></data>
+  <data name="SignedInAs"><value>تم تسجيل الدخول كـ</value></data>
+</root>

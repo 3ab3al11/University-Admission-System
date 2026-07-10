@@ -1,0 +1,50 @@
+# Build results
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+artifacts/
+
+# Visual Studio / VS Code
+.vs/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / JetBrains
+.idea/
+*.sln.iml
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+
+# Local databases and backups
+*.db
+*.sqlite
+*.sqlite3
+*.mdf
+*.ldf
+*.bak
+
+# User secrets / environment files
+.env
+.env.*
+secrets.json
+appsettings.Local.json
+
+# Logs and temporary files
+*.log
+logs/
+*.tmp
+*.temp
+
+# User-uploaded or generated documents
+wwwroot/uploads/
+
+# OS files
+.DS_Store
+Thumbs.db

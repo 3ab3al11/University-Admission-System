@@ -1,0 +1,641 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+
+  <!-- Navbar / Layout -->
+  <data name="SiteTitle"><value>Online Admissions Portal</value></data>
+  <data name="UniversityName"><value>Assiut National University</value></data>
+  <data name="Dashboard"><value>Dashboard</value></data>
+  <data name="Login"><value>Sign in</value></data>
+  <data name="Register"><value>Create account</value></data>
+  <data name="Logout"><value>Sign out</value></data>
+  <data name="Back"><value>Back</value></data>
+  <data name="Language"><value>Language</value></data>
+  <data name="Arabic"><value>العربية</value></data>
+  <data name="English"><value>English</value></data>
+  <data name="ThemeLight"><value>Light mode</value></data>
+  <data name="ThemeDark"><value>Dark mode</value></data>
+  <data name="FooterRights"><value>All rights reserved</value></data>
+
+  <!-- Student Dashboard -->
+  <data name="WelcomeDashboard"><value>Welcome to your dashboard</value></data>
+  <data name="WelcomeDashboardSub"><value>Track your application status and manage your personal information.</value></data>
+  <data name="ApplicationStatus"><value>Application status</value></data>
+  <data name="BasicInfo"><value>Basic information</value></data>
+  <data name="FullName"><value>Full name</value></data>
+  <data name="Email"><value>Email</value></data>
+  <data name="StudentPhone"><value>Student mobile</value></data>
+  <data name="ParentPhone"><value>Parent mobile</value></data>
+  <data name="Section"><value>Section</value></data>
+  <data name="EquivalentPercentage"><value>Equivalent percentage</value></data>
+  <data name="PreferencesCard"><value>College preferences</value></data>
+  <data name="PreferencesCardSub"><value>Choose your preferred colleges</value></data>
+  <data name="StartSelection"><value>Start selecting</value></data>
+  <data name="EditDataCard"><value>Edit information</value></data>
+  <data name="EditDataCardSub"><value>Update your basic information</value></data>
+  <data name="EditAction"><value>Edit</value></data>
+  <data name="AllocationCard"><value>Allocation status</value></data>
+  <data name="AllocationCardSub"><value>Follow your allocation result</value></data>
+  <data name="ShowStatus"><value>View status</value></data>
+  <data name="AttendanceCard"><value>University attendance steps</value></data>
+  <data name="AttendanceCardSub"><value>Documents required when attending</value></data>
+  <data name="ShowInstructions"><value>View instructions</value></data>
+  <data name="AdmissionsClosed"><value>Admissions and allocation are currently closed</value></data>
+  <data name="AdmissionsClosedSub"><value>You cannot edit your data or pick preferences at this time. Please watch for university announcements.</value></data>
+  <data name="AdmissionsClosedBadge"><value>Admissions closed</value></data>
+  <data name="ClosedByAdmin"><value>Closed by administration</value></data>
+  <data name="PreferencesUnavailable"><value>Preference selection is currently unavailable</value></data>
+  <data name="EditUnavailable"><value>Data editing is currently unavailable</value></data>
+  <data name="UnavailableNow"><value>Not available now</value></data>
+  <data name="ClosedFromAdminShort"><value>Preference selection has been closed by the university administration.</value></data>
+
+  <!-- Preferences page -->
+  <data name="PreferencesTitle"><value>College preferences</value></data>
+  <data name="PreferencesIntro"><value>Available colleges and the maximum number of preferences are set automatically based on your section.</value></data>
+  <data name="AvailableColleges"><value>Available colleges</value></data>
+  <data name="BackToDashboard"><value>Back to dashboard</value></data>
+  <data name="PreferencesClosedTitle"><value>Preference selection is currently closed</value></data>
+  <data name="PreferencesClosedBody"><value>Preferences cannot be added or modified after admissions are closed by the administration.</value></data>
+
+  <!-- Application form -->
+  <data name="ApplicationFormTitle"><value>Application and identity verification</value></data>
+  <data name="ApplicationFormIntro"><value>Verification uses your national ID and seat number together. Grades are imported officially from the high school results and cannot be entered manually.</value></data>
+  <data name="EditClosedTitle"><value>Application editing is currently closed</value></data>
+  <data name="EditClosedBody"><value>Application data cannot be edited after admissions are closed by the administration.</value></data>
+
+  <!-- Admin -->
+  <data name="AdminDashboard"><value>Admin dashboard</value></data>
+  <data name="ManageColleges"><value>Manage colleges</value></data>
+  <data name="SystemControl"><value>System control</value></data>
+  <data name="CollegeResults"><value>College results report</value></data>
+
+  <!-- Section display labels (the stored value stays Arabic; this is display only) -->
+  <data name="Section_Science"><value>Scientific - Biology</value></data>
+  <data name="Section_Math"><value>Scientific - Mathematics</value></data>
+  <data name="Section_Literary"><value>Literary</value></data>
+
+  <!-- Preferences (full) -->
+  <data name="PreferencesMaxHint"><value>You can choose up to {0} colleges by priority.</value></data>
+  <data name="LoadError"><value>An error occurred while loading data. Please try again.</value></data>
+  <data name="YourEquivalent"><value>Your equivalent percentage:</value></data>
+  <data name="YourSection"><value>Section:</value></data>
+  <data name="MinScoreRequired"><value>Minimum percentage required to choose this college:</value></data>
+  <data name="YourSelectedPreferences"><value>Your selected preferences</value></data>
+  <data name="NoCollegeSelectedYet"><value>No college selected yet</value></data>
+  <data name="SavePreferences"><value>Save preferences (update)</value></data>
+  <data name="BackShort"><value>Back</value></data>
+  <data name="JsMaxColleges"><value>You can select at most {0} colleges</value></data>
+  <data name="JsAtLeastOne"><value>Please select at least one college</value></data>
+
+  <!-- Application form (full) -->
+  <data name="VerifiedLinkedMsg"><value>Your identity has been verified and your official result linked. The data below is official and cannot be edited.</value></data>
+  <data name="OfficialResult"><value>Official result</value></data>
+  <data name="LabelName"><value>Name</value></data>
+  <data name="SeatNumber"><value>Seat number</value></data>
+  <data name="TotalScore"><value>Total score</value></data>
+  <data name="MaxScore"><value>Maximum score</value></data>
+  <data name="Percentage"><value>Percentage</value></data>
+  <data name="EquivalentForAllocation"><value>Equivalent percentage for allocation</value></data>
+  <data name="StatusLabel"><value>Status</value></data>
+  <data name="ChoosePreferences"><value>Choose preferences</value></data>
+  <data name="VerificationData"><value>Verification data</value></data>
+  <data name="NationalId"><value>National ID</value></data>
+  <data name="NationalIdPlaceholder"><value>14 digits</value></data>
+  <data name="SeatNumberPlaceholder"><value>Enter seat number</value></data>
+  <data name="ChooseSection"><value>-- Choose section --</value></data>
+  <data name="ContactData"><value>Contact information</value></data>
+  <data name="PhoneNumber"><value>Phone number</value></data>
+  <data name="ParentPhoneNumber"><value>Parent phone number</value></data>
+  <data name="PhonePlaceholder"><value>11 digits</value></data>
+  <data name="Address"><value>Address</value></data>
+  <data name="AddressPlaceholder"><value>Address (optional)</value></data>
+  <data name="EmailReadonlyHint"><value>Email is tied to your account and cannot be edited here.</value></data>
+  <data name="NoGradesEnteredHint"><value>You will not enter any grades. After verification, your official result is fetched automatically and shown read-only.</value></data>
+  <data name="VerifyAndLink"><value>Verify and link result</value></data>
+
+  <!-- Admin Dashboard -->
+  <data name="AdminDashboardTitle"><value>Administration dashboard</value></data>
+  <data name="AdminDashboardSub"><value>Manage and monitor the admissions and allocation system</value></data>
+  <data name="TotalStudents"><value>Total students</value></data>
+  <data name="CompletedProfile"><value>Completed profile</value></data>
+  <data name="ChosePreferences"><value>Chose preferences</value></data>
+  <data name="Allocated"><value>Allocated</value></data>
+  <data name="Pending"><value>Pending</value></data>
+  <data name="RunAllocationTitle"><value>Run allocation</value></data>
+  <data name="RunAllocationSub"><value>Start distributing students across colleges</value></data>
+  <data name="GoToAllocation"><value>Go to allocation page</value></data>
+  <data name="SystemControlSub"><value>Deletion operations and admissions control</value></data>
+  <data name="GoToSystemControl"><value>Go to control panel</value></data>
+  <data name="ImportTitle"><value>Import official high-school results</value></data>
+  <data name="ImportSub"><value>Upload the official Excel file and compute percentages on the server</value></data>
+  <data name="ImportPage"><value>Import page</value></data>
+  <data name="ManageApplicants"><value>Manage applicants</value></data>
+  <data name="ApplicantUnit"><value>applicants</value></data>
+  <data name="ShowList"><value>View list</value></data>
+  <data name="ManageAllocation"><value>Manage allocation</value></data>
+  <data name="AllocatedUnit"><value>allocated</value></data>
+  <data name="ComingSoon"><value>Coming soon</value></data>
+  <data name="CollegeUnit"><value>colleges</value></data>
+  <data name="CollegeResultsSub"><value>Print accepted students per college</value></data>
+  <data name="OpenReports"><value>Open reports</value></data>
+  <data name="LatestApplicants"><value>Latest applicants</value></data>
+  <data name="StudentName"><value>Student name</value></data>
+  <data name="ApplicationDate"><value>Application date</value></data>
+  <data name="NoApplicantsYet"><value>No applications yet</value></data>
+  <data name="LatestAllocations"><value>Latest allocations</value></data>
+  <data name="Student"><value>Student</value></data>
+  <data name="College"><value>College</value></data>
+  <data name="Total"><value>Total</value></data>
+  <data name="Date"><value>Date</value></data>
+  <data name="NotAllocatedYet"><value>No allocation yet</value></data>
+
+  <!-- Manage colleges -->
+  <data name="ManageCollegesSub"><value>Edit college data, capacity, and minimum required score</value></data>
+  <data name="AddCollege"><value>Add college</value></data>
+  <data name="Code"><value>Code</value></data>
+  <data name="CollegeName"><value>College name</value></data>
+  <data name="Status"><value>Status</value></data>
+  <data name="Capacity"><value>Capacity</value></data>
+  <data name="MinScorePercent"><value>Minimum %</value></data>
+  <data name="AllowedSections"><value>Allowed sections</value></data>
+  <data name="PreferencesCount"><value>Preferences</value></data>
+  <data name="AllocationsCount"><value>Allocations</value></data>
+  <data name="Actions"><value>Actions</value></data>
+  <data name="VisibleToStudents"><value>Visible to students</value></data>
+  <data name="HiddenFromStudents"><value>Hidden from students</value></data>
+  <data name="Edit"><value>Edit</value></data>
+  <data name="HideFromStudents"><value>Hide from students</value></data>
+  <data name="ShowToStudents"><value>Show to students</value></data>
+  <data name="DeleteCollege"><value>Delete college</value></data>
+
+  <!-- College form -->
+  <data name="EditCollegeTitle"><value>Edit college</value></data>
+  <data name="AddCollegeTitle"><value>Add a new college</value></data>
+  <data name="CollegeNameAr"><value>College name (Arabic)</value></data>
+  <data name="CollegeNameEn"><value>College name (English)</value></data>
+  <data name="CollegeCode"><value>College code</value></data>
+  <data name="MinScoreHint"><value>Students whose percentage is below this cannot choose the college.</value></data>
+  <data name="VisibleSwitchHint"><value>When hidden, the college is not shown to students and is excluded from allocation.</value></data>
+  <data name="AllowedSectionsHint"><value>The college is shown only to students in the selected sections. (The Finance college is hidden from students by a special rule regardless of this setting.)</value></data>
+  <data name="Cancel"><value>Cancel</value></data>
+  <data name="SaveChanges"><value>Save changes</value></data>
+  <data name="AddCollegeBtn"><value>Add college</value></data>
+
+  <!-- Delete college -->
+  <data name="DeleteCollegeConfirmTitle"><value>Confirm college deletion</value></data>
+  <data name="DeleteWarningHeading"><value>Warning: this action cannot be undone</value></data>
+  <data name="DeleteWillLead"><value>Deletion will:</value></data>
+  <data name="DeleteEraseCollege"><value>Permanently remove the college from the system.</value></data>
+  <data name="DeleteErasePrefs"><value>Delete all preferences linked to it</value></data>
+  <data name="DeleteEraseAllocs"><value>Delete all allocation results for it</value></data>
+  <data name="PreferenceWord"><value>preference</value></data>
+  <data name="AcceptedStudentWord"><value>accepted student</value></data>
+  <data name="DeleteAllocNote"><value>Students accepted into this college will have no result for it. Allocation will NOT run automatically — the admin must run it manually later to redistribute them.</value></data>
+  <data name="MinScore"><value>Minimum score</value></data>
+  <data name="LinkedPreferences"><value>Linked preferences count</value></data>
+  <data name="AcceptedCount"><value>Accepted count</value></data>
+  <data name="ConfirmDeleteFinal"><value>Confirm permanent deletion</value></data>
+  <data name="MustChooseSection"><value>You must choose at least one section</value></data>
+
+  <!-- System control -->
+  <data name="DangerousOps"><value>Dangerous operations - please be careful</value></data>
+  <data name="AdmissionsStatus"><value>Admissions status</value></data>
+  <data name="CurrentStatus"><value>Current status:</value></data>
+  <data name="AdmissionsOpenStrong"><value>open</value></data>
+  <data name="AdmissionsClosedStrong"><value>closed</value></data>
+  <data name="AdmissionsOpenDesc"><value>Students can submit applications and choose preferences</value></data>
+  <data name="AdmissionsClosedDesc"><value>Students cannot edit their data</value></data>
+  <data name="AdmissionsWord"><value>admissions</value></data>
+  <data name="CloseWord"><value>Close</value></data>
+  <data name="OpenWord"><value>Open</value></data>
+  <data name="Profiles"><value>Profiles</value></data>
+  <data name="Preferences"><value>Preferences</value></data>
+  <data name="Allocations"><value>Allocations</value></data>
+  <data name="DeleteOpsTitle"><value>Deletion operations (dangerous)</value></data>
+  <data name="DeleteOpsNote"><value>These operations delete operational data only and cannot be undone. They do NOT delete student accounts and profiles, nor the imported official results database. Use them only when starting a new admission cycle.</value></data>
+  <data name="DeleteAllocationsTitle"><value>Delete allocations</value></data>
+  <data name="DeleteAllocationsDesc"><value>Deletes allocation results only and resets college cutoffs. Does not delete preferences or profiles.</value></data>
+  <data name="DeletePreferencesTitle"><value>Delete preferences</value></data>
+  <data name="DeletePreferencesDesc"><value>Delete all student preferences</value></data>
+  <data name="ResetEverythingTitle"><value>Reset everything</value></data>
+  <data name="ResetEverythingDesc"><value>Delete preferences + allocations (profiles are kept)</value></data>
+  <data name="ResetSystem"><value>Reset system</value></data>
+  <data name="AuditLog"><value>Recent operations log</value></data>
+  <data name="Operation"><value>Operation</value></data>
+  <data name="Details"><value>Details</value></data>
+  <data name="User"><value>User</value></data>
+  <data name="NoLoggedOps"><value>No logged operations</value></data>
+  <data name="ConfirmDelete"><value>Confirm deletion</value></data>
+  <data name="ConfirmDeleteAllAllocations"><value>Are you sure you want to delete all allocations?</value></data>
+  <data name="CannotUndo"><value>This action cannot be undone!</value></data>
+  <data name="ConfirmDeleteAllPreferences"><value>Are you sure you want to delete all preferences?</value></data>
+  <data name="VeryDangerousOp"><value>Warning: very dangerous operation</value></data>
+  <data name="WillBeDeleted"><value>Will be deleted:</value></data>
+  <data name="ProfilesKept"><value>Profiles ({0}) will be kept</value></data>
+  <data name="UseForNewCycle"><value>Use this function only to start a new admission cycle</value></data>
+  <data name="ConfirmFullReset"><value>Confirm full reset</value></data>
+  <data name="AllocationUnit"><value>allocations</value></data>
+
+  <!-- College results report -->
+  <data name="CollegeResultsSubtitle"><value>Choose a college to view accepted students ordered from highest to lowest</value></data>
+  <data name="ChooseCollege"><value>-- Choose college --</value></data>
+  <data name="ShowReport"><value>Show report</value></data>
+  <data name="NoResultsForCollege"><value>No results available for this college yet.</value></data>
+  <data name="PrintSavePdf"><value>Print / Save PDF</value></data>
+  <data name="PortalName"><value>Online Admissions &amp; Allocation System</value></data>
+  <data name="ReportFor"><value>Result report for</value></data>
+  <data name="CollegeCapacity"><value>College capacity</value></data>
+  <data name="HighestEquivalent"><value>Highest equivalent percentage</value></data>
+  <data name="LowestEquivalent"><value>Lowest equivalent percentage</value></data>
+  <data name="ReportDateTime"><value>Report date and time</value></data>
+  <data name="Rank"><value>Rank</value></data>
+  <data name="AcceptancePreference"><value>Acceptance preference</value></data>
+  <data name="AllocationDateCol"><value>Allocation date</value></data>
+
+  <!-- Account form-field labels -->
+  <data name="Password"><value>Password</value></data>
+  <data name="ConfirmPassword"><value>Confirm password</value></data>
+  <data name="NewPassword"><value>New password</value></data>
+  <data name="RememberMe"><value>Remember me</value></data>
+
+  <!-- Account / Auth -->
+  <data name="LoginTitle"><value>Sign in</value></data>
+  <data name="LoginWelcome"><value>Welcome to Assiut National University</value></data>
+  <data name="ForgotPasswordQ"><value>Forgot your password?</value></data>
+  <data name="LoginBtn"><value>Sign in</value></data>
+  <data name="NoAccountQ"><value>Don't have an account?</value></data>
+  <data name="CreateAccountLink"><value>Create a new account</value></data>
+  <data name="RegisterTitle"><value>Create a new account</value></data>
+  <data name="RegisterSub"><value>Join Assiut National University</value></data>
+  <data name="FullNamePlaceholder"><value>Full name</value></data>
+  <data name="StudentPhoneHint"><value>Student mobile number (11 digits starting with 01)</value></data>
+  <data name="ParentPhoneHint"><value>Parent mobile number (required) — can be used by up to 3 accounts</value></data>
+  <data name="PasswordHint"><value>Password must be at least 8 characters with upper/lowercase letters, a digit and a special character.</value></data>
+  <data name="CreateAccountBtn"><value>Create account</value></data>
+  <data name="AlreadyHaveAccountQ"><value>Already have an account?</value></data>
+  <data name="ForgotPasswordTitle"><value>Forgot password</value></data>
+  <data name="ForgotPasswordSub"><value>Enter your registered email to receive password reset instructions</value></data>
+  <data name="SendResetLink"><value>Send reset link</value></data>
+  <data name="BackToLogin"><value>Back to sign in</value></data>
+  <data name="ResetPasswordTitle"><value>Reset your password</value></data>
+  <data name="ResetPasswordSub"><value>Enter your new password</value></data>
+  <data name="SetNewPassword"><value>Set new password</value></data>
+  <data name="ForgotConfirmTitle"><value>Check your email</value></data>
+  <data name="ForgotConfirmBody"><value>If the email is registered with us, password reset instructions will be sent to it. Please check your inbox and follow the link.</value></data>
+  <data name="ResetConfirmTitle"><value>Password changed successfully</value></data>
+  <data name="ResetConfirmBody"><value>You can now sign in with your new password.</value></data>
+  <data name="AccessDeniedTitle"><value>Access denied</value></data>
+  <data name="AccessDeniedSub"><value>Sorry, you don't have permission to access this page</value></data>
+  <data name="AccessDeniedHint"><value>You may need to sign in with another account or contact the administration for the required permissions.</value></data>
+  <data name="GoHome"><value>Back to home</value></data>
+
+  <!-- Applicants list -->
+  <data name="ApplicantsTitle"><value>Manage applicants</value></data>
+  <data name="ApplicantsSub"><value>View and manage all applying students</value></data>
+  <data name="Search"><value>Search</value></data>
+  <data name="SearchPlaceholder"><value>Search by name, email, or national ID</value></data>
+  <data name="FilterByStatus"><value>Filter by status</value></data>
+  <data name="All"><value>All</value></data>
+  <data name="StatusAllocated"><value>Allocated</value></data>
+  <data name="StatusPending"><value>Pending review</value></data>
+  <data name="StatusIncomplete"><value>Incomplete</value></data>
+  <data name="StatusReadyForPrefs"><value>Ready for preferences</value></data>
+  <data name="SearchBtn"><value>Search</value></data>
+  <data name="Results"><value>Results</value></data>
+  <data name="BackToDashboardShort"><value>Back to dashboard</value></data>
+  <data name="View"><value>View</value></data>
+  <data name="NoResults"><value>No results</value></data>
+  <data name="PreferencesCol"><value>Preferences</value></data>
+  <data name="ApplicantStatusCol"><value>Status</value></data>
+  <data name="ActionsCol"><value>Actions</value></data>
+
+  <!-- Applicant details -->
+  <data name="ApplicantDetailsTitle"><value>Applicant details</value></data>
+  <data name="BackToList"><value>Back to list</value></data>
+  <data name="PersonalData"><value>Personal information</value></data>
+  <data name="MobileNumber"><value>Mobile number</value></data>
+  <data name="DateOfBirth"><value>Date of birth</value></data>
+  <data name="Gender"><value>Gender</value></data>
+  <data name="City"><value>City</value></data>
+  <data name="Governorate"><value>Governorate</value></data>
+  <data name="AcademicData"><value>Academic information</value></data>
+  <data name="HighSchoolName"><value>High school</value></data>
+  <data name="GraduationYear"><value>Graduation year</value></data>
+  <data name="CertificateType"><value>Certificate type</value></data>
+  <data name="TotalScoreOverall"><value>Total score</value></data>
+  <data name="PreferencesOfAllocation"><value>Allocation preferences</value></data>
+  <data name="NoPreferencesYet"><value>No preferences chosen yet</value></data>
+  <data name="AllocationResultLabel"><value>Allocation result</value></data>
+  <data name="AllocationDateLabel"><value>Allocation date</value></data>
+  <data name="DocumentsSubmittedLabel"><value>Documents</value></data>
+  <data name="DocsUploaded"><value>Uploaded</value></data>
+  <data name="DocsNotUploaded"><value>Not uploaded</value></data>
+  <data name="NotAllocatedYetMsg"><value>No allocation yet</value></data>
+  <data name="UploadedDocuments"><value>Uploaded documents</value></data>
+  <data name="DocumentType"><value>Document type</value></data>
+  <data name="FileName"><value>File name</value></data>
+  <data name="FileSize"><value>Size</value></data>
+  <data name="UploadDate"><value>Upload date</value></data>
+  <data name="VerificationCol"><value>Verification</value></data>
+  <data name="Verified"><value>Verified</value></data>
+  <data name="NoDocsYet"><value>No documents uploaded yet</value></data>
+
+  <!-- Run allocation -->
+  <data name="RunAllocationPageTitle"><value>Run automatic allocation</value></data>
+  <data name="RunAllocationPageSub"><value>Distribute students across colleges based on equivalent percentage and preferences</value></data>
+  <data name="AllocationDoneOk"><value>Allocation completed successfully!</value></data>
+  <data name="AllocationSummary"><value>Allocation summary</value></data>
+  <data name="TotalRequests"><value>Total requests</value></data>
+  <data name="Accepted"><value>Accepted</value></data>
+  <data name="Rejected"><value>Rejected</value></data>
+  <data name="ExecutionTime"><value>Execution time</value></data>
+  <data name="ErrorLabel"><value>Error!</value></data>
+  <data name="AllocationAlgorithmTitle"><value>Automatic allocation algorithm</value></data>
+  <data name="AllocationAlgorithmSub"><value>All students will be sorted by equivalent percentage (highest first), then placed in colleges based on their preferences and available capacity</value></data>
+  <data name="HowItWorks"><value>How it works:</value></data>
+  <data name="Step1Sort"><value>Sort students by equivalent percentage (highest first)</value></data>
+  <data name="Step2Assign"><value>For each student: try to place them in the first preferred college with available capacity</value></data>
+  <data name="Step3Cutoff"><value>Compute the final cutoff for each college after allocation</value></data>
+  <data name="Step4Save"><value>Save the results and notify students</value></data>
+  <data name="StartAllocationNow"><value>Start allocation now</value></data>
+  <data name="ConfirmStartAllocation"><value>Are you sure you want to start the allocation? This will affect all applications.</value></data>
+  <data name="ImportantAlerts"><value>Important notices</value></data>
+  <data name="ReviewBeforeRunning"><value>Make sure to review all applications before running</value></data>
+  <data name="AllocationIrreversible"><value>Allocation cannot be undone after running</value></data>
+  <data name="LastAllocationRun"><value>Last allocation run</value></data>
+  <data name="NoAllocationRunYet"><value>Allocation has not been run yet</value></data>
+
+  <!-- Import official records -->
+  <data name="ImportPageTitle"><value>Import official high-school results</value></data>
+  <data name="ImportPageSub"><value>Upload the official Excel file and compute percentages on the server</value></data>
+  <data name="CurrentOfficialRecordsCount"><value>Current official records</value></data>
+  <data name="EligibleSucceeded"><value>Eligible (passed)</value></data>
+  <data name="LastBatch"><value>Last batch</value></data>
+  <data name="ImportAborted"><value>Import aborted</value></data>
+  <data name="ElapsedTime"><value>Elapsed time</value></data>
+  <data name="ImportSucceeded"><value>Import completed successfully</value></data>
+  <data name="BatchLabel"><value>Batch</value></data>
+  <data name="MaxScoreLabel"><value>Maximum score</value></data>
+  <data name="TimeLabel"><value>Time</value></data>
+  <data name="RowsRead"><value>Rows read from file</value></data>
+  <data name="EligibleShort"><value>Eligible (passed)</value></data>
+  <data name="NotEligible"><value>Not eligible</value></data>
+  <data name="MissingData"><value>Missing data</value></data>
+  <data name="Duplicate"><value>Duplicate</value></data>
+  <data name="FirstProblemRows"><value>First problematic rows</value></data>
+  <data name="RowNumber"><value>Row number</value></data>
+  <data name="Reason"><value>Reason</value></data>
+  <data name="ImportFileExists"><value>An imported results file already exists. You must delete the current data first before uploading a new file.</value></data>
+  <data name="CurrentRecordsLabel"><value>Current records count</value></data>
+  <data name="CurrentBatchLabel"><value>Current batch</value></data>
+  <data name="LastImportDate"><value>Last import date</value></data>
+  <data name="DeleteCurrentOfficial"><value>Delete current high-school results</value></data>
+  <data name="UploadNewFile"><value>Upload new file</value></data>
+  <data name="ExcelFileHint"><value>The file contains: seat number, student name, score, and pass/fail status.</value></data>
+  <data name="MaxScoreHint"><value>For the current test file: 700 · For the final file: 320</value></data>
+  <data name="ImportBatchPlaceholder"><value>Example: Aug-2024</value></data>
+  <data name="ImportBatchHint"><value>Helps you distinguish batches in the audit log</value></data>
+  <data name="AbortOnOverflowHint"><value>Recommended: if any row's percentage exceeds 100% the whole import is aborted (means MaxScore is wrong)</value></data>
+  <data name="ServerComputesHint"><value>The equivalent percentage is computed on the server automatically. Failing students (failed/absent) are stored as "not eligible" for application — not skipped.</value></data>
+  <data name="StartImport"><value>Start import</value></data>
+
+  <!-- Delete official records -->
+  <data name="DeleteOfficialTitle"><value>Delete imported official results data</value></data>
+  <data name="DeleteOfficialSub"><value>Dangerous operation — please review carefully before confirming</value></data>
+  <data name="CurrentState"><value>Current state</value></data>
+  <data name="OfficialRecordsCount"><value>Official records count</value></data>
+  <data name="VerifiedStudentsCount"><value>Students verified using this data</value></data>
+  <data name="VerifiedPrefsCount"><value>Preferences from verified students</value></data>
+  <data name="AllocationsCountLabel"><value>Allocations count</value></data>
+  <data name="DeleteBlockedMsg"><value>Official results data cannot be deleted because students have been verified using it. You must reset application and allocation data first before deleting the official results.</value></data>
+  <data name="ResetVerifiedBtn"><value>Reset application and verification data</value></data>
+  <data name="NoOfficialToDelete"><value>No imported results data to delete.</value></data>
+  <data name="DeleteOfficialWarn"><value>{0} record(s) will be permanently deleted from the imported official results database. Students, accounts and colleges will NOT be deleted. This action cannot be undone.</value></data>
+  <data name="DeleteOfficialConfirmJs"><value>Final confirmation: delete all imported official results data?</value></data>
+  <data name="ConfirmDeleteOfficialBtn"><value>Confirm deletion of current high-school results</value></data>
+
+  <!-- Reset verified applications -->
+  <data name="ResetVerifiedTitle"><value>Reset application and verification data</value></data>
+  <data name="ResetVerifiedSub"><value>Detach students from official results to allow deleting them later</value></data>
+  <data name="ResetWillDo"><value>The following will be performed:</value></data>
+  <data name="ResetItem1"><value>Detach {0} verified student(s) from the official records (unlink).</value></data>
+  <data name="ResetItem2"><value>Clear data copied from the official record inside the student profile: national ID, seat number, total, percentage, equivalent percentage.</value></data>
+  <data name="ResetItem3"><value>Delete {0} preference(s) and {1} allocation(s) for these students (they will re-apply).</value></data>
+  <data name="ResetItem4"><value>Block students from preferences and results until they re-verify.</value></data>
+  <data name="ResetSafeNote"><value>The following will NOT be deleted: user accounts, colleges, admin account, or imported official results data.</value></data>
+  <data name="ResetIrreversible"><value>This action cannot be undone. Students will need to re-enter their national ID and seat number to verify again.</value></data>
+  <data name="NoLinkedStudents"><value>No students are linked to official results. No need to reset.</value></data>
+  <data name="ConfirmResetJs"><value>Final confirmation: detach {0} student(s) from official results and delete their preferences and allocations?</value></data>
+  <data name="ConfirmResetBtn"><value>Confirm application and verification data reset</value></data>
+
+  <!-- Generic / TempData -->
+  <data name="ErrCollegeNotFound"><value>College not found</value></data>
+  <data name="ErrCodeTaken"><value>The college code is already used by another college</value></data>
+  <data name="MsgCollegeAdded"><value>College added successfully</value></data>
+  <data name="MsgCollegeUpdated"><value>College updated successfully</value></data>
+  <data name="MsgCollegeDeleted"><value>College {0} and all its links were deleted ({1} preference(s), {2} allocation(s)).</value></data>
+  <data name="ErrCollegeDeleteFailed"><value>An error occurred while deleting the college. No changes were applied.</value></data>
+  <data name="MsgVisibilityChanged"><value>{0} visibility changed to: {1}</value></data>
+
+  <!-- AccountController messages -->
+  <data name="Acc_StudentPhoneTaken"><value>This student mobile number is already used by another account.</value></data>
+  <data name="Acc_ParentPhoneMaxed"><value>This parent mobile number has reached the maximum number of accounts (3).</value></data>
+  <data name="Acc_AccountLocked"><value>The account is temporarily locked due to repeated failed sign-in attempts. Try again in 10 minutes.</value></data>
+  <data name="Acc_InvalidCredentials"><value>Incorrect email or password</value></data>
+  <data name="Acc_ResetLinkInvalid"><value>The password reset link is invalid or incomplete.</value></data>
+  <data name="Acc_ResetLinkInvalidShort"><value>The password reset link is invalid.</value></data>
+  <data name="Acc_ResetEmailSubject"><value>Password reset - Assiut National University</value></data>
+  <data name="Acc_ResetEmailBody"><value>To reset your password, open the link below:</value></data>
+
+  <!-- Identity error mappings -->
+  <data name="Id_DuplicateEmail"><value>This email is already in use</value></data>
+  <data name="Id_InvalidEmail"><value>Invalid email address</value></data>
+  <data name="Id_PasswordTooShort"><value>Password is too short</value></data>
+  <data name="Id_PasswordRequiresDigit"><value>Password must contain a digit</value></data>
+  <data name="Id_PasswordRequiresUpper"><value>Password must contain an uppercase letter</value></data>
+  <data name="Id_PasswordRequiresLower"><value>Password must contain a lowercase letter</value></data>
+  <data name="Id_PasswordRequiresNonAlphanumeric"><value>Password must contain a special character (e.g. @ or !)</value></data>
+  <data name="Id_InvalidToken"><value>The reset link is invalid or expired. Please request a new one.</value></data>
+  <data name="Id_Generic"><value>Something went wrong, please try again</value></data>
+
+  <!-- StudentController messages -->
+  <data name="St_AlreadyLinkedReadOnly"><value>Your account is already linked to an official record and cannot be changed.</value></data>
+  <data name="St_TrackInvalid"><value>The selected section is invalid.</value></data>
+  <data name="St_IdentityLookupError"><value>An unexpected error occurred. Try again or contact the administrator.</value></data>
+  <data name="St_NationalIdNotFound"><value>The national ID was not found in the university records.</value></data>
+  <data name="St_SeatMismatch"><value>Seat number does not match the national ID.</value></data>
+  <data name="St_SeatNotInOfficial"><value>Seat number not found in the official results.</value></data>
+  <data name="St_NotEligible"><value>This student is not eligible to apply based on the official result.</value></data>
+  <data name="St_SeatLinkedElsewhere"><value>This seat number is linked to another account. Please contact support.</value></data>
+  <data name="St_PhoneInUse"><value>This phone number is already in use. Please enter a different number or leave it empty.</value></data>
+  <data name="St_SaveError"><value>An unexpected error occurred while saving. Try again or contact the administrator.</value></data>
+  <data name="St_VerifiedOk"><value>Your identity was verified and your official result linked successfully.</value></data>
+  <data name="St_MustCompleteProfile"><value>You must complete the application form first!</value></data>
+  <data name="St_AlreadyAllocatedNoEdit"><value>Allocation results have been announced — preferences cannot be edited.</value></data>
+  <data name="St_PrefAtLeastOne"><value>Please select at least one college</value></data>
+  <data name="St_PrefMax"><value>You can select at most {0} colleges for your section</value></data>
+  <data name="St_PrefNotAvailableForTrack"><value>You picked a college not available for your section. Please choose from the available colleges only.</value></data>
+  <data name="St_PrefCollegeHidden"><value>The college {0} is currently hidden and cannot be selected.</value></data>
+  <data name="St_PrefBelowMin"><value>You cannot select {0} because your percentage is below its minimum required score.</value></data>
+  <data name="St_PrefSavedOk"><value>Your preferences have been saved successfully. You can update them before admissions close.</value></data>
+  <data name="St_MustChoosePrefs"><value>You must choose your preferences first!</value></data>
+  <data name="St_NoAllocationYet"><value>No college has been allocated to you yet</value></data>
+  <data name="St_DocsUploadDisabled"><value>Online document upload is disabled. Please bring the original paper documents when visiting the university.</value></data>
+  <data name="St_MustCompleteApplicationShort"><value>You must complete the application form first</value></data>
+  <data name="St_MustChoosePrefsShort"><value>You must choose college preferences first</value></data>
+  <data name="St_AllocationNotAnnounced"><value>Allocation results have not been announced yet</value></data>
+  <data name="St_MustUploadDocs"><value>You must upload the required documents first</value></data>
+  <data name="St_AdmissionsClosedSave"><value>Admissions are currently closed and changes cannot be saved.</value></data>
+
+  <!-- Allocation status display -->
+  <data name="AS_Allocated"><value>Allocated</value></data>
+  <data name="AS_Confirmed"><value>Confirmed</value></data>
+  <data name="AS_Rejected"><value>Rejected</value></data>
+  <data name="AS_Pending"><value>Pending</value></data>
+
+  <!-- DataAnnotation messages (referenced from ViewModels by KEY) -->
+  <data name="DA_EmailRequired"><value>Email is required</value></data>
+  <data name="DA_EmailInvalid"><value>Invalid email address</value></data>
+  <data name="DA_PasswordRequired"><value>Password is required</value></data>
+  <data name="DA_NewPasswordRequired"><value>New password is required</value></data>
+  <data name="DA_PasswordsMustMatch"><value>Password and confirmation do not match</value></data>
+  <data name="DA_FullNameRequired"><value>Full name is required</value></data>
+  <data name="DA_StudentPhoneRequired"><value>Student mobile number is required</value></data>
+  <data name="DA_ParentPhoneRequired"><value>Parent mobile number is required</value></data>
+  <data name="DA_PhoneFormat"><value>The mobile number must be 11 digits starting with 01</value></data>
+  <data name="DA_PasswordMinLen"><value>The {0} must be at least {2} characters</value></data>
+  <data name="DA_NationalIdRequired"><value>National ID is required</value></data>
+  <data name="DA_NationalIdFormat"><value>National ID must be 14 digits</value></data>
+  <data name="DA_SeatNumberRequired"><value>Seat number is required</value></data>
+  <data name="DA_SeatNumberInvalid"><value>Seat number is invalid</value></data>
+  <data name="DA_SectionRequired"><value>Section is required</value></data>
+  <data name="DA_PhoneFormatPlain"><value>Phone number must be 11 digits</value></data>
+  <data name="DA_ParentPhoneFormatPlain"><value>Parent phone must be 11 digits</value></data>
+  <data name="DA_AddressTooLong"><value>Address is too long</value></data>
+  <data name="DA_RegisteredEmail"><value>Registered email</value></data>
+  <data name="DA_StudentMobile"><value>Student mobile number</value></data>
+  <data name="DA_ParentMobile"><value>Parent mobile number</value></data>
+  <data name="DA_PrefAtLeastOne"><value>Please select at least one college</value></data>
+
+  <!-- Admissions schedule (datetime window on top of the manual switch) -->
+  <data name="AdmissionsSchedule"><value>Admissions schedule</value></data>
+  <data name="AdmissionsScheduleHint"><value>Set a start and end date for applications. The start must be earlier than the end. Leave both empty to fall back to the manual switch only.</value></data>
+  <data name="StartDate"><value>Admissions start date</value></data>
+  <data name="EndDate"><value>Admissions end date</value></data>
+  <data name="SaveAdmissionsSchedule"><value>Save schedule</value></data>
+  <data name="InvalidAdmissionsSchedule"><value>The admissions start date must be before the end date</value></data>
+  <data name="AdmissionsScheduleSaved"><value>Admissions schedule saved successfully</value></data>
+  <data name="AdmissionsStartsAt"><value>Admissions will open at</value></data>
+  <data name="AdmissionsEndsAt"><value>Applications end at</value></data>
+  <data name="AdmissionsNotStarted"><value>Admissions have not started yet</value></data>
+  <data name="AdmissionsOpenNow"><value>Admissions are currently open</value></data>
+  <data name="AdmissionsExpired"><value>Admissions closed: the scheduled deadline has passed</value></data>
+  <data name="AdmissionsClosedManually"><value>Admissions are currently closed by the university administration</value></data>
+  <data name="AdmissionsManualOpenNoSchedule"><value>Manually open without a configured window</value></data>
+
+  <!-- Student dashboard notifications -->
+  <data name="NotificationsHeader"><value>University Notifications</value></data>
+  <data name="NotifAdmissionOpen"><value>&lt;strong&gt;Important:&lt;/strong&gt; Applications are now open for the 2026-2027 academic year. Please complete your application as soon as possible.</value></data>
+  <data name="NotifDeadline"><value>&lt;strong&gt;Notice:&lt;/strong&gt; The application deadline is June 30, 2026. Make sure all required documents are attached.</value></data>
+  <data name="NotifPrefsReminder"><value>&lt;strong&gt;Reminder:&lt;/strong&gt; Don't forget to select your college preferences to complete the allocation process. The available options and their count depend on your section.</value></data>
+
+  <!-- Allocation status page -->
+  <data name="AllocStatusTitle"><value>Allocation Status</value></data>
+  <data name="AllocStatusSub"><value>Track your application and selected preferences</value></data>
+  <data name="AcceptedTitle"><value>You've been accepted!</value></data>
+  <data name="AcceptedSub"><value>Congratulations! A college has been assigned to you</value></data>
+  <data name="AcceptedBadge"><value>Accepted</value></data>
+  <data name="PendingTitle"><value>Your application is being processed</value></data>
+  <data name="PendingSub"><value>Results will be announced soon</value></data>
+  <data name="PendingBadge"><value>In progress</value></data>
+  <data name="ApplicationSummary"><value>Application summary</value></data>
+  <data name="BasicInformation"><value>Basic information</value></data>
+  <data name="EmailAddress"><value>Email address</value></data>
+  <data name="SelectedPreferences"><value>Selected preferences</value></data>
+  <data name="AcceptedHere"><value>Accepted here</value></data>
+  <data name="SubmissionDate"><value>Submission date</value></data>
+  <data name="AcceptedCollege"><value>Accepted college</value></data>
+  <data name="AllocationDate"><value>Allocation date</value></data>
+  <data name="ViewFinalResult"><value>View final result</value></data>
+  <data name="PrintNominationCard"><value>Nomination card (for printing)</value></data>
+  <data name="AttendanceProcedures"><value>University attendance procedures</value></data>
+  <data name="NextSteps"><value>Next steps</value></data>
+  <data name="StepPrefsSubmitted"><value>Preferences submitted</value></data>
+  <data name="StepWaitingResult"><value>Awaiting allocation result</value></data>
+  <data name="StepPrintCard"><value>After the result is announced, print the nomination card</value></data>
+  <data name="StepAttendUniversity"><value>Attend the university with the original paper documents to complete the procedures</value></data>
+  <data name="EmailNotifyResults"><value>You will be notified by email when results are announced</value></data>
+  <data name="BackToDashboardFull"><value>Back to dashboard</value></data>
+
+  <!-- Allocation result page -->
+  <data name="AllocResultTitle"><value>Allocation Result</value></data>
+  <data name="AllocResultSub"><value>Final nomination details</value></data>
+  <data name="CongratsNominated"><value>Congratulations! You have been nominated</value></data>
+  <data name="NominatedTo"><value>You have been nominated to:</value></data>
+  <data name="OfficialEquivalentPct"><value>Your official equivalent percentage</value></data>
+  <data name="OfficialStudentInfo"><value>Official student information</value></data>
+  <data name="OfficialFullName"><value>Official full name</value></data>
+  <data name="OfficialEquivalentPctShort"><value>Official equivalent percentage</value></data>
+  <data name="NominationDate"><value>Nomination date</value></data>
+  <data name="AttendanceInstructionsLabel"><value>Attendance instructions:</value></data>
+  <data name="AttendanceInstructionsBody"><value>Please attend Assiut National University to complete the admission procedures, bringing the original paper documents and the printed nomination card. The attendance date will be announced by the university administration.</value></data>
+  <data name="NotNominatedTitle"><value>Not nominated</value></data>
+  <data name="NotNominatedBody"><value>Unfortunately, you were not nominated to any college in this round of the allocation</value></data>
+  <data name="SecondPhaseNotice"><value>Watch the site for the dates of the second allocation phase</value></data>
+
+  <!-- Nomination card -->
+  <data name="NominationCardTitle"><value>Nomination Card</value></data>
+  <data name="NominationCardFor"><value>Admission nomination card</value></data>
+  <data name="UniversityLogoAlt"><value>University logo</value></data>
+  <data name="UniversityNameArOnly"><value>جامعة أسيوط الأهلية</value></data>
+  <data name="UniversityNameEnOnly"><value>Assiut National University</value></data>
+  <data name="PrintCardBtn"><value>Print card</value></data>
+  <data name="NominatedForCollege"><value>You have been nominated to</value></data>
+  <data name="IssueDate"><value>Issue date</value></data>
+
+  <!-- Public home page -->
+  <data name="HomePageTitle"><value>Home</value></data>
+  <data name="HomeHeroTitle"><value>Welcome to the Online Admissions Portal</value></data>
+  <data name="HomeHeroSubtitle"><value>We open the doors of academic excellence at Assiut National University. Join us and be part of a bright future with accredited academic programs and a distinguished faculty.</value></data>
+  <data name="StartApplicationNow"><value>Start your application now!</value></data>
+  <data name="FeatureAccredTitle"><value>Academic Accreditation</value></data>
+  <data name="FeatureAccredSub"><value>Our academic programs are locally and internationally accredited, ensuring you a distinguished professional future.</value></data>
+  <data name="FeatureFacultyTitle"><value>Distinguished Faculty</value></data>
+  <data name="FeatureFacultySub"><value>Faculty members with high experience and scientific competence from the best local and international universities.</value></data>
+  <data name="FeatureProgramsTitle"><value>Diverse Academic Programs</value></data>
+  <data name="FeatureProgramsSub"><value>A wide range of scientific and humanities disciplines that meet all the needs of the job market.</value></data>
+  <data name="CollegeEng"><value>Faculty of Engineering</value></data>
+  <data name="CollegePharm"><value>Faculty of Pharmacy</value></data>
+  <data name="CollegeDent"><value>Faculty of Dentistry</value></data>
+  <data name="CollegeMed"><value>Faculty of Medicine</value></data>
+  <data name="CollegeLang"><value>Faculty of Languages</value></data>
+  <data name="CollegeFinAdmin"><value>Faculty of Financial and Administrative Sciences</value></data>
+  <data name="CollegeCompAI"><value>Faculty of Computers and Artificial Intelligence</value></data>
+  <data name="CtaReady"><value>Are you ready to join us?</value></data>
+  <data name="CtaSubtitle"><value>Register now and start your academic journey at Assiut National University</value></data>
+  <data name="SignedInAs"><value>Signed in as</value></data>
+</root>

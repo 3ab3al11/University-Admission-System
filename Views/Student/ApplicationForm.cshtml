@@ -1,0 +1,212 @@
+@using Microsoft.Extensions.Localization
+@using ANU_Admissions.Resources
+@using ANU_Admissions.Helpers
+@inject IStringLocalizer<SharedResource> L
+@model ANU_Admissions.ViewModels.ApplicationFormViewModel
+@{
+    ViewData["Title"] = L["ApplicationFormTitle"].Value;
+    bool admissionsOpen = ViewBag.AdmissionsOpen as bool? ?? true;
+    var gate = ViewBag.GateStatus as ANU_Admissions.Services.AdmissionsGateStatus;
+}
+
+<div class="mb-4">
+    <h2 class="fw-bold" style="color: var(--black-text);">@L["ApplicationFormTitle"]</h2>
+    <p class="text-muted">@L["ApplicationFormIntro"]</p>
+</div>
+
+<partial name="_StudentAlerts" />
+
+@if (!admissionsOpen)
+{
+    string title = L["EditClosedTitle"].Value;
+    string body  = L["EditClosedBody"].Value;
+    string css   = "alert-danger"; string icon = "bi-lock-fill";
+    if (gate != null)
+    {
+        switch (gate.State)
+        {
+            case ANU_Admissions.Services.AdmissionsGateState.ManualClosed:
+                title = L["AdmissionsClosedManually"].Value; break;
+            case ANU_Admissions.Services.AdmissionsGateState.NotStarted:
+                css = "alert-warning"; icon = "bi-hourglass-split";
+                title = L["AdmissionsNotStarted"].Value;
+                body = gate.StartAt.HasValue
+                    ? $"{L["AdmissionsStartsAt"].Value}: {gate.StartAt.Value:yyyy-MM-dd HH:mm}" : body;
+                break;
+            case ANU_Admissions.Services.AdmissionsGateState.Expired:
+                css = "alert-secondary"; icon = "bi-calendar-x-fill";
+                title = L["AdmissionsExpired"].Value;
+                body = "";
+                break;
+        }
+    }
+    <div class="alert @css d-flex align-items-start" role="alert">
+        <i class="bi @icon ms-2 mt-1" style="font-size: 1.6rem;"></i>
+        <div>
+            <h5 class="fw-bold mb-1">@title</h5>
+            @if (!string.IsNullOrEmpty(body))
+            {
+                <p class="mb-0">@body</p>
+            }
+        </div>
+    </div>
+    <a href="/Student/Dashboard" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-right ms-2"></i> @L["BackToDashboard"]
+    </a>
+    return;
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-9">
+
+        @if (Model.IsLinked)
+        {
+            <!-- ================= LINKED: official result (read-only) ================= -->
+            <div class="alert alert-success">
+                <i class="bi bi-shield-check ms-2"></i>
+                @L["VerifiedLinkedMsg"]
+            </div>
+
+            <div class="card card-university mb-4">
+                <div class="card-header bg-light fw-bold">
+                    <i class="bi bi-mortarboard ms-2"></i> @L["OfficialResult"]
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">@L["LabelName"]</label>
+                            <input class="form-control bg-light" value="@Model.FullName" readonly />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">@L["SeatNumber"]</label>
+                            <input class="form-control bg-light" value="@Model.SeatNumber" readonly />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">@L["TotalScore"]</label>
+                            <input class="form-control bg-light" value="@Model.TotalScore" readonly />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">@L["MaxScore"]</label>
+                            <input class="form-control bg-light" value="@Model.MaxScore" readonly />
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">@L["Percentage"]</label>
+                            <input class="form-control bg-light" value="@Model.Percentage %" readonly />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">@L["EquivalentForAllocation"]</label>
+                            <input class="form-control bg-light fw-bold text-success" value="@Model.EquivalentPercentage %" readonly />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">@L["Section"]</label>
+                            <input class="form-control bg-light" value="@DisplayHelper.SectionLabel(L, Model.Track)" readonly />
+                        </div>
+                        @if (!string.IsNullOrWhiteSpace(Model.StatusDescription))
+                        {
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">@L["StatusLabel"]</label>
+                                <input class="form-control bg-light" value="@Model.StatusDescription" readonly />
+                            </div>
+                        }
+                    </div>
+
+                    <div class="d-flex gap-3 justify-content-end mt-4">
+                        <a href="/Student/Dashboard" class="btn btn-outline-secondary btn-lg px-4">@L["BackShort"]</a>
+                        <a href="/Student/Preferences" class="btn btn-primary-gold btn-lg px-4">
+                            <i class="bi bi-list-check ms-2"></i> @L["ChoosePreferences"]
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- ================= NOT LINKED: verification form ================= -->
+            <div class="card card-university">
+                <div class="card-body p-4">
+                    <form asp-action="ApplicationForm" method="post">
+                        <div asp-validation-summary="ModelOnly" class="alert alert-danger" role="alert"></div>
+
+                        <h5 class="fw-bold mb-3">
+                            <i class="bi bi-person-vcard text-gold ms-2"></i> @L["VerificationData"]
+                        </h5>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="NationalId" class="form-label fw-bold">@L["NationalId"] *</label>
+                                <input asp-for="NationalId" class="form-control form-control-lg"
+                                       placeholder="@L["NationalIdPlaceholder"]" maxlength="14" inputmode="numeric" />
+                                <span asp-validation-for="NationalId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="SeatNumber" class="form-label fw-bold">@L["SeatNumber"] *</label>
+                                <input asp-for="SeatNumber" class="form-control form-control-lg"
+                                       placeholder="@L["SeatNumberPlaceholder"]" inputmode="numeric" />
+                                <span asp-validation-for="SeatNumber" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Track" class="form-label fw-bold">@L["Section"] *</label>
+                                <select asp-for="Track" class="form-select form-select-lg">
+                                    <option value="">@L["ChooseSection"]</option>
+                                    <option value="علمي علوم">@L["Section_Science"]</option>
+                                    <option value="علمي رياضة">@L["Section_Math"]</option>
+                                    <option value="أدبي">@L["Section_Literary"]</option>
+                                </select>
+                                <span asp-validation-for="Track" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <h5 class="fw-bold mb-3">
+                            <i class="bi bi-telephone text-gold ms-2"></i> @L["ContactData"]
+                        </h5>
+
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <label asp-for="PhoneNumber" class="form-label fw-bold">@L["PhoneNumber"]</label>
+                                <input asp-for="PhoneNumber" class="form-control form-control-lg"
+                                       placeholder="@L["PhonePlaceholder"]" maxlength="11" inputmode="numeric" />
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="ParentPhoneNumber" class="form-label fw-bold">@L["ParentPhoneNumber"]</label>
+                                <input asp-for="ParentPhoneNumber" class="form-control form-control-lg"
+                                       placeholder="@L["PhonePlaceholder"]" maxlength="11" inputmode="numeric" />
+                                <span asp-validation-for="ParentPhoneNumber" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-12">
+                                <label asp-for="Address" class="form-label fw-bold">@L["Address"]</label>
+                                <input asp-for="Address" class="form-control form-control-lg" placeholder="@L["AddressPlaceholder"]" />
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">@L["Email"]</label>
+                                <input class="form-control bg-light" value="@Model.Email" readonly />
+                                <div class="form-text">@L["EmailReadonlyHint"]</div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info small">
+                            <i class="bi bi-info-circle ms-1"></i>
+                            @L["NoGradesEnteredHint"]
+                        </div>
+
+                        <div class="d-flex gap-3 justify-content-end mt-4">
+                            <a href="/Student/Dashboard" class="btn btn-outline-secondary btn-lg px-5">
+                                <i class="bi bi-arrow-right ms-2"></i> @L["BackShort"]
+                            </a>
+                            <button type="submit" class="btn btn-primary-gold btn-lg px-5">
+                                <i class="bi bi-shield-check ms-2"></i> @L["VerifyAndLink"]
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

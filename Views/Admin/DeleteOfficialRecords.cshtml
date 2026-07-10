@@ -1,0 +1,79 @@
+@using Microsoft.Extensions.Localization
+@using ANU_Admissions.Resources
+@inject IStringLocalizer<SharedResource> L
+@{
+    ViewData["Title"] = L["DeleteOfficialTitle"].Value;
+    int total = ViewBag.TotalRecords ?? 0;
+    int linked = ViewBag.LinkedProfiles ?? 0;
+    int allocations = ViewBag.AllocationsCount ?? 0;
+    int verifiedPrefs = ViewBag.VerifiedPreferences ?? 0;
+    bool canDelete = linked == 0;
+}
+
+<div class="mb-4">
+    <h2 class="fw-bold text-danger">
+        <i class="bi bi-exclamation-octagon ms-2"></i>
+        @L["DeleteOfficialTitle"]
+    </h2>
+    <p class="text-muted">@L["DeleteOfficialSub"]</p>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- Current state -->
+        <div class="card card-university mb-4">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">@L["CurrentState"]</h5>
+                <ul class="list-unstyled mb-0">
+                    <li class="mb-2"><strong>@L["OfficialRecordsCount"]:</strong> @total</li>
+                    <li class="mb-2"><strong>@L["VerifiedStudentsCount"]:</strong>
+                        <span class="@(linked > 0 ? "text-danger fw-bold" : "text-success")">@linked</span>
+                    </li>
+                    <li class="mb-2"><strong>@L["VerifiedPrefsCount"]:</strong> @verifiedPrefs</li>
+                    <li class="mb-0"><strong>@L["AllocationsCountLabel"]:</strong> @allocations</li>
+                </ul>
+            </div>
+        </div>
+
+        @if (!canDelete)
+        {
+            <!-- Blocked -->
+            <div class="alert alert-danger">
+                <i class="bi bi-shield-x ms-2"></i>
+                @L["DeleteBlockedMsg"]
+            </div>
+            <div class="d-flex gap-2">
+                <a asp-action="ResetVerifiedApplications" class="btn btn-danger">
+                    <i class="bi bi-arrow-counterclockwise ms-2"></i>
+                    @L["ResetVerifiedBtn"]
+                </a>
+                <a asp-action="ImportOfficialRecords" class="btn btn-outline-secondary">
+                    <i class="bi bi-arrow-right ms-2"></i> @L["BackShort"]
+                </a>
+            </div>
+        }
+        else if (total == 0)
+        {
+            <div class="alert alert-info">@L["NoOfficialToDelete"]</div>
+            <a asp-action="ImportOfficialRecords" class="btn btn-outline-secondary">@L["BackShort"]</a>
+        }
+        else
+        {
+            <!-- Confirm delete -->
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle-fill ms-2"></i>
+                @L["DeleteOfficialWarn", total]
+            </div>
+
+            <form asp-action="DeleteOfficialRecordsConfirmed" method="post"
+                  onsubmit="return confirm(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(L["DeleteOfficialConfirmJs"].Value)));">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-danger btn-lg">
+                    <i class="bi bi-trash ms-2"></i>
+                    @L["ConfirmDeleteOfficialBtn"]
+                </button>
+                <a asp-action="ImportOfficialRecords" class="btn btn-outline-secondary btn-lg">@L["Cancel"]</a>
+            </form>
+        }
+    </div>
+</div>

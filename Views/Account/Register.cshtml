@@ -1,0 +1,116 @@
+@using Microsoft.Extensions.Localization
+@using ANU_Admissions.Resources
+@inject IStringLocalizer<SharedResource> L
+@model ANU_Admissions.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = L["RegisterTitle"].Value;
+}
+
+<div class="row justify-content-center mt-5">
+    <div class="col-lg-6 col-md-8">
+        <div class="card card-university">
+            <div class="card-body p-5">
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold" style="color: var(--black-text);">
+                        <i class="bi bi-person-plus text-gold ms-2"></i>
+                        @L["RegisterTitle"]
+                    </h3>
+                    <p class="text-muted">@L["RegisterSub"]</p>
+                </div>
+
+                <form asp-action="Register" method="post">
+                    <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
+                    <div class="mb-3">
+                        <label asp-for="FullName" class="form-label fw-bold">@L["FullName"]</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="bi bi-person text-gold"></i>
+                            </span>
+                            <input asp-for="FullName" class="form-control" placeholder="@L["FullNamePlaceholder"]" />
+                        </div>
+                        <span asp-validation-for="FullName" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label fw-bold">@L["Email"]</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="bi bi-envelope text-gold"></i>
+                            </span>
+                            <input asp-for="Email" class="form-control" placeholder="example@email.com" />
+                        </div>
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="PhoneNumber" class="form-label fw-bold">@L["PhoneNumber"]</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="bi bi-phone text-gold"></i>
+                            </span>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="01xxxxxxxxx" maxlength="11" />
+                        </div>
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        <small class="text-muted">@L["StudentPhoneHint"]</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ParentPhoneNumber" class="form-label fw-bold">@L["ParentPhoneNumber"]</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="bi bi-phone-fill text-secondary"></i>
+                            </span>
+                            <input asp-for="ParentPhoneNumber" class="form-control" placeholder="01xxxxxxxxx" maxlength="11" required />
+                        </div>
+                        <span asp-validation-for="ParentPhoneNumber" class="text-danger"></span>
+                        <small class="text-muted">@L["ParentPhoneHint"]</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Password" class="form-label fw-bold">@L["Password"]</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="bi bi-lock text-gold"></i>
+                            </span>
+                            <input asp-for="Password" class="form-control" placeholder="••••••••" />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                        <small class="text-muted">@L["PasswordHint"]</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="ConfirmPassword" class="form-label fw-bold">@L["ConfirmPassword"]</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light">
+                                <i class="bi bi-lock-fill text-gold"></i>
+                            </span>
+                            <input asp-for="ConfirmPassword" class="form-control" placeholder="••••••••" />
+                        </div>
+                        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary-gold btn-lg">
+                            <i class="bi bi-person-plus ms-2"></i>
+                            @L["CreateAccountBtn"]
+                        </button>
+                    </div>
+                </form>
+
+                <hr class="my-4">
+
+                <div class="text-center">
+                    <p class="mb-0">
+                        @L["AlreadyHaveAccountQ"]
+                        <a href="/Account/Login" class="text-gold fw-bold">@L["LoginBtn"]</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

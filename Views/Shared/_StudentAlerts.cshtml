@@ -1,0 +1,29 @@
+@*
+    Renders TempData alerts scoped to the student area.
+    The keys are namespaced (StudentSuccess/StudentError/StudentWarning) so
+    student messages never leak into admin pages and vice-versa.
+*@
+@if (TempData["StudentSuccess"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill ms-2"></i>
+        @TempData["StudentSuccess"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["StudentWarning"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill ms-2"></i>
+        @TempData["StudentWarning"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+@if (TempData["StudentError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-x-circle-fill ms-2"></i>
+        @TempData["StudentError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}

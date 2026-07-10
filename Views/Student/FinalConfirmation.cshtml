@@ -1,0 +1,47 @@
+@{
+    ViewData["Title"] = "تأكيد نهائي";
+}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <!-- Success Card -->
+        <div class="card card-university mb-4">
+            <div class="card-body p-5 text-center">
+                <i class="bi bi-check-circle-fill text-success" style="font-size: 6rem; margin-bottom: 1.5rem;"></i>
+                
+                <h2 class="fw-bold mb-3" style="color: var(--black-text);">
+                    تم إرسال طلبك بنجاح ✅
+                </h2>
+                
+                <p class="text-muted fs-5 mb-4">شكراً لك، تم استلام جميع البيانات والمستندات المطلوبة</p>
+
+                <!-- Status Badge -->
+                <div class="mb-4">
+                    <h5 class="text-muted mb-2">حالة الطلب:</h5>
+                    <span class="badge bg-warning text-dark px-4 py-3" style="font-size: 1.2rem;">
+                        <i class="bi bi-hourglass-split ms-2"></i>
+                        قيد المراجعة
+                    </span>
+                </div>
+
+                <div class="alert alert-info text-start">
+                    <i class="bi bi-info-circle ms-2"></i>
+                    <strong>ماذا بعد؟</strong>
+                    <ul class="mb-0 mt-2 pe-3">
+                        <li>سيتم مراجعة طلبك خلال 3-5 أيام عمل</li>
+                        <li>ستتلقى إشعاراً عبر البريد الإلكتروني عند اكتمال المراجعة</li>
+                        <li>يمكنك متابعة حالة طلبك من خلال لوحة التحكم</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Back to Dashboard -->
+        <div class="d-grid">
+            <a href="/Student/Dashboard" class="btn btn-primary-gold btn-lg">
+                <i class="bi bi-house-door ms-2"></i>
+                العودة للوحة التحكم
+            </a>
+        </div>
+    </div>
+</div>

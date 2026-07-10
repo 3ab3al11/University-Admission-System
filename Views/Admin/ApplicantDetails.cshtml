@@ -1,0 +1,270 @@
+@using Microsoft.Extensions.Localization
+@using ANU_Admissions.Resources
+@using ANU_Admissions.Helpers
+@inject IStringLocalizer<SharedResource> L
+@model ANU_Admissions.ViewModels.ApplicantDetailsViewModel
+@{
+    ViewData["Title"] = L["ApplicantDetailsTitle"].Value;
+}
+
+<div class="mb-4">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h2 class="fw-bold" style="color: var(--black-text);">
+                <i class="bi bi-person-badge text-primary ms-2"></i>
+                @Model.StudentName
+            </h2>
+            <p class="text-muted">@Model.Email</p>
+        </div>
+        <a href="@Url.Action("Applicants")" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-right ms-2"></i>
+            @L["BackToList"]
+        </a>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Personal Information -->
+    <div class="col-lg-6">
+        <div class="card card-university h-100">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-person text-primary ms-2"></i>
+                    @L["PersonalData"]
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">@L["FullName"]</small>
+                        <strong>@Model.StudentName</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">@L["Email"]</small>
+                        <strong>@Model.Email</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">@L["MobileNumber"]</small>
+                        <strong>@Model.PhoneNumber</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">@L["NationalId"]</small>
+                        <strong>@(Model.NationalId ?? "-")</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">@L["DateOfBirth"]</small>
+                        <strong>@Model.DateOfBirth.ToString("yyyy/MM/dd")</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">@L["Gender"]</small>
+                        <strong>@Model.Gender</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">@L["City"]</small>
+                        <strong>@Model.City</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">@L["Governorate"]</small>
+                        <strong>@Model.Governorate</strong>
+                    </div>
+                    <div class="col-12">
+                        <small class="text-muted d-block">@L["Address"]</small>
+                        <strong>@Model.Address</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Academic Information -->
+    <div class="col-lg-6">
+        <div class="card card-university h-100">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-mortarboard text-success ms-2"></i>
+                    @L["AcademicData"]
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">@L["HighSchoolName"]</small>
+                        <strong>@Model.HighSchoolName</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">@L["GraduationYear"]</small>
+                        <strong>@Model.GraduationYear</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">@L["CertificateType"]</small>
+                        <strong>@Model.CertificateType</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">@L["Section"]</small>
+                        <span class="badge bg-info">@DisplayHelper.SectionLabel(L, Model.Section)</span>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">@L["TotalScoreOverall"]</small>
+                        <strong>@Model.TotalScore</strong>
+                    </div>
+                    <div class="col-md-6">
+                        <small class="text-muted d-block">@L["Percentage"]</small>
+                        <strong>@Model.Percentage%</strong>
+                    </div>
+                    <div class="col-12">
+                        <small class="text-muted d-block">@L["EquivalentPercentage"]</small>
+                        <h4 class="text-gold mb-0">@Model.EquivalentPercentage%</h4>
+                    </div>
+                    <div class="col-12">
+                        <small class="text-muted d-block">@L["ApplicationDate"]</small>
+                        <strong>@Model.ApplicationDate.ToString("dd/MM/yyyy HH:mm")</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Preferences -->
+    <div class="col-lg-6">
+        <div class="card card-university">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-list-check text-info ms-2"></i>
+                    @L["PreferencesOfAllocation"] (@Model.Preferences.Count)
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.Preferences.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-sm mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>@L["Rank"]</th>
+                                    <th>@L["College"]</th>
+                                    <th>@L["MinScore"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var pref in Model.Preferences)
+                                {
+                                    <tr>
+                                        <td><span class="badge bg-primary">@pref.Rank</span></td>
+                                        <td>@pref.CollegeName</td>
+                                        <td><strong>@pref.MinimumScore%</strong></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="p-4 text-center text-muted">
+                        <i class="bi bi-inbox"></i>
+                        <p class="mb-0 mt-2 small">@L["NoPreferencesYet"]</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Allocation -->
+    <div class="col-lg-6">
+        <div class="card card-university">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-trophy text-warning ms-2"></i>
+                    @L["AllocationResultLabel"]
+                </h5>
+            </div>
+            <div class="card-body">
+                @if (Model.Allocation != null)
+                {
+                    <div class="alert alert-success">
+                        <h5 class="alert-heading">@Model.Allocation.CollegeName</h5>
+                        <hr>
+                        <p class="mb-1"><strong>@L["AllocationDateLabel"]:</strong> @Model.Allocation.AllocationDate.ToString("dd/MM/yyyy")</p>
+                        <p class="mb-1"><strong>@L["StatusLabel"]:</strong> <span class="badge bg-success">@DisplayHelper.AllocationStatusLabel(L, Model.Allocation.Status)</span></p>
+                        <p class="mb-0">
+                            <strong>@L["DocumentsSubmittedLabel"]:</strong>
+                            @if (Model.Allocation.DocumentsSubmitted)
+                            {
+                                <span class="badge bg-success">@L["DocsUploaded"]</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning text-dark">@L["DocsNotUploaded"]</span>
+                            }
+                        </p>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center text-muted p-4">
+                        <i class="bi bi-hourglass-split" style="font-size: 2rem;"></i>
+                        <p class="mb-0 mt-2">@L["NotAllocatedYetMsg"]</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Documents -->
+    <div class="col-12">
+        <div class="card card-university">
+            <div class="card-header bg-white">
+                <h5 class="mb-0 fw-bold">
+                    <i class="bi bi-file-earmark-arrow-up text-primary ms-2"></i>
+                    @L["UploadedDocuments"] (@Model.Documents.Count)
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.Documents.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>@L["DocumentType"]</th>
+                                    <th>@L["FileName"]</th>
+                                    <th>@L["FileSize"]</th>
+                                    <th>@L["UploadDate"]</th>
+                                    <th>@L["VerificationCol"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var doc in Model.Documents)
+                                {
+                                    <tr>
+                                        <td><strong>@doc.DocumentType</strong></td>
+                                        <td><small class="text-muted">@doc.FileName</small></td>
+                                        <td><small>@doc.GetFileSizeFormatted()</small></td>
+                                        <td><small>@doc.UploadedAt.ToString("dd/MM/yyyy HH:mm")</small></td>
+                                        <td>
+                                            @if (doc.IsVerified)
+                                            {
+                                                <span class="badge bg-success">@L["Verified"]</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-warning text-dark">@L["StatusPending"]</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="p-4 text-center text-muted">
+                        <i class="bi bi-inbox" style="font-size: 2rem;"></i>
+                        <p class="mb-0 mt-2">@L["NoDocsYet"]</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

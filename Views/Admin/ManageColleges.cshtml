@@ -1,0 +1,98 @@
+@using Microsoft.Extensions.Localization
+@using ANU_Admissions.Resources
+@using ANU_Admissions.Helpers
+@inject IStringLocalizer<SharedResource> L
+@model List<ANU_Admissions.ViewModels.CollegeEditViewModel>
+@{
+    ViewData["Title"] = L["ManageColleges"].Value;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <h2 class="fw-bold">
+            <i class="bi bi-building text-gold ms-2"></i>
+            @L["ManageColleges"]
+        </h2>
+        <p class="text-muted mb-0">@L["ManageCollegesSub"]</p>
+    </div>
+    <a asp-action="CreateCollege" class="btn btn-primary-gold">
+        <i class="bi bi-plus-circle ms-2"></i> @L["AddCollege"]
+    </a>
+</div>
+
+<div class="card card-university">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>@L["Code"]</th>
+                        <th>@L["CollegeName"]</th>
+                        <th>@L["Status"]</th>
+                        <th>@L["Capacity"]</th>
+                        <th>@L["MinScorePercent"]</th>
+                        <th>@L["AllowedSections"]</th>
+                        <th>@L["PreferencesCount"]</th>
+                        <th>@L["AllocationsCount"]</th>
+                        <th>@L["Actions"]</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model)
+                    {
+                        <tr class="@(!c.IsActive ? "table-secondary" : "")">
+                            <td><span class="badge bg-secondary">@c.Code</span></td>
+                            <td class="fw-bold">@DisplayHelper.CollegeName(c.NameAr, c.NameEn)</td>
+                            <td>
+                                @if (c.IsActive)
+                                {
+                                    <span class="badge bg-success"><i class="bi bi-eye ms-1"></i> @L["VisibleToStudents"]</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger"><i class="bi bi-eye-slash ms-1"></i> @L["HiddenFromStudents"]</span>
+                                }
+                            </td>
+                            <td>@c.Capacity</td>
+                            <td><strong class="text-gold">@c.MinimumScore%</strong></td>
+                            <td><small class="text-muted">@DisplayHelper.AllowedSectionsLabel(L, c.AllowedSections)</small></td>
+                            <td>@c.PreferencesCount</td>
+                            <td>@c.AllocationsCount</td>
+                            <td>
+                                <div class="d-flex gap-1">
+                                    <a asp-action="EditCollege" asp-route-id="@c.Id" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-pencil ms-1"></i> @L["Edit"]
+                                    </a>
+                                    <form asp-action="ToggleCollegeVisibility" asp-route-id="@c.Id" method="post" class="d-inline">
+                                        @Html.AntiForgeryToken()
+                                        @if (c.IsActive)
+                                        {
+                                            <button type="submit" class="btn btn-sm btn-outline-warning" title="@L["HideFromStudents"]">
+                                                <i class="bi bi-eye-slash"></i>
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button type="submit" class="btn btn-sm btn-outline-success" title="@L["ShowToStudents"]">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                        }
+                                    </form>
+                                    <a asp-action="DeleteCollege" asp-route-id="@c.Id" class="btn btn-sm btn-outline-danger" title="@L["DeleteCollege"]">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4">
+    <a asp-action="Dashboard" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-right ms-2"></i> @L["BackToDashboard"]
+    </a>
+</div>

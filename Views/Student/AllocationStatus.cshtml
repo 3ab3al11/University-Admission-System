@@ -1,0 +1,222 @@
+@using Microsoft.Extensions.Localization
+@using ANU_Admissions.Resources
+@inject IStringLocalizer<SharedResource> L
+@model ANU_Admissions.ViewModels.AllocationStatusViewModel
+@{
+    ViewData["Title"] = L["AllocStatusTitle"].Value;
+}
+
+<div class="mb-4">
+    <h2 class="fw-bold" style="color: var(--black-text);">@L["AllocStatusTitle"]</h2>
+    <p class="text-muted">@L["AllocStatusSub"]</p>
+</div>
+
+<partial name="_StudentAlerts" />
+
+<div class="row g-4">
+    <!-- Status Card -->
+    <div class="col-12">
+        @if (Model.Status == "Allocated")
+        {
+            <div class="card card-status-accepted" style="border: 3px solid #10b981; background-color: #ecfdf5;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-check-circle-fill text-success" style="font-size: 2.5rem; margin-left: 1rem;"></i>
+                            <div>
+                                <h4 class="mb-1 fw-bold" style="color: var(--black-text);">@L["AcceptedTitle"]</h4>
+                                <p class="text-muted mb-0">@L["AcceptedSub"]</p>
+                            </div>
+                        </div>
+                        <span class="badge bg-success px-3 py-2" style="font-size: 0.95rem;">
+                            <i class="bi bi-check-circle ms-1"></i>
+                            @L["AcceptedBadge"]
+                        </span>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="card card-status-pending" style="border: 3px solid #fbbf24; background-color: #fffbeb;">
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-hourglass-split text-warning" style="font-size: 2.5rem; margin-left: 1rem;"></i>
+                            <div>
+                                <h4 class="mb-1 fw-bold" style="color: var(--black-text);">@L["PendingTitle"]</h4>
+                                <p class="text-muted mb-0">@L["PendingSub"]</p>
+                            </div>
+                        </div>
+                        <span class="badge bg-warning text-dark px-3 py-2" style="font-size: 0.95rem;">
+                            <i class="bi bi-clock-history ms-1"></i>
+                            @L["PendingBadge"]
+                        </span>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <!-- Summary Card -->
+    <div class="col-lg-8">
+        <div class="card card-university">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-4">
+                    <i class="bi bi-file-text text-gold ms-2"></i>
+                    @L["ApplicationSummary"]
+                </h5>
+
+                <!-- Basic Info Section -->
+                <div class="mb-4 pb-3 border-bottom">
+                    <h6 class="text-muted mb-3">@L["BasicInformation"]</h6>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">@L["FullName"]</small>
+                            <strong>@Model.FullName</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">@L["EmailAddress"]</small>
+                            <strong>@Model.Email</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">@L["Section"]</small>
+                            <strong>@Model.Track</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">@L["EquivalentPercentage"]</small>
+                            <strong class="text-gold">@Model.EquivalentPercentage%</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preferences Section -->
+                <div class="mb-4 pb-3 border-bottom">
+                    <h6 class="text-muted mb-3">@L["SelectedPreferences"]</h6>
+                    <div class="preferences-list">
+                        @foreach (var pref in Model.Preferences)
+                        {
+                            var isAccepted = Model.Allocation != null
+                                && pref.CollegeName == Model.Allocation.CollegeName;
+                            <div class="preference-item d-flex align-items-center mb-3 p-3 @(isAccepted ? "pref-item-accepted" : "pref-item-default")"
+                                 style="@(isAccepted
+                                        ? "background-color: #d1fae5; border-radius: 0.5rem; border: 2px solid #10b981;"
+                                        : "background-color: #f9fafb; border-radius: 0.5rem; border: 1px solid #e5e7eb;")">
+                                <div class="rank-badge me-3" style="background: linear-gradient(135deg, var(--gold) 0%, #d97706 100%); color: white; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;">
+                                    @pref.Rank
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="fw-bold mb-1">
+                                        @pref.CollegeName
+                                        @if (isAccepted)
+                                        {
+                                            <span class="badge bg-success ms-2">
+                                                <i class="bi bi-trophy-fill ms-1"></i> @L["AcceptedHere"]
+                                            </span>
+                                        }
+                                    </div>
+                                </div>
+                                @if (isAccepted)
+                                {
+                                    <i class="bi bi-check-circle-fill text-success" style="font-size: 1.6rem;"></i>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Submission Date -->
+                <div class="text-muted">
+                    <small>
+                        <i class="bi bi-calendar-check ms-1"></i>
+                        @L["SubmissionDate"]: @DateTime.Now.ToString("dd MMMM yyyy")
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Next Steps Card -->
+    <div class="col-lg-4">
+        @if (Model.Allocation != null)
+        {
+            <!-- Allocation Result Card -->
+            <div class="card card-university mb-3" style="border: 2px solid #10b981;">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3 text-success">
+                        <i class="bi bi-trophy-fill ms-2"></i>
+                        @L["AcceptedCollege"]
+                    </h5>
+                    <div class="mb-3">
+                        <h4 class="fw-bold" style="color: var(--gold);">@Model.Allocation.CollegeName</h4>
+                    </div>
+                    <div class="mb-3">
+                        <small class="text-muted d-block">@L["AllocationDate"]</small>
+                        <strong>@Model.Allocation.AllocationDate.ToString("dd MMMM yyyy")</strong>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-grid gap-2">
+                        <a asp-action="AllocationResult" class="btn btn-success">
+                            <i class="bi bi-file-earmark-check ms-2"></i>
+                            @L["ViewFinalResult"]
+                        </a>
+
+                        <a asp-action="NominationCard" class="btn btn-outline-gold">
+                            <i class="bi bi-printer ms-2"></i>
+                            @L["PrintNominationCard"]
+                        </a>
+
+                        <a asp-action="AllocationResult" class="btn btn-primary-gold">
+                            <i class="bi bi-card-checklist ms-2"></i>
+                            @L["AttendanceProcedures"]
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <!-- Pending Status Card -->
+            <div class="card card-university">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-info-circle ms-2"></i>
+                        @L["NextSteps"]
+                    </h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <i class="bi bi-check2-circle text-success ms-2"></i>
+                            <strong>@L["StepPrefsSubmitted"]</strong>
+                        </li>
+                        <li class="mb-3">
+                            <i class="bi bi-hourglass-split text-warning ms-2"></i>
+                            @L["StepWaitingResult"]
+                        </li>
+                        <li class="mb-3 text-muted">
+                            <i class="bi bi-circle ms-2"></i>
+                            @L["StepPrintCard"]
+                        </li>
+                        <li class="text-muted">
+                            <i class="bi bi-circle ms-2"></i>
+                            @L["StepAttendUniversity"]
+                        </li>
+                    </ul>
+
+                    <div class="alert alert-info mt-3" role="alert">
+                        <i class="bi bi-lightbulb me-2"></i>
+                        <small>@L["EmailNotifyResults"]</small>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Back Button -->
+<div class="mt-4">
+    <a asp-action="Dashboard" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-right ms-2"></i>
+        @L["BackToDashboardFull"]
+    </a>
+</div>

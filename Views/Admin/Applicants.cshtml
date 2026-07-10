@@ -1,0 +1,113 @@
+@using Microsoft.Extensions.Localization
+@using ANU_Admissions.Resources
+@using ANU_Admissions.Helpers
+@inject IStringLocalizer<SharedResource> L
+@model ANU_Admissions.ViewModels.ApplicantsListViewModel
+@{
+    ViewData["Title"] = L["ApplicantsTitle"].Value;
+}
+
+<div class="mb-4">
+    <h2 class="fw-bold" style="color: var(--black-text);">
+        <i class="bi bi-people text-primary ms-2"></i>
+        @L["ApplicantsTitle"]
+    </h2>
+    <p class="text-muted">@L["ApplicantsSub"]</p>
+</div>
+
+<!-- Search and Filter -->
+<div class="card card-university mb-4">
+    <div class="card-body">
+        <form method="get" asp-action="Applicants" class="row g-3">
+            <div class="col-md-5">
+                <label class="form-label">@L["Search"]</label>
+                <input type="text" name="searchTerm" value="@Model.SearchTerm" class="form-control" placeholder="@L["SearchPlaceholder"]">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label">@L["FilterByStatus"]</label>
+                <select name="statusFilter" class="form-select">
+                    <option value="">@L["All"]</option>
+                    <option value="allocated" selected="@(Model.StatusFilter == "allocated")">@L["StatusAllocated"]</option>
+                    <option value="pending" selected="@(Model.StatusFilter == "pending")">@L["StatusPending"]</option>
+                    <option value="incomplete" selected="@(Model.StatusFilter == "incomplete")">@L["StatusIncomplete"]</option>
+                </select>
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-search ms-1"></i>
+                    @L["SearchBtn"]
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Results -->
+<div class="card card-university">
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fw-bold">@L["Results"] (@Model.Applicants.Count)</h5>
+        <a href="@Url.Action("Dashboard")" class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-right ms-1"></i>
+            @L["BackToDashboardShort"]
+        </a>
+    </div>
+    <div class="card-body p-0">
+        @if (Model.Applicants.Any())
+        {
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>@L["StudentName"]</th>
+                            <th>@L["Email"]</th>
+                            <th>@L["NationalId"]</th>
+                            <th>@L["Section"]</th>
+                            <th>@L["EquivalentPercentage"]</th>
+                            <th>@L["PreferencesCol"]</th>
+                            <th>@L["ApplicantStatusCol"]</th>
+                            <th>@L["ApplicationDate"]</th>
+                            <th>@L["ActionsCol"]</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var applicant in Model.Applicants)
+                        {
+                            <tr>
+                                <td class="fw-bold">@applicant.StudentName</td>
+                                <td><small class="text-muted">@applicant.Email</small></td>
+                                <td><small>@(applicant.NationalId ?? "-")</small></td>
+                                <td><span class="badge bg-info">@DisplayHelper.SectionLabel(L, applicant.Section)</span></td>
+                                <td><strong class="text-gold">@applicant.EquivalentPercentage%</strong></td>
+                                <td class="text-center">
+                                    @if (applicant.PreferencesCount > 0)
+                                    {
+                                        <span class="badge bg-success">@applicant.PreferencesCount</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-secondary">0</span>
+                                    }
+                                </td>
+                                <td><span class="badge @applicant.StatusBgClass">@L[applicant.StatusKey]</span></td>
+                                <td><small>@applicant.ApplicationDate.ToString("dd/MM/yyyy")</small></td>
+                                <td>
+                                    <a href="@Url.Action("ApplicantDetails", new { id = applicant.ProfileId })" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye ms-1"></i>
+                                        @L["View"]
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="p-5 text-center text-muted">
+                <i class="bi bi-inbox" style="font-size: 3rem;"></i>
+                <p class="mt-3 mb-0">@L["NoResults"]</p>
+            </div>
+        }
+    </div>
+</div>

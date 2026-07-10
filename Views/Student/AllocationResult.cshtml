@@ -1,0 +1,124 @@
+@using Microsoft.Extensions.Localization
+@using ANU_Admissions.Resources
+@inject IStringLocalizer<SharedResource> L
+@model ANU_Admissions.ViewModels.NominationResultViewModel
+@{
+    ViewData["Title"] = L["AllocResultTitle"].Value;
+}
+
+<div class="mb-4">
+    <h2 class="fw-bold" style="color: var(--black-text);">@L["AllocResultTitle"]</h2>
+    <p class="text-muted">@L["AllocResultSub"]</p>
+</div>
+
+@if (Model.IsAllocated)
+{
+    <!-- Success Card -->
+    <div class="row justify-content-center mb-4">
+        <div class="col-lg-8">
+            <div class="card card-result-success" style="border: 3px solid #10b981; background: linear-gradient(135deg, #d1fae5 0%, #ffffff 100%);">
+                <div class="card-body p-5 text-center">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 5rem; margin-bottom: 1rem;"></i>
+                    <h3 class="fw-bold mb-3" style="color: #065f46;">@L["CongratsNominated"]</h3>
+
+                    <div class="alert alert-success text-center mb-4" style="font-size: 1.3rem; border: 2px solid #10b981;">
+                        <strong>@L["NominatedTo"]</strong>
+                        <h4 class="mt-2 mb-0 fw-bold" style="color: var(--primary-gold);">@Model.CollegeName</h4>
+                    </div>
+
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-12">
+                            <div class="p-3 result-inner-panel bg-white rounded border">
+                                <small class="text-muted d-block">@L["OfficialEquivalentPct"]</small>
+                                <h4 class="fw-bold text-primary mb-0">@Model.EquivalentPercentage%</h4>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a asp-action="NominationCard" class="btn btn-primary-gold btn-lg px-5">
+                        <i class="bi bi-printer ms-2"></i>
+                        @L["PrintNominationCard"]
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Official Student Info Card -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card card-university">
+                <div class="card-body p-4">
+                    <h5 class="fw-bold mb-4">
+                        <i class="bi bi-person-badge text-gold ms-2"></i>
+                        @L["OfficialStudentInfo"]
+                    </h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">@L["OfficialFullName"]</small>
+                            <strong>@Model.OfficialFullName</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">@L["NationalId"]</small>
+                            <strong>@Model.NationalId</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">@L["SeatNumber"]</small>
+                            <strong>@Model.SeatNumber</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">@L["Section"]</small>
+                            <strong>@Model.Section</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">@L["OfficialEquivalentPctShort"]</small>
+                            <strong class="text-gold">@Model.EquivalentPercentage%</strong>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">@L["NominationDate"]</small>
+                            <strong>@Model.AllocationDate.ToString("yyyy-MM-dd")</strong>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning mt-4 mb-0">
+                        <i class="bi bi-info-circle ms-2"></i>
+                        <strong>@L["AttendanceInstructionsLabel"]</strong>
+                        @L["AttendanceInstructionsBody"]
+                    </div>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+                <a href="/Student/Dashboard" class="btn btn-outline-gold btn-lg">
+                    <i class="bi bi-arrow-right ms-2"></i>
+                    @L["BackToDashboardFull"]
+                </a>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Not Allocated -->
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card card-result-failure" style="border: 3px solid #ef4444; background: linear-gradient(135deg, #fee2e2 0%, #ffffff 100%);">
+                <div class="card-body p-5 text-center">
+                    <i class="bi bi-x-circle-fill text-danger" style="font-size: 5rem; margin-bottom: 1rem;"></i>
+                    <h3 class="fw-bold mb-3 text-danger">@L["NotNominatedTitle"]</h3>
+                    <p class="text-muted mb-4">@L["NotNominatedBody"]</p>
+
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle ms-2"></i>
+                        @L["SecondPhaseNotice"]
+                    </div>
+
+                    <a href="/Student/Dashboard" class="btn btn-outline-secondary btn-lg">
+                        <i class="bi bi-arrow-right ms-2"></i>
+                        @L["BackToDashboardFull"]
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+}

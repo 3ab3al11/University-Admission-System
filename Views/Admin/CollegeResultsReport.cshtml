@@ -1,0 +1,142 @@
+@using Microsoft.Extensions.Localization
+@using ANU_Admissions.Resources
+@using ANU_Admissions.Helpers
+@inject IStringLocalizer<SharedResource> L
+@model ANU_Admissions.ViewModels.CollegeResultsReportViewModel
+@{
+    ViewData["Title"] = L["CollegeResults"].Value;
+}
+
+<style>
+    /* The report sheet is always a white page (on screen and in print), so its
+       text is pinned dark regardless of light/dark theme to stay readable. */
+    .report-area { background:#fff; color:#111; }
+    .report-area .text-muted { color:#555 !important; }
+    .report-area .table { --bs-table-bg:#fff; --bs-table-color:#111; --bs-table-border-color:#999; }
+    .report-area .table-light, .report-area .table-light > th { background-color:#f1f1f1 !important; color:#111 !important; }
+    .report-header { text-align:center; border-bottom:2px solid var(--primary-gold,#b8860b); padding-bottom:1rem; margin-bottom:1.5rem; }
+    .report-header h2 { font-weight:800; margin:.25rem 0 0; }
+    .report-meta { display:flex; flex-wrap:wrap; gap:1rem 2rem; margin-bottom:1rem; }
+    .report-meta div { font-size:.95rem; }
+    .report-table th, .report-table td { vertical-align:middle; font-size:.9rem; }
+
+    @@media print {
+        body * { visibility:hidden; }
+        #reportArea, #reportArea * { visibility:visible; }
+        #reportArea { position:absolute; top:0; right:0; left:0; margin:0; }
+        .no-print { display:none !important; }
+        .report-table { font-size:11px; }
+        thead { display:table-header-group; }   /* repeat header across pages */
+        tr { page-break-inside:avoid; }
+    }
+</style>
+
+<div class="mb-4 no-print">
+    <h2 class="fw-bold">
+        <i class="bi bi-bar-chart-line text-gold ms-2"></i>
+        @L["CollegeResults"]
+    </h2>
+    <p class="text-muted">@L["CollegeResultsSubtitle"]</p>
+</div>
+
+<!-- College selector -->
+<div class="card card-university mb-4 no-print">
+    <div class="card-body">
+        <form method="get" asp-action="CollegeResultsReport" class="row g-3 align-items-end">
+            <div class="col-md-8">
+                <label class="form-label fw-bold">@L["College"]</label>
+                <select name="collegeId" class="form-select form-select-lg">
+                    <option value="">@L["ChooseCollege"]</option>
+                    @foreach (var c in Model.Colleges)
+                    {
+                        <option value="@c.Id" selected="@(Model.SelectedCollegeId == c.Id)">@DisplayHelper.CollegeName(c.NameAr, c.NameEn)</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-4">
+                <button type="submit" class="btn btn-primary-gold btn-lg w-100">
+                    <i class="bi bi-search ms-2"></i> @L["ShowReport"]
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (Model.HasSelection)
+{
+    @if (!Model.Students.Any())
+    {
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle ms-2"></i>
+            @L["NoResultsForCollege"]
+        </div>
+    }
+    else
+    {
+        var reportCollegeName = DisplayHelper.CollegeName(Model.CollegeName, Model.CollegeNameEn);
+        <div class="d-flex justify-content-end mb-3 no-print">
+            <button type="button" class="btn btn-outline-gold" onclick="window.print()">
+                <i class="bi bi-printer ms-2"></i> @L["PrintSavePdf"]
+            </button>
+        </div>
+
+        <div id="reportArea" class="report-area">
+            <div class="card card-university">
+                <div class="card-body p-4">
+                    <div class="report-header">
+                        <h2>@L["UniversityName"]</h2>
+                        <div class="text-muted">@L["PortalName"]</div>
+                        <h4 class="fw-bold mt-2">@L["ReportFor"] @reportCollegeName</h4>
+                    </div>
+
+                    <div class="report-meta">
+                        <div><strong>@L["College"]:</strong> @reportCollegeName</div>
+                        <div><strong>@L["AcceptedCount"]:</strong> @Model.AcceptedCount</div>
+                        <div><strong>@L["CollegeCapacity"]:</strong> @Model.Capacity</div>
+                        <div><strong>@L["HighestEquivalent"]:</strong> @Model.HighestPercentage%</div>
+                        <div><strong>@L["LowestEquivalent"]:</strong> @Model.LowestPercentage%</div>
+                        <div><strong>@L["ReportDateTime"]:</strong> @Model.GeneratedAt.ToString("yyyy-MM-dd HH:mm")</div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-sm report-table">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>@L["Rank"]</th>
+                                    <th>@L["LabelName"]</th>
+                                    <th>@L["SeatNumber"]</th>
+                                    <th>@L["NationalId"]</th>
+                                    <th>@L["Section"]</th>
+                                    <th>@L["EquivalentForAllocation"]</th>
+                                    <th>@L["AcceptancePreference"]</th>
+                                    <th>@L["AllocationDateCol"]</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var s in Model.Students)
+                                {
+                                    <tr>
+                                        <td>@s.Rank</td>
+                                        <td class="fw-bold">@s.FullName</td>
+                                        <td>@s.SeatNumber</td>
+                                        <td>@s.NationalIdMasked</td>
+                                        <td>@DisplayHelper.SectionLabel(L, s.Section)</td>
+                                        <td><strong>@s.EquivalentPercentage%</strong></td>
+                                        <td>@(s.PreferenceRank?.ToString() ?? "-")</td>
+                                        <td>@s.AllocationDate.ToString("yyyy-MM-dd HH:mm")</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+}
+
+<div class="mt-4 no-print">
+    <a asp-action="Dashboard" class="btn btn-outline-secondary">
+        <i class="bi bi-arrow-right ms-2"></i> @L["BackToDashboard"]
+    </a>
+</div>

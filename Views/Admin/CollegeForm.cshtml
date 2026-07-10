@@ -1,0 +1,106 @@
+@using Microsoft.Extensions.Localization
+@using ANU_Admissions.Resources
+@inject IStringLocalizer<SharedResource> L
+@model ANU_Admissions.ViewModels.CollegeEditViewModel
+@{
+    bool isEdit = Model.Id != 0;
+    ViewData["Title"] = isEdit ? L["EditCollegeTitle"].Value : L["AddCollege"].Value;
+}
+
+<div class="mb-4">
+    <h2 class="fw-bold">
+        <i class="bi bi-building text-gold ms-2"></i>
+        @(isEdit ? L["EditCollegeTitle"] : L["AddCollegeTitle"])
+    </h2>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card card-university">
+            <div class="card-body p-4">
+                <form asp-action="@(isEdit ? "EditCollege" : "CreateCollege")" method="post">
+                    @Html.AntiForgeryToken()
+                    <input asp-for="Id" type="hidden" />
+                    @* Only render the red alert when there are actual validation
+                       errors — otherwise the empty .alert.alert-danger box shows
+                       above the form on a plain GET. *@
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div asp-validation-summary="All" class="alert alert-danger" role="alert"></div>
+                    }
+
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label asp-for="NameAr" class="form-label fw-bold">@L["CollegeNameAr"]</label>
+                            <input asp-for="NameAr" class="form-control" />
+                            <span asp-validation-for="NameAr" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Code" class="form-label fw-bold">@L["CollegeCode"]</label>
+                            <input asp-for="Code" class="form-control" />
+                            <span asp-validation-for="Code" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-8">
+                            <label asp-for="NameEn" class="form-label fw-bold">@L["CollegeNameEn"]</label>
+                            <input asp-for="NameEn" class="form-control" />
+                            <span asp-validation-for="NameEn" class="text-danger"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label asp-for="Capacity" class="form-label fw-bold">@L["Capacity"]</label>
+                            <input asp-for="Capacity" type="number" min="0" class="form-control" />
+                            <span asp-validation-for="Capacity" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="MinimumScore" class="form-label fw-bold">@L["MinScore"]</label>
+                            <input asp-for="MinimumScore" type="number" step="0.01" min="0" max="100" class="form-control" />
+                            <span asp-validation-for="MinimumScore" class="text-danger"></span>
+                            <small class="text-muted">@L["MinScoreHint"]</small>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" asp-for="IsActive" id="isActiveSwitch" />
+                                <label class="form-check-label fw-bold" for="isActiveSwitch">
+                                    @L["VisibleToStudents"]
+                                </label>
+                            </div>
+                            <small class="text-muted">@L["VisibleSwitchHint"]</small>
+                        </div>
+
+                        <div class="col-md-12">
+                            <label class="form-label fw-bold">@L["AllowedSections"]</label>
+                            <div class="d-flex flex-wrap gap-4 mt-1">
+                                @foreach (var sec in ANU_Admissions.ViewModels.CollegeEditViewModel.CanonicalSections)
+                                {
+                                    <div class="form-check">
+                                        @* value stays the canonical Arabic string used by all logic;
+                                           only the visible label is localized. *@
+                                        <input class="form-check-input" type="checkbox" name="SelectedSections"
+                                               value="@sec" id="sec_@sec"
+                                               checked="@(Model.SelectedSections.Contains(sec))" />
+                                        <label class="form-check-label" for="sec_@sec">@ANU_Admissions.Helpers.DisplayHelper.SectionLabel(L, sec)</label>
+                                    </div>
+                                }
+                            </div>
+                            <small class="text-muted">@L["AllowedSectionsHint"]</small>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 justify-content-end mt-4">
+                        <a asp-action="ManageColleges" class="btn btn-outline-secondary">@L["Cancel"]</a>
+                        <button type="submit" class="btn btn-primary-gold">
+                            <i class="bi bi-check-circle ms-2"></i>
+                            @(isEdit ? L["SaveChanges"] : L["AddCollegeBtn"])
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

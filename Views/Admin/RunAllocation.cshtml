@@ -1,0 +1,138 @@
+@using Microsoft.Extensions.Localization
+@using ANU_Admissions.Resources
+@inject IStringLocalizer<SharedResource> L
+@{
+    ViewData["Title"] = L["RunAllocationPageTitle"].Value;
+}
+
+<div class="mb-4">
+    <a href="/Admin/Dashboard" class="btn btn-outline-secondary mb-3">
+        <i class="bi bi-arrow-right ms-2"></i>
+        @L["BackToDashboard"]
+    </a>
+    <h2 class="fw-bold" style="color: var(--black-text);">
+        <i class="bi bi-play-circle text-gold ms-2"></i>
+        @L["RunAllocationPageTitle"]
+    </h2>
+    <p class="text-muted">@L["RunAllocationPageSub"]</p>
+</div>
+
+@if (TempData["AllocationSuccess"] != null)
+{
+    var summaryJson = TempData["AllocationSummary"] as string ?? "{}";
+    var summary = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, object>>(summaryJson)
+                  ?? new Dictionary<string, object>();
+
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle ms-2"></i>
+        <strong>@L["AllocationDoneOk"]</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+
+    <div class="card card-university mb-4">
+        <div class="card-body p-4">
+            <h5 class="fw-bold mb-4">
+                <i class="bi bi-clipboard-data text-gold ms-2"></i>
+                @L["AllocationSummary"]
+            </h5>
+            <div class="row g-3">
+                <div class="col-md-3">
+                    <div class="text-center p-3 bg-light rounded">
+                        <h3 class="fw-bold text-primary mb-1">@summary["TotalProcessed"]</h3>
+                        <small class="text-muted">@L["TotalRequests"]</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center p-3 bg-light rounded">
+                        <h3 class="fw-bold text-success mb-1">@summary["Accepted"]</h3>
+                        <small class="text-muted">@L["Accepted"]</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center p-3 bg-light rounded">
+                        <h3 class="fw-bold text-danger mb-1">@summary["Rejected"]</h3>
+                        <small class="text-muted">@L["Rejected"]</small>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="text-center p-3 bg-light rounded">
+                        <h5 class="fw-bold text-gold mb-1">@summary["ExecutionTime"]</h5>
+                        <small class="text-muted">@L["ExecutionTime"]</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@if (TempData["AllocationError"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle ms-2"></i>
+        <strong>@L["ErrorLabel"]</strong> @TempData["AllocationError"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="row g-4">
+    <!-- Main Allocation Card -->
+    <div class="col-lg-8">
+        <div class="card card-university">
+            <div class="card-body p-5 text-center">
+                <i class="bi bi-cpu" style="font-size: 5rem; color: var(--primary-gold); margin-bottom: 1.5rem;"></i>
+                <h3 class="fw-bold mb-3">@L["AllocationAlgorithmTitle"]</h3>
+                <p class="text-muted mb-4">@L["AllocationAlgorithmSub"]</p>
+
+                <div class="alert alert-info text-start mb-4">
+                    <h6 class="fw-bold mb-2">
+                        <i class="bi bi-info-circle ms-1"></i>
+                        @L["HowItWorks"]
+                    </h6>
+                    <ol class="mb-0 pe-3">
+                        <li>@L["Step1Sort"]</li>
+                        <li>@L["Step2Assign"]</li>
+                        <li>@L["Step3Cutoff"]</li>
+                        <li>@L["Step4Save"]</li>
+                    </ol>
+                </div>
+
+                <form method="post" asp-action="ExecuteAllocation" onsubmit="return confirm(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(L["ConfirmStartAllocation"].Value)))">
+                    <button type="submit" class="btn btn-primary-gold btn-lg px-5 py-3">
+                        <i class="bi bi-play-circle ms-2"></i>
+                        @L["StartAllocationNow"]
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Sidebar -->
+    <div class="col-lg-4">
+        <div class="card card-university mb-3">
+            <div class="card-body p-4">
+                <h6 class="fw-bold mb-3">
+                    <i class="bi bi-exclamation-triangle text-warning ms-2"></i>
+                    @L["ImportantAlerts"]
+                </h6>
+                <div class="alert alert-warning mb-3">
+                    <small>@L["ReviewBeforeRunning"]</small>
+                </div>
+                <div class="alert alert-danger mb-0">
+                    <small>@L["AllocationIrreversible"]</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="card card-university">
+            <div class="card-body p-4">
+                <h6 class="fw-bold mb-3">
+                    <i class="bi bi-clock-history text-primary ms-2"></i>
+                    @L["LastAllocationRun"]
+                </h6>
+                <p class="text-muted mb-0 small">
+                    @L["NoAllocationRunYet"]
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
