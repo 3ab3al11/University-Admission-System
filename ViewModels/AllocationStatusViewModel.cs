@@ -9,7 +9,7 @@ public class AllocationStatusViewModel
     public string Email { get; set; } = string.Empty;
     public decimal EquivalentPercentage { get; set; }
     public string Track { get; set; } = string.Empty;
-    
+
     public List<PreferenceDisplay> Preferences { get; set; } = new();
     public AllocationResultDisplay? Allocation { get; set; }
 }

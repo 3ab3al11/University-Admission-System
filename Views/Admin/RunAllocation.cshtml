@@ -3,6 +3,8 @@
 @inject IStringLocalizer<SharedResource> L
 @{
     ViewData["Title"] = L["RunAllocationPageTitle"].Value;
+    var gateStatus = ViewBag.GateStatus as ANU_Admissions.Services.AdmissionsGateStatus;
+    var admissionsOpen = gateStatus?.IsOpen ?? false;
 }
 
 <div class="mb-4">
@@ -96,8 +98,18 @@
                     </ol>
                 </div>
 
-                <form method="post" asp-action="ExecuteAllocation" onsubmit="return confirm(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(L["ConfirmStartAllocation"].Value)))">
-                    <button type="submit" class="btn btn-primary-gold btn-lg px-5 py-3">
+                @if (admissionsOpen)
+                {
+                    <div class="alert alert-warning mb-3">
+                        <i class="bi bi-lock-fill ms-1"></i>
+                        @L["CloseAdmissionsBeforeAllocation"]
+                    </div>
+                }
+
+                <form method="post" asp-action="ExecuteAllocation"
+                      data-confirm-message="@L["ConfirmStartAllocation"]">
+                    <button type="submit" class="btn btn-primary-gold btn-lg px-5 py-3"
+                            disabled="@(admissionsOpen ? "disabled" : null)">
                         <i class="bi bi-play-circle ms-2"></i>
                         @L["StartAllocationNow"]
                     </button>

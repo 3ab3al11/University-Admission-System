@@ -174,7 +174,7 @@
 </div>
 
 @section Scripts {
-    <script>
+    <script nonce="@Context.Items[ContentSecurityPolicy.NonceItemKey]">
         // Localized strings passed from the server (JSON-encoded so quotes /
         // Arabic / English never break the script).
         const i18n = {
@@ -224,39 +224,57 @@
 
         function updateSelectedList() {
             const listContainer = document.getElementById('selectedList');
-            const emptyMessage = document.getElementById('emptyMessage');
             const submitBtn = document.getElementById('submitBtn');
             const hiddenContainer = document.getElementById('selectedCollegesHiddenContainer');
-            
+
             // Clear previous content
-            listContainer.innerHTML = '';
-            hiddenContainer.innerHTML = '';
-            
+            listContainer.replaceChildren();
+            hiddenContainer.replaceChildren();
+
             if (selectedColleges.length === 0) {
-                listContainer.innerHTML = '<p class="text-muted text-center py-4" id="emptyMessage"><i class="bi bi-inbox" style="font-size: 2rem;"></i><br>' + i18n.emptyMessage + '</p>';
+                const message = document.createElement('p');
+                message.className = 'text-muted text-center py-4';
+                message.id = 'emptyMessage';
+
+                const icon = document.createElement('i');
+                icon.className = 'bi bi-inbox fs-2';
+                message.append(icon, document.createElement('br'), document.createTextNode(i18n.emptyMessage));
+                listContainer.appendChild(message);
                 submitBtn.disabled = true;
                 return;
             }
-            
-            // Build the visual list
+
+            // Build every element through DOM APIs. College names can originate
+            // from imported/admin data, so they must never be interpreted as HTML.
             selectedColleges.forEach((college, index) => {
                 const item = document.createElement('div');
                 item.className = 'preference-item p-3 mb-2 bg-light rounded';
-                item.innerHTML = `
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <span class="badge bg-gold me-2">${index + 1}</span>
-                            <strong>${college.name}</strong>
-                        </div>
-                        <div class="btn-group btn-group-sm">
-                            ${index > 0 ? `<button type="button" class="btn btn-outline-secondary" onclick="moveUp(${index})"><i class="bi bi-arrow-up"></i></button>` : ''}
-                            ${index < selectedColleges.length - 1 ? `<button type="button" class="btn btn-outline-secondary" onclick="moveDown(${index})"><i class="bi bi-arrow-down"></i></button>` : ''}
-                            <button type="button" class="btn btn-outline-danger" onclick="removeCollege(${college.id})"><i class="bi bi-x-lg"></i></button>
-                        </div>
-                    </div>
-                `;
+
+                const row = document.createElement('div');
+                row.className = 'd-flex justify-content-between align-items-center';
+
+                const description = document.createElement('div');
+                const rank = document.createElement('span');
+                rank.className = 'badge bg-gold me-2';
+                rank.textContent = String(index + 1);
+                const name = document.createElement('strong');
+                name.textContent = college.name;
+                description.append(rank, name);
+
+                const buttons = document.createElement('div');
+                buttons.className = 'btn-group btn-group-sm';
+                if (index > 0) {
+                    buttons.appendChild(createPreferenceButton('up', index, 'bi-arrow-up'));
+                }
+                if (index < selectedColleges.length - 1) {
+                    buttons.appendChild(createPreferenceButton('down', index, 'bi-arrow-down'));
+                }
+                buttons.appendChild(createPreferenceButton('remove', college.id, 'bi-x-lg', true));
+
+                row.append(description, buttons);
+                item.appendChild(row);
                 listContainer.appendChild(item);
-                
+
                 // Create hidden input for each selected college ID
                 const hiddenInput = document.createElement('input');
                 hiddenInput.type = 'hidden';
@@ -264,8 +282,21 @@
                 hiddenInput.value = college.id;
                 hiddenContainer.appendChild(hiddenInput);
             });
-            
+
             submitBtn.disabled = false;
+        }
+
+        function createPreferenceButton(action, value, iconName, isDanger = false) {
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = isDanger ? 'btn btn-outline-danger' : 'btn btn-outline-secondary';
+            button.dataset.preferenceAction = action;
+            button.dataset.preferenceValue = String(value);
+
+            const icon = document.createElement('i');
+            icon.className = `bi ${iconName}`;
+            button.appendChild(icon);
+            return button;
         }
 
         function moveUp(index) {
@@ -284,13 +315,33 @@
 
         function removeCollege(collegeId) {
             selectedColleges = selectedColleges.filter(c => c.id !== collegeId);
-            
+
             // Uncheck the checkbox
             const checkbox = document.querySelector(`#college${collegeId}`);
             if (checkbox) checkbox.checked = false;
-            
+
             updateSelectedList();
         }
+
+        document.getElementById('selectedList').addEventListener('click', function(event) {
+            const button = event.target.closest('button[data-preference-action]');
+            if (!button || !this.contains(button)) return;
+
+            const value = Number.parseInt(button.dataset.preferenceValue, 10);
+            if (!Number.isInteger(value)) return;
+
+            switch (button.dataset.preferenceAction) {
+                case 'up':
+                    moveUp(value);
+                    break;
+                case 'down':
+                    moveDown(value);
+                    break;
+                case 'remove':
+                    removeCollege(value);
+                    break;
+            }
+        });
 
         // Handle form submission
         document.getElementById('preferencesForm').addEventListener('submit', function(e) {
@@ -306,7 +357,7 @@
         }
     </script>
 
-    <style>
+    <style nonce="@Context.Items[ContentSecurityPolicy.NonceItemKey]">
         .college-card {
             border: 2px solid var(--border-gray);
             transition: all 0.3s ease;

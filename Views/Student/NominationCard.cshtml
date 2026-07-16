@@ -6,7 +6,7 @@
     ViewData["Title"] = L["NominationCardTitle"].Value;
 }
 
-<style>
+<style nonce="@Context.Items[ContentSecurityPolicy.NonceItemKey]">
     .nomination-card {
         max-width: 800px;
         margin: 0 auto;
@@ -86,7 +86,7 @@
     <a href="/Student/AllocationResult" class="btn btn-outline-secondary">
         <i class="bi bi-arrow-right ms-2"></i> @L["Back"]
     </a>
-    <button type="button" class="btn btn-primary-gold" onclick="window.print()">
+    <button type="button" class="btn btn-primary-gold" data-print-page>
         <i class="bi bi-printer ms-2"></i> @L["PrintCardBtn"]
     </button>
 </div>
@@ -94,7 +94,7 @@
 <div id="nominationCardArea">
     <div class="nomination-card">
         <div class="nomination-header">
-            <img src="~/images/logo.png" alt="@L["UniversityLogoAlt"]" style="height: 64px;" onerror="this.style.display='none'" />
+            <img src="~/images/logo.png" alt="@L["UniversityLogoAlt"]" style="height: 64px;" />
             <h2>@L["UniversityNameArOnly"]</h2>
             <div class="text-muted">@L["UniversityNameEnOnly"]</div>
         </div>

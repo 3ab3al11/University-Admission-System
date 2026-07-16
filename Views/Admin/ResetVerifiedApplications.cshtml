@@ -48,7 +48,7 @@
         else
         {
             <form asp-action="ResetVerifiedApplicationsConfirmed" method="post"
-                  onsubmit="return confirm(@Html.Raw(System.Text.Json.JsonSerializer.Serialize(string.Format(L["ConfirmResetJs"].Value, profiles))));">
+                  data-confirm-message="@string.Format(L["ConfirmResetJs"].Value, profiles)">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="btn btn-danger btn-lg">
                     <i class="bi bi-arrow-counterclockwise ms-2"></i>

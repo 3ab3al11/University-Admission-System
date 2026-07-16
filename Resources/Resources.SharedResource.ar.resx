@@ -383,6 +383,7 @@
   <data name="Step4Save"><value>حفظ النتائج وإشعار الطلاب</value></data>
   <data name="StartAllocationNow"><value>بدء التنسيق الآن</value></data>
   <data name="ConfirmStartAllocation"><value>هل أنت متأكد من بدء عملية التنسيق؟ هذا الإجراء سيؤثر على جميع الطلبات.</value></data>
+  <data name="CloseAdmissionsBeforeAllocation"><value>أغلق باب التقديم أولًا قبل تشغيل التنسيق حتى لا تتغير بيانات الطلاب أثناء العملية.</value></data>
   <data name="ImportantAlerts"><value>تنبيهات هامة</value></data>
   <data name="ReviewBeforeRunning"><value>تأكد من مراجعة جميع الطلبات قبل التشغيل</value></data>
   <data name="AllocationIrreversible"><value>لا يمكن التراجع عن التنسيق بعد تنفيذه</value></data>
@@ -415,7 +416,7 @@
   <data name="LastImportDate"><value>تاريخ آخر استيراد</value></data>
   <data name="DeleteCurrentOfficial"><value>حذف نتائج الثانوية العامة الحالية</value></data>
   <data name="UploadNewFile"><value>رفع ملف جديد</value></data>
-  <data name="ExcelFileHint"><value>الملف يحتوي على: رقم الجلوس، اسم الطالب، الدرجة، وحالة النجاح/الرسوب.</value></data>
+  <data name="ExcelFileHint"><value>الملف يحتوي على: رقم الجلوس، اسم الطالب، الدرجة، وحالة النجاح/الرسوب. الصيغ المقبولة: XLSX/XLS؛ الحد الأقصى: 100 ميجابايت.</value></data>
   <data name="MaxScoreHint"><value>للملف التجريبي الحالي: 700 · للملف النهائي: 320</value></data>
   <data name="ImportBatchPlaceholder"><value>مثال: Aug-2024</value></data>
   <data name="ImportBatchHint"><value>يساعدك تميّز الدفعات في سجل المراجعة</value></data>
@@ -451,6 +452,16 @@
   <data name="NoLinkedStudents"><value>لا يوجد طلاب مرتبطون بالنتائج الرسمية. لا حاجة لإعادة الضبط.</value></data>
   <data name="ConfirmResetJs"><value>تأكيد نهائي: فصل {0} طالبًا عن النتائج الرسمية وحذف رغباتهم وتنسيقاتهم؟</value></data>
   <data name="ConfirmResetBtn"><value>تأكيد إعادة ضبط بيانات التقديم والتحقق</value></data>
+  <data name="OfficialMaintenanceBusy"><value>توجد عملية أخرى على النتائج الرسمية قيد التنفيذ حاليًا. حاول مرة أخرى بعد قليل.</value></data>
+  <data name="MsgOfficialRecordsDeleted"><value>تم حذف {0} سجل من النتائج الرسمية. يمكنك الآن رفع ملف جديد.</value></data>
+  <data name="ErrOfficialRecordsDelete"><value>حدث خطأ أثناء حذف النتائج الرسمية. لم يتم تنفيذ أي تغيير.</value></data>
+  <data name="MsgVerifiedApplicationsReset"><value>تمت إعادة ضبط {0} ملف طالب وحذف {1} رغبة و{2} تنسيق. يمكنك الآن حذف النتائج الرسمية.</value></data>
+  <data name="ErrVerifiedApplicationsReset"><value>حدث خطأ أثناء إعادة ضبط الطلبات المتحقق منها. لم يتم تنفيذ أي تغيير.</value></data>
+  <data name="InvalidExcelFileType"><value>يجب أن يكون الملف بصيغة .xlsx أو .xls.</value></data>
+  <data name="EmptyExcelFile"><value>ملف Excel المحدد فارغ.</value></data>
+  <data name="ExcelFileTooLarge"><value>حجم ملف Excel يتجاوز الحد الأقصى وهو 100 ميجابايت.</value></data>
+  <data name="InvalidExcelFileContent"><value>محتوى الملف لا يطابق ملف XLSX أو XLS صالحًا.</value></data>
+  <data name="UnsafeExcelArchive"><value>تم رفض ملف XLSX لأن حجمه بعد الفك أو نسبة ضغطه غير آمنة.</value></data>
 
   <!-- Generic / TempData -->
   <data name="ErrCollegeNotFound"><value>الكلية غير موجودة</value></data>
@@ -497,6 +508,7 @@
   <data name="St_MustCompleteProfile"><value>يجب إكمال نموذج التقديم أولًا!</value></data>
   <data name="St_AlreadyAllocatedNoEdit"><value>تم إعلان نتيجة التنسيق ولا يمكن تعديل الرغبات بعد ذلك.</value></data>
   <data name="St_PrefAtLeastOne"><value>يرجى اختيار كلية واحدة على الأقل</value></data>
+  <data name="St_PrefDuplicate"><value>لا يمكن اختيار نفس الكلية أكثر من مرة.</value></data>
   <data name="St_PrefMax"><value>يمكنك اختيار {0} كليات كحد أقصى حسب شعبتك</value></data>
   <data name="St_PrefNotAvailableForTrack"><value>اخترت كلية غير متاحة لشعبتك. يرجى الاختيار من الكليات المتاحة فقط.</value></data>
   <data name="St_PrefCollegeHidden"><value>الكلية {0} مخفية حاليًا ولا يمكن اختيارها.</value></data>
@@ -638,4 +650,11 @@
   <data name="CtaReady"><value>هل أنت مستعد للانضمام إلينا؟</value></data>
   <data name="CtaSubtitle"><value>سجل الآن وابدأ رحلتك الأكاديمية في جامعة أسيوط الأهلية</value></data>
   <data name="SignedInAs"><value>تم تسجيل الدخول كـ</value></data>
+  <data name="UnexpectedErrorTitle"><value>حدث خطأ غير متوقع</value></data>
+  <data name="UnexpectedErrorBody"><value>تعذر إكمال طلبك. حاول مرة أخرى، وإذا استمرت المشكلة أرسل رقم الطلب إلى المسؤول.</value></data>
+  <data name="RequestIdLabel"><value>رقم الطلب</value></data>
+  <data name="PageNotFoundTitle"><value>الصفحة غير موجودة</value></data>
+  <data name="PageNotFoundBody"><value>الصفحة المطلوبة غير موجودة أو ربما تم نقلها.</value></data>
+  <data name="RequestFailedTitle"><value>تعذر إكمال الطلب</value></data>
+  <data name="RequestFailedBody"><value>راجع الطلب ثم حاول مرة أخرى.</value></data>
 </root>

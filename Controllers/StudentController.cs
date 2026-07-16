@@ -1,13 +1,14 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
+using System.Globalization;
 using ANU_Admissions.Data;
 using ANU_Admissions.Models;
 using ANU_Admissions.Resources;
 using ANU_Admissions.Services;
 using ANU_Admissions.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace ANU_Admissions.Controllers;
 
@@ -16,22 +17,20 @@ public class StudentController : Controller
 {
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly AppDbContext _context;
-    private readonly Services.IOfficialIdentityProvider _identityProvider;
+    private readonly Services.IStudentVerificationService _studentVerificationService;
     private readonly Services.IAdmissionsGate _admissionsGate;
     private readonly IStringLocalizer<SharedResource> _l;
-
-    private static readonly string[] AllowedSections = { "علمي علوم", "علمي رياضة", "أدبي" };
 
     public StudentController(
         UserManager<ApplicationUser> userManager,
         AppDbContext context,
-        Services.IOfficialIdentityProvider identityProvider,
+        Services.IStudentVerificationService studentVerificationService,
         Services.IAdmissionsGate admissionsGate,
         IStringLocalizer<SharedResource> localizer)
     {
         _userManager = userManager;
         _context = context;
-        _identityProvider = identityProvider;
+        _studentVerificationService = studentVerificationService;
         _admissionsGate = admissionsGate;
         _l = localizer;
     }
@@ -180,147 +179,69 @@ public class StudentController : Controller
             return View(model);
         }
 
-        // 3. Section must be one of the allowed values.
-        if (!AllowedSections.Contains(model.Track))
+        var outcome = await _studentVerificationService.VerifyAndSaveAsync(
+            user,
+            profile,
+            new Services.StudentVerificationRequest(
+                model.NationalId!,
+                model.SeatNumber!,
+                model.Track!,
+                model.PhoneNumber,
+                model.ParentPhoneNumber,
+                model.Address),
+            HttpContext.RequestAborted);
+
+        if (outcome.Status == Services.StudentVerificationStatus.AlreadyLinked)
         {
-            ModelState.AddModelError(nameof(model.Track), _l["St_TrackInvalid"].Value);
+            profile = outcome.Profile!;
+            PopulateFromOfficial(model, profile.OfficialRecord!, profile.Section);
+            TempData["StudentWarning"] = _l["St_AlreadyLinkedReadOnly"].Value;
             return View(model);
         }
 
-        // Phone rules (same as registration): student mobile unique to one
-        // account; parent mobile shared by at most 3 accounts. Self-excluded.
-        var newPhone = model.PhoneNumber?.Trim();
-        if (!string.IsNullOrEmpty(newPhone) &&
-            await _userManager.Users.AnyAsync(u => u.PhoneNumber == newPhone && u.Id != user.Id))
+        switch (outcome.Status)
         {
-            ModelState.AddModelError(nameof(model.PhoneNumber),
-                _l["Acc_StudentPhoneTaken"].Value);
-            return View(model);
-        }
-        var newParentPhone = model.ParentPhoneNumber?.Trim();
-        if (!string.IsNullOrEmpty(newParentPhone) &&
-            await _userManager.Users.CountAsync(u => u.ParentPhoneNumber == newParentPhone && u.Id != user.Id) >= 3)
-        {
-            ModelState.AddModelError(nameof(model.ParentPhoneNumber),
-                _l["Acc_ParentPhoneMaxed"].Value);
-            return View(model);
-        }
-
-        var nationalId = model.NationalId!.Trim();
-        var seatNumber = model.SeatNumber!.Trim();
-
-        // 4-6. Verify identity: national id must exist AND its official seat
-        // number must match the seat number the student entered.
-        OfficialIdentityResult? identity;
-        try
-        {
-            identity = await _identityProvider.GetByNationalIdAsync(nationalId);
-        }
-        catch
-        {
-            ModelState.AddModelError(string.Empty, _l["St_IdentityLookupError"].Value);
-            return View(model);
-        }
-
-        if (identity == null)
-        {
-            ModelState.AddModelError(nameof(model.NationalId), _l["St_NationalIdNotFound"].Value);
-            return View(model);
-        }
-
-        if (!string.Equals(identity.SeatNumber?.Trim(), seatNumber, StringComparison.Ordinal))
-        {
-            ModelState.AddModelError(nameof(model.SeatNumber), _l["St_SeatMismatch"].Value);
-            return View(model);
-        }
-
-        // 7-9. Look up the official result by the verified seat number.
-        var officialSeat = identity.SeatNumber!.Trim();
-        var record = await _context.OfficialStudentRecords
-            .FirstOrDefaultAsync(o => o.SeatNumber == officialSeat);
-
-        if (record == null)
-        {
-            ModelState.AddModelError(nameof(model.SeatNumber), _l["St_SeatNotInOfficial"].Value);
-            return View(model);
-        }
-
-        if (!record.IsEligible)
-        {
-            ModelState.AddModelError(nameof(model.SeatNumber), _l["St_NotEligible"].Value);
-            return View(model);
-        }
-
-        // 10. The official record must not already be linked to someone else.
-        var seatAlreadyLinked = await _context.StudentProfiles
-            .AnyAsync(p => p.OfficialRecordId == record.Id && p.UserId != user.Id);
-        if (seatAlreadyLinked)
-        {
-            ModelState.AddModelError(nameof(model.SeatNumber), _l["St_SeatLinkedElsewhere"].Value);
-            return View(model);
-        }
-
-        // 11. Create or update the profile for the LOGGED-IN user only.
-        if (profile == null)
-        {
-            profile = new StudentProfile
-            {
-                UserId = user.Id,
-                ApplicationDate = DateTime.UtcNow
-            };
-            _context.StudentProfiles.Add(profile);
-        }
-
-        // Scores are copied from the official record only — never from the
-        // form ([BindNever] guarantees the client cannot supply them).
-        profile.OfficialRecordId = record.Id;
-        profile.SeatNumber = record.SeatNumber;
-        profile.NationalId = identity.NationalId;   // verified identity
-        profile.TotalScore = record.TotalScore;
-        profile.Percentage = record.Percentage;
-        profile.EquivalentPercentage = record.EquivalentPercentage;
-        profile.CertificateType = "Egyptian";
-        profile.Section = model.Track!;
-
-        // 12. Contact info comes from the student (optional). Email is the
-        // Identity username and is intentionally not editable here.
-        // Phone numbers are stored ONLY on the account (ApplicationUser); we do
-        // NOT copy them into StudentProfile.PhoneNumber, because that column has
-        // a unique index and duplicating the phone there made verification fail
-        // for any student sharing a number. The dashboard reads the phone from
-        // the account anyway.
-        if (!string.IsNullOrWhiteSpace(model.Address))
-            profile.Address = model.Address.Trim();
-        if (!string.IsNullOrWhiteSpace(model.PhoneNumber))
-            user.PhoneNumber = model.PhoneNumber.Trim();
-        if (!string.IsNullOrWhiteSpace(model.ParentPhoneNumber))
-            user.ParentPhoneNumber = model.ParentPhoneNumber.Trim();
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateException ex)
-        {
-            // Surface the real cause instead of a misleading "seat linked" message.
-            var msg = (ex.InnerException?.Message ?? ex.Message);
-            if (msg.Contains("IX_StudentProfiles_PhoneNumber"))
-            {
-                ModelState.AddModelError(nameof(model.PhoneNumber), _l["St_PhoneInUse"].Value);
-            }
-            else if (msg.Contains("OfficialRecordId"))
-            {
+            case Services.StudentVerificationStatus.InvalidSection:
+                ModelState.AddModelError(nameof(model.Track), _l["St_TrackInvalid"].Value);
+                break;
+            case Services.StudentVerificationStatus.StudentPhoneTaken:
+                ModelState.AddModelError(nameof(model.PhoneNumber), _l["Acc_StudentPhoneTaken"].Value);
+                break;
+            case Services.StudentVerificationStatus.ParentPhoneLimitReached:
+                ModelState.AddModelError(nameof(model.ParentPhoneNumber), _l["Acc_ParentPhoneMaxed"].Value);
+                break;
+            case Services.StudentVerificationStatus.IdentityLookupFailed:
+                ModelState.AddModelError(string.Empty, _l["St_IdentityLookupError"].Value);
+                break;
+            case Services.StudentVerificationStatus.NationalIdNotFound:
+                ModelState.AddModelError(nameof(model.NationalId), _l["St_NationalIdNotFound"].Value);
+                break;
+            case Services.StudentVerificationStatus.SeatNumberMismatch:
+                ModelState.AddModelError(nameof(model.SeatNumber), _l["St_SeatMismatch"].Value);
+                break;
+            case Services.StudentVerificationStatus.SeatNotInOfficialRecords:
+                ModelState.AddModelError(nameof(model.SeatNumber), _l["St_SeatNotInOfficial"].Value);
+                break;
+            case Services.StudentVerificationStatus.StudentNotEligible:
+                ModelState.AddModelError(nameof(model.SeatNumber), _l["St_NotEligible"].Value);
+                break;
+            case Services.StudentVerificationStatus.SeatAlreadyLinked:
                 ModelState.AddModelError(nameof(model.SeatNumber), _l["St_SeatLinkedElsewhere"].Value);
-            }
-            else
-            {
+                break;
+            case Services.StudentVerificationStatus.PhoneConflict:
+                ModelState.AddModelError(nameof(model.PhoneNumber), _l["St_PhoneInUse"].Value);
+                break;
+            case Services.StudentVerificationStatus.SaveFailed:
                 ModelState.AddModelError(string.Empty, _l["St_SaveError"].Value);
-            }
+                break;
+        }
+
+        if (outcome.Status != Services.StudentVerificationStatus.Succeeded)
+        {
             return View(model);
         }
 
-        // Audit log (item 11): record the successful identity verification.
-        profile.OfficialRecord = record;
+        profile = outcome.Profile!;
         await LogStudentAuditAsync("Student Verification", profile,
             $"تم التحقق من الهوية وربط النتيجة الرسمية — الشعبة: {profile.Section}، " +
             $"النسبة المكافئة: {profile.EquivalentPercentage}%");
@@ -398,7 +319,7 @@ public class StudentController : Controller
             .Select(p => p.CollegeId)
             .ToListAsync();
 
-        if (existingPreferences.Any())
+        if (existingPreferences.Count > 0)
         {
             model.SelectedCollegeIds = existingPreferences;
         }
@@ -453,12 +374,17 @@ public class StudentController : Controller
         else if (vm.SelectedCollegeIds.Count > maxPreferences)
         {
             ModelState.AddModelError(nameof(vm.SelectedCollegeIds),
-                string.Format(_l["St_PrefMax"].Value, maxPreferences));
+                string.Format(CultureInfo.CurrentCulture, _l["St_PrefMax"].Value, maxPreferences));
+        }
+        else if (vm.SelectedCollegeIds.Count != vm.SelectedCollegeIds.Distinct().Count())
+        {
+            ModelState.AddModelError(nameof(vm.SelectedCollegeIds),
+                _l["St_PrefDuplicate"].Value);
         }
 
         // Validate every selected college is allowed for the student's section
         // (server-side enforcement — never trust the client).
-        if (vm.SelectedCollegeIds != null && vm.SelectedCollegeIds.Any())
+        if (vm.SelectedCollegeIds != null && vm.SelectedCollegeIds.Count > 0)
         {
             var allowedIds = (await GetCollegesByTrackFromDb(section ?? ""))
                 .Select(c => c.Id).ToHashSet();
@@ -477,7 +403,7 @@ public class StudentController : Controller
             foreach (var name in hiddenNames)
             {
                 ModelState.AddModelError(nameof(vm.SelectedCollegeIds),
-                    string.Format(_l["St_PrefCollegeHidden"].Value, name));
+                    string.Format(CultureInfo.CurrentCulture, _l["St_PrefCollegeHidden"].Value, name));
             }
 
             var belowMin = await _context.Colleges
@@ -489,7 +415,7 @@ public class StudentController : Controller
             foreach (var name in belowMin)
             {
                 ModelState.AddModelError(nameof(vm.SelectedCollegeIds),
-                    string.Format(_l["St_PrefBelowMin"].Value, name));
+                    string.Format(CultureInfo.CurrentCulture, _l["St_PrefBelowMin"].Value, name));
             }
         }
 
@@ -511,9 +437,9 @@ public class StudentController : Controller
             .ToListAsync();
 
         var oldNames = string.Join(" > ", existingPreferences.Select(p => p.College.NameAr));
-        bool isUpdate = existingPreferences.Any();
+        bool isUpdate = existingPreferences.Count > 0;
 
-        if (existingPreferences.Any())
+        if (existingPreferences.Count > 0)
         {
             _context.Preferences.RemoveRange(existingPreferences);
         }
@@ -537,7 +463,8 @@ public class StudentController : Controller
             .Where(c => vm.SelectedCollegeIds.Contains(c.Id))
             .ToListAsync();
         var newNames = string.Join(" > ", vm.SelectedCollegeIds
-            .Select(id => newColleges.FirstOrDefault(c => c.Id == id)?.NameAr ?? id.ToString()));
+            .Select(id => newColleges.FirstOrDefault(c => c.Id == id)?.NameAr
+                ?? id.ToString(CultureInfo.InvariantCulture)));
 
         await LogStudentAuditAsync(
             isUpdate ? "Update Preferences" : "Save Preferences",
@@ -557,44 +484,44 @@ public class StudentController : Controller
 
         var userId = _userManager.GetUserId(User);
         var user = await _userManager.GetUserAsync(User);
-        
+
         if (user == null)
         {
             return RedirectToAction("Login", "Account");
         }
-        
+
         // Guard: Check ApplicationForm completed
         var profile = await _context.StudentProfiles
             .FirstOrDefaultAsync(p => p.UserId == userId);
-            
+
         if (profile == null || profile.EquivalentPercentage == 0)
         {
             TempData["StudentWarning"] = _l["St_MustCompleteProfile"].Value;
             return RedirectToAction("ApplicationForm");
         }
-        
+
         // Guard: Check preferences submitted
         var hasPreferences = await _context.Preferences
             .AnyAsync(p => p.StudentProfile.UserId == userId);
-        
+
         if (!hasPreferences)
         {
             TempData["StudentWarning"] = _l["St_MustChoosePrefs"].Value;
             return RedirectToAction("Preferences");
         }
-        
+
         // Load preferences with college info
         var preferences = await _context.Preferences
             .Include(p => p.College)
             .Where(p => p.StudentProfileId == profile.Id)
             .OrderBy(p => p.Rank)
             .ToListAsync();
-        
+
         // Check for allocation
         var allocation = await _context.Allocations
             .Include(a => a.College)
             .FirstOrDefaultAsync(a => a.StudentProfileId == profile.Id);
-        
+
         var model = new AllocationStatusViewModel
         {
             FullName = user.FullName,
@@ -616,7 +543,7 @@ public class StudentController : Controller
                 AllocationDate = allocation.AllocationDate
             } : null
         };
-        
+
         return View(model);
     }
 
@@ -841,7 +768,7 @@ public class StudentController : Controller
     private async Task<IActionResult?> EnsureProfileCompletedAsync()
     {
         var profile = await GetCurrentProfileAsync();
-        
+
         if (profile == null || profile.EquivalentPercentage <= 0)
         {
             TempData["StudentError"] = _l["St_MustCompleteApplicationShort"].Value;

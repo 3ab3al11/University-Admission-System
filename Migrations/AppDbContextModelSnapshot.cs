@@ -97,13 +97,15 @@ namespace ANU_Admissions.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<string>("ParentPhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
@@ -127,6 +129,15 @@ namespace ANU_Admissions.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
+
+                    b.HasIndex("ParentPhoneNumber")
+                        .HasDatabaseName("IX_AspNetUsers_ParentPhoneNumber")
+                        .HasFilter("[ParentPhoneNumber] IS NOT NULL AND [ParentPhoneNumber] <> ''");
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique()
+                        .HasDatabaseName("IX_AspNetUsers_PhoneNumber")
+                        .HasFilter("[PhoneNumber] IS NOT NULL AND [PhoneNumber] <> ''");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -446,6 +457,9 @@ namespace ANU_Admissions.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CollegeId");
+
+                    b.HasIndex("StudentProfileId", "CollegeId")
+                        .IsUnique();
 
                     b.HasIndex("StudentProfileId", "Rank")
                         .IsUnique();

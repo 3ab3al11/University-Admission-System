@@ -1,6 +1,6 @@
+using ANU_Admissions.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ANU_Admissions.Models;
 
 namespace ANU_Admissions.Data;
 
@@ -13,8 +13,17 @@ public static class DbInitializer
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
         var configuration = serviceProvider.GetRequiredService<IConfiguration>();
 
-        // Ensure database is created
-        await context.Database.MigrateAsync();
+        // Production/development use real relational migrations. Test hosts can
+        // replace SQL Server with EF's in-memory provider and still initialize
+        // the complete Identity/domain model without relational-only APIs.
+        if (context.Database.IsRelational())
+        {
+            await context.Database.MigrateAsync();
+        }
+        else
+        {
+            await context.Database.EnsureCreatedAsync();
+        }
 
         // Seed roles
         string[] roleNames = { "Admin", "Student" };

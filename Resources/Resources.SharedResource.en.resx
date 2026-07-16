@@ -383,6 +383,7 @@
   <data name="Step4Save"><value>Save the results and notify students</value></data>
   <data name="StartAllocationNow"><value>Start allocation now</value></data>
   <data name="ConfirmStartAllocation"><value>Are you sure you want to start the allocation? This will affect all applications.</value></data>
+  <data name="CloseAdmissionsBeforeAllocation"><value>Close admissions before running allocation so student data cannot change during the operation.</value></data>
   <data name="ImportantAlerts"><value>Important notices</value></data>
   <data name="ReviewBeforeRunning"><value>Make sure to review all applications before running</value></data>
   <data name="AllocationIrreversible"><value>Allocation cannot be undone after running</value></data>
@@ -415,7 +416,7 @@
   <data name="LastImportDate"><value>Last import date</value></data>
   <data name="DeleteCurrentOfficial"><value>Delete current high-school results</value></data>
   <data name="UploadNewFile"><value>Upload new file</value></data>
-  <data name="ExcelFileHint"><value>The file contains: seat number, student name, score, and pass/fail status.</value></data>
+  <data name="ExcelFileHint"><value>The file contains: seat number, student name, score, and pass/fail status. Accepted formats: XLSX/XLS; maximum size: 100 MB.</value></data>
   <data name="MaxScoreHint"><value>For the current test file: 700 · For the final file: 320</value></data>
   <data name="ImportBatchPlaceholder"><value>Example: Aug-2024</value></data>
   <data name="ImportBatchHint"><value>Helps you distinguish batches in the audit log</value></data>
@@ -451,6 +452,16 @@
   <data name="NoLinkedStudents"><value>No students are linked to official results. No need to reset.</value></data>
   <data name="ConfirmResetJs"><value>Final confirmation: detach {0} student(s) from official results and delete their preferences and allocations?</value></data>
   <data name="ConfirmResetBtn"><value>Confirm application and verification data reset</value></data>
+  <data name="OfficialMaintenanceBusy"><value>Another official-results operation is currently running. Please try again shortly.</value></data>
+  <data name="MsgOfficialRecordsDeleted"><value>Deleted {0} official record(s). You can now upload a new file.</value></data>
+  <data name="ErrOfficialRecordsDelete"><value>An error occurred while deleting official results. No changes were applied.</value></data>
+  <data name="MsgVerifiedApplicationsReset"><value>Reset {0} student profile(s), deleted {1} preference(s) and {2} allocation(s). You can now delete the official results.</value></data>
+  <data name="ErrVerifiedApplicationsReset"><value>An error occurred while resetting verified applications. No changes were applied.</value></data>
+  <data name="InvalidExcelFileType"><value>The file must be in .xlsx or .xls format.</value></data>
+  <data name="EmptyExcelFile"><value>The selected Excel file is empty.</value></data>
+  <data name="ExcelFileTooLarge"><value>The Excel file exceeds the 100 MB size limit.</value></data>
+  <data name="InvalidExcelFileContent"><value>The file content does not match a valid XLSX or XLS workbook.</value></data>
+  <data name="UnsafeExcelArchive"><value>The XLSX archive has unsafe size or compression characteristics and was rejected.</value></data>
 
   <!-- Generic / TempData -->
   <data name="ErrCollegeNotFound"><value>College not found</value></data>
@@ -497,6 +508,7 @@
   <data name="St_MustCompleteProfile"><value>You must complete the application form first!</value></data>
   <data name="St_AlreadyAllocatedNoEdit"><value>Allocation results have been announced — preferences cannot be edited.</value></data>
   <data name="St_PrefAtLeastOne"><value>Please select at least one college</value></data>
+  <data name="St_PrefDuplicate"><value>The same college cannot be selected more than once.</value></data>
   <data name="St_PrefMax"><value>You can select at most {0} colleges for your section</value></data>
   <data name="St_PrefNotAvailableForTrack"><value>You picked a college not available for your section. Please choose from the available colleges only.</value></data>
   <data name="St_PrefCollegeHidden"><value>The college {0} is currently hidden and cannot be selected.</value></data>
@@ -638,4 +650,11 @@
   <data name="CtaReady"><value>Are you ready to join us?</value></data>
   <data name="CtaSubtitle"><value>Register now and start your academic journey at Assiut National University</value></data>
   <data name="SignedInAs"><value>Signed in as</value></data>
+  <data name="UnexpectedErrorTitle"><value>Something went wrong</value></data>
+  <data name="UnexpectedErrorBody"><value>We could not complete your request. Please try again, and share the request ID with the administrator if the problem continues.</value></data>
+  <data name="RequestIdLabel"><value>Request ID</value></data>
+  <data name="PageNotFoundTitle"><value>Page not found</value></data>
+  <data name="PageNotFoundBody"><value>The requested page does not exist or may have moved.</value></data>
+  <data name="RequestFailedTitle"><value>Request could not be completed</value></data>
+  <data name="RequestFailedBody"><value>Please check the request and try again.</value></data>
 </root>

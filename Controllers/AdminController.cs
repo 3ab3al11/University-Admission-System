@@ -1,15 +1,13 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
+using System.Globalization;
+using System.Text.Json;
 using ANU_Admissions.Data;
 using ANU_Admissions.Models;
 using ANU_Admissions.Resources;
 using ANU_Admissions.ViewModels;
-using System.Data;
-using System.Text.Json;
-using ExcelDataReader;
-using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 
 namespace ANU_Admissions.Controllers;
 
@@ -19,14 +17,23 @@ public class AdminController : Controller
     private readonly AppDbContext _context;
     private readonly IStringLocalizer<SharedResource> _l;
     private readonly Services.IAdmissionsGate _admissionsGate;
+    private readonly Services.IAllocationService _allocationService;
+    private readonly Services.IOfficialRecordsImportService _officialRecordsImportService;
+    private readonly Services.IOfficialRecordsMaintenanceService _officialRecordsMaintenanceService;
     private readonly ILogger<AdminController> _logger;
 
     public AdminController(AppDbContext context, IStringLocalizer<SharedResource> localizer,
-        Services.IAdmissionsGate admissionsGate, ILogger<AdminController> logger)
+        Services.IAdmissionsGate admissionsGate, Services.IAllocationService allocationService,
+        Services.IOfficialRecordsImportService officialRecordsImportService,
+        Services.IOfficialRecordsMaintenanceService officialRecordsMaintenanceService,
+        ILogger<AdminController> logger)
     {
         _context = context;
         _l = localizer;
         _admissionsGate = admissionsGate;
+        _allocationService = allocationService;
+        _officialRecordsImportService = officialRecordsImportService;
+        _officialRecordsMaintenanceService = officialRecordsMaintenanceService;
         _logger = logger;
     }
 
@@ -36,30 +43,30 @@ public class AdminController : Controller
         {
             // Statistics
             TotalStudents = await _context.StudentProfiles.CountAsync(),
-            
+
             CompletedProfiles = await _context.StudentProfiles
                 .Where(sp => sp.EquivalentPercentage > 0)
                 .CountAsync(),
-            
+
             StudentsWithPreferences = await _context.Preferences
                 .Select(p => p.StudentProfileId)
                 .Distinct()
                 .CountAsync(),
-            
+
             AllocatedCount = await _context.Allocations.CountAsync(),
-            
+
             PendingAllocation = await _context.StudentProfiles
-                .Where(sp => sp.EquivalentPercentage > 0 && 
+                .Where(sp => sp.EquivalentPercentage > 0 &&
                             !_context.Allocations.Any(a => a.StudentProfileId == sp.Id))
                 .CountAsync(),
-            
+
             DocumentsUploadedCount = await _context.Documents
                 .Select(d => d.StudentProfileId)
                 .Distinct()
                 .CountAsync(),
-            
+
             TotalColleges = await _context.Colleges.CountAsync(),
-            
+
             // Latest Profiles (last 5)
             LatestProfiles = await _context.StudentProfiles
                 .Include(sp => sp.User)
@@ -74,7 +81,7 @@ public class AdminController : Controller
                     ApplicationDate = sp.ApplicationDate
                 })
                 .ToListAsync(),
-            
+
             // Latest Allocations (last 5)
             LatestAllocations = await _context.Allocations
                 .Include(a => a.StudentProfile)
@@ -91,7 +98,7 @@ public class AdminController : Controller
                     AllocationDate = a.AllocationDate
                 })
                 .ToListAsync(),
-            
+
             // Latest Documents (last 5)
             LatestDocuments = await _context.Documents
                 .Include(d => d.StudentProfile)
@@ -110,8 +117,9 @@ public class AdminController : Controller
         return View(viewModel);
     }
 
-    public IActionResult RunAllocation()
+    public async Task<IActionResult> RunAllocation()
     {
+        ViewBag.GateStatus = await _admissionsGate.GetStatusAsync();
         return View();
     }
 
@@ -119,159 +127,43 @@ public class AdminController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ExecuteAllocation()
     {
+        // Allocation must run against a stable set of applications and
+        // preferences. Students can still edit while admissions are open, so
+        // reject the operation until the admin closes admissions first.
+        var gate = await _admissionsGate.GetStatusAsync();
+        if (gate.IsOpen)
+        {
+            TempData["AllocationError"] = _l["CloseAdmissionsBeforeAllocation"].Value;
+            return RedirectToAction(nameof(RunAllocation));
+        }
+
         try
         {
-            var startTime = DateTime.Now;
-
-            // 1. Load real students from database with preferences
-            // Students are ordered by equivalent percentage. If percentages are
-            // equal, earlier application date gets priority.
-            var students = await _context.StudentProfiles
-                .Include(sp => sp.User)
-                .Where(sp => sp.EquivalentPercentage > 0)
-                .OrderByDescending(sp => sp.EquivalentPercentage)
-                .ThenBy(sp => sp.ApplicationDate)
-                .ToListAsync();
-
-            if (!students.Any())
+            var result = await _allocationService.RunAsync(HttpContext.RequestAborted);
+            if (result.TotalProcessed == 0)
             {
                 TempData["AllocationError"] = "لا يوجد طلاب مؤهلين للتنسيق";
-                return RedirectToAction("RunAllocation");
+                return RedirectToAction(nameof(RunAllocation));
             }
 
-            // Load preferences separately (EF Core limitation with Include + OrderBy)
-            var studentIds = students.Select(s => s.Id).ToList();
-            var allPreferences = await _context.Preferences
-                .Include(p => p.College)
-                .Where(p => studentIds.Contains(p.StudentProfileId))
-                .OrderBy(p => p.StudentProfileId)
-                .ThenBy(p => p.Rank)
-                .ToListAsync();
-
-            // Group preferences by student
-            var preferencesByStudent = allPreferences
-                .GroupBy(p => p.StudentProfileId)
-                .ToDictionary(g => g.Key, g => g.ToList());
-
-            // 2. Load colleges from database
-            var colleges = await _context.Colleges.ToListAsync();
-            var collegeCapacity = colleges.ToDictionary(c => c.Id, c => c.Capacity);
-            var collegeAssignments = colleges.ToDictionary(c => c.Id, c => new List<(int StudentProfileId, decimal Score)>());
-
-            // Reset FinalCutoff for ALL colleges so a stale cutoff from a previous run
-            // cannot survive. Colleges that accept students get recomputed below;
-            // colleges with no students in this run stay null.
-            foreach (var college in colleges)
-            {
-                college.FinalCutoff = null;
-            }
-
-            // Run the whole rewrite (clear old -> insert new -> update cutoffs) as one
-            // atomic unit. On any error the transaction is rolled back (it is disposed
-            // without commit), so the previous allocation is preserved.
-            using var transaction = await _context.Database.BeginTransactionAsync();
-
-            // 3. Clear previous allocations (allow rerun)
-            var existingAllocations = await _context.Allocations.ToListAsync();
-            if (existingAllocations.Any())
-            {
-                _context.Allocations.RemoveRange(existingAllocations);
-                await _context.SaveChangesAsync();
-            }
-
-            // 4. Run allocation algorithm
-            int allocatedCount = 0;
-            int rejectedCount = 0;
-
-            foreach (var student in students)
-            {
-                bool allocated = false;
-
-                // Get student preferences
-                if (!preferencesByStudent.TryGetValue(student.Id, out var preferences) || !preferences.Any())
-                {
-                    rejectedCount++;
-                    continue;
-                }
-
-                // Try each preference in rank order
-                foreach (var pref in preferences.OrderBy(p => p.Rank))
-                {
-                    var college = pref.College;
-                    var currentCount = collegeAssignments[college.Id].Count;
-
-                    // Accept only if: capacity available, the student meets the
-                    // minimum score, AND the college is currently allowed for the
-                    // student's section (per AllowedSections, FIN excluded). The
-                    // last check re-validates against any admin edits made AFTER
-                    // the student saved preferences. Ordering/algorithm unchanged.
-                    if (college.IsActive &&
-                        currentCount < collegeCapacity[college.Id] &&
-                        student.EquivalentPercentage >= college.MinimumScore &&
-                        IsCollegeAllowedForSectionAllocation(college, student.Section))
-                    {
-                        // Allocate student to this college
-                        collegeAssignments[college.Id].Add((student.Id, student.EquivalentPercentage));
-                        
-                        _context.Allocations.Add(new Allocation
-                        {
-                            StudentProfileId = student.Id,
-                            CollegeId = college.Id,
-                            AllocationDate = DateTime.UtcNow
-                        });
-
-                        allocated = true;
-                        allocatedCount++;
-                        break;
-                    }
-                }
-
-                if (!allocated)
-                {
-                    rejectedCount++;
-                }
-            }
-
-            // 5. Update FinalCutoff only for colleges that actually accepted students.
-            // (All cutoffs were reset to null above, so empty colleges remain null.)
-            foreach (var kvp in collegeAssignments)
-            {
-                var college = colleges.First(c => c.Id == kvp.Key);
-
-                if (kvp.Value.Any())
-                {
-                    // FinalCutoff is the minimum score among accepted students
-                    college.FinalCutoff = kvp.Value.Min(x => x.Score);
-                    _context.Colleges.Update(college);
-                }
-            }
-
-            // 6. Save all changes and commit the transaction atomically
-            await _context.SaveChangesAsync();
-            await transaction.CommitAsync();
-
-            var executionTime = (DateTime.Now - startTime).TotalSeconds;
-
-            // 7. Prepare summary
             var summary = new
             {
-                TotalProcessed = students.Count,
-                Accepted = allocatedCount,
-                Rejected = rejectedCount,
-                ExecutionTime = $"{executionTime:F2} ثانية"
+                result.TotalProcessed,
+                result.Accepted,
+                result.Rejected,
+                ExecutionTime = $"{result.Duration.TotalSeconds:F2} ثانية"
             };
 
             TempData["AllocationSuccess"] = true;
-            TempData["AllocationSummary"] = System.Text.Json.JsonSerializer.Serialize(summary);
-            
-            return RedirectToAction("RunAllocation");
+            TempData["AllocationSummary"] = JsonSerializer.Serialize(summary);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Failed to execute allocation");
             TempData["AllocationError"] = "حدث خطأ أثناء تنفيذ العملية. يرجى المحاولة مرة أخرى.";
-            return RedirectToAction("RunAllocation");
         }
+
+        return RedirectToAction(nameof(RunAllocation));
     }
 
     // ================================
@@ -299,7 +191,7 @@ public class AdminController : Controller
             query = statusFilter switch
             {
                 "allocated" => query.Where(sp => _context.Allocations.Any(a => a.StudentProfileId == sp.Id)),
-                "pending" => query.Where(sp => sp.EquivalentPercentage > 0 && 
+                "pending" => query.Where(sp => sp.EquivalentPercentage > 0 &&
                                               !_context.Allocations.Any(a => a.StudentProfileId == sp.Id)),
                 "incomplete" => query.Where(sp => sp.EquivalentPercentage == 0),
                 _ => query
@@ -482,7 +374,7 @@ public class AdminController : Controller
             }
 
             model.AcceptedCount = model.Students.Count;
-            if (model.Students.Any())
+            if (model.Students.Count > 0)
             {
                 model.HighestPercentage = model.Students.Max(s => s.EquivalentPercentage);
                 model.LowestPercentage = model.Students.Min(s => s.EquivalentPercentage);
@@ -490,20 +382,6 @@ public class AdminController : Controller
         }
 
         return View(model);
-    }
-
-    // Allocation-time section guard: a college is acceptable for a student only
-    // if its AllowedSections contains the student's section and it is not FIN.
-    // Same data-driven rule used on the student preferences page.
-    private static bool IsCollegeAllowedForSectionAllocation(College college, string? section)
-    {
-        if (college.Code == "FIN") return false;
-        if (string.IsNullOrWhiteSpace(section) || string.IsNullOrWhiteSpace(college.AllowedSections))
-            return false;
-
-        return college.AllowedSections
-            .Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries)
-            .Contains(section);
     }
 
     // Masks the middle of a national id (admin report / printable PDF safety).
@@ -650,7 +528,11 @@ public class AdminController : Controller
         await LogAuditAsync("Toggle College Visibility",
             $"كلية: {c.NameAr} ({c.Code}) → {arLabel}");
         var displayName = ANU_Admissions.Helpers.DisplayHelper.CollegeName(c.NameAr, c.NameEn);
-        TempData["AdminSuccess"] = string.Format(_l["MsgVisibilityChanged"].Value, displayName, label);
+        TempData["AdminSuccess"] = string.Format(
+            CultureInfo.CurrentCulture,
+            _l["MsgVisibilityChanged"].Value,
+            displayName,
+            label);
         return RedirectToAction(nameof(ManageColleges));
     }
 
@@ -719,8 +601,12 @@ public class AdminController : Controller
             await transaction.CommitAsync();
 
             var displayName = ANU_Admissions.Helpers.DisplayHelper.CollegeName(c.NameAr, c.NameEn);
-            TempData["AdminSuccess"] = string.Format(_l["MsgCollegeDeleted"].Value,
-                displayName, prefsDeleted, allocsDeleted);
+            TempData["AdminSuccess"] = string.Format(
+                CultureInfo.CurrentCulture,
+                _l["MsgCollegeDeleted"].Value,
+                displayName,
+                prefsDeleted,
+                allocsDeleted);
         }
         catch (Exception)
         {
@@ -810,10 +696,10 @@ public class AdminController : Controller
         try
         {
             var count = await _context.Allocations.CountAsync();
-            
+
             // Delete all allocations
             _context.Allocations.RemoveRange(await _context.Allocations.ToListAsync());
-            
+
             // Reset FinalCutoff for all colleges
             var colleges = await _context.Colleges.ToListAsync();
             foreach (var college in colleges)
@@ -867,9 +753,9 @@ public class AdminController : Controller
         try
         {
             var count = await _context.Documents.CountAsync();
-            
-            // TODO: Optionally delete physical files from wwwroot/uploads
-            // For now, just delete DB records
+
+            // The current document workflow stores metadata only; there are no
+            // physical uploads to leave behind on disk.
             _context.Documents.RemoveRange(await _context.Documents.ToListAsync());
             await _context.SaveChangesAsync();
 
@@ -910,7 +796,7 @@ public class AdminController : Controller
 
             await _context.SaveChangesAsync();
 
-            await LogAuditAsync("Reset Everything", 
+            await LogAuditAsync("Reset Everything",
                 $"Deleted {allocCount} allocations, {prefCount} preferences, {docCount} documents");
 
             TempData["AdminSuccess"] = "تم إعادة تعيين النظام بالكامل (الملفات الشخصية محفوظة)";
@@ -1045,36 +931,33 @@ public class AdminController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteOfficialRecordsConfirmed()
     {
-        // Guard: never delete official results while students are linked to them.
-        var linked = await _context.StudentProfiles.CountAsync(p => p.OfficialRecordId != null);
-        if (linked > 0)
+        var outcome = await _officialRecordsMaintenanceService.DeleteAllAsync(
+            GetOfficialRecordsMaintenanceActor(),
+            HttpContext.RequestAborted);
+
+        switch (outcome.Status)
         {
-            TempData["AdminError"] =
-                "لا يمكن حذف بيانات النتائج الرسمية لأن هناك طلابًا تم التحقق منهم باستخدام هذه البيانات. " +
-                "يجب إعادة ضبط بيانات التقديم والتنسيق أولًا قبل حذف النتائج الرسمية.";
-            return RedirectToAction(nameof(DeleteOfficialRecords));
+            case Services.OfficialRecordsDeleteStatus.Deleted:
+                TempData["AdminSuccess"] =
+                    _l["MsgOfficialRecordsDeleted", outcome.DeletedRecords].Value;
+                return RedirectToAction(nameof(ImportOfficialRecords));
+
+            case Services.OfficialRecordsDeleteStatus.NoRecords:
+                TempData["AdminError"] = _l["NoOfficialToDelete"].Value;
+                return RedirectToAction(nameof(ImportOfficialRecords));
+
+            case Services.OfficialRecordsDeleteStatus.LinkedProfilesExist:
+                TempData["AdminError"] = _l["DeleteBlockedMsg"].Value;
+                return RedirectToAction(nameof(DeleteOfficialRecords));
+
+            case Services.OfficialRecordsDeleteStatus.Busy:
+                TempData["AdminError"] = _l["OfficialMaintenanceBusy"].Value;
+                return RedirectToAction(nameof(DeleteOfficialRecords));
+
+            default:
+                TempData["AdminError"] = _l["ErrOfficialRecordsDelete"].Value;
+                return RedirectToAction(nameof(DeleteOfficialRecords));
         }
-
-        try
-        {
-            await using var transaction = await _context.Database.BeginTransactionAsync();
-
-            // Efficient bulk delete (single SQL DELETE, no loading 734k rows).
-            var deleted = await _context.OfficialStudentRecords.ExecuteDeleteAsync();
-
-            await LogAuditAsync("Delete Official Records",
-                $"تم حذف {deleted} سجل من النتائج الرسمية المستوردة");
-
-            await transaction.CommitAsync();
-
-            TempData["AdminSuccess"] = $"تم حذف {deleted} سجل من النتائج الرسمية. يمكنك الآن رفع ملف جديد.";
-        }
-        catch (Exception)
-        {
-            TempData["AdminError"] = "حدث خطأ أثناء حذف بيانات النتائج. لم يتم حذف أي شيء.";
-        }
-
-        return RedirectToAction(nameof(ImportOfficialRecords));
     }
 
     // Confirmation page: reset verified applications so official results can be
@@ -1099,42 +982,32 @@ public class AdminController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ResetVerifiedApplicationsConfirmed()
     {
-        try
+        var outcome = await _officialRecordsMaintenanceService
+            .ResetVerifiedApplicationsAsync(
+                GetOfficialRecordsMaintenanceActor(),
+                HttpContext.RequestAborted);
+
+        switch (outcome.Status)
         {
-            await using var transaction = await _context.Database.BeginTransactionAsync();
+            case Services.VerifiedApplicationsResetStatus.Reset:
+                TempData["AdminSuccess"] = _l[
+                    "MsgVerifiedApplicationsReset",
+                    outcome.ResetProfiles,
+                    outcome.DeletedPreferences,
+                    outcome.DeletedAllocations].Value;
+                break;
 
-            var prefsDeleted = await _context.Preferences
-                .Where(pr => pr.StudentProfile.OfficialRecordId != null)
-                .ExecuteDeleteAsync();
+            case Services.VerifiedApplicationsResetStatus.NoLinkedProfiles:
+                TempData["AdminSuccess"] = _l["NoLinkedStudents"].Value;
+                break;
 
-            var allocsDeleted = await _context.Allocations
-                .Where(a => a.StudentProfile.OfficialRecordId != null)
-                .ExecuteDeleteAsync();
+            case Services.VerifiedApplicationsResetStatus.Busy:
+                TempData["AdminError"] = _l["OfficialMaintenanceBusy"].Value;
+                break;
 
-            // Unlink + clear ONLY the official-verification-derived fields.
-            // Section/contact stay; EquivalentPercentage=0 forces re-verification.
-            var resetCount = await _context.StudentProfiles
-                .Where(p => p.OfficialRecordId != null)
-                .ExecuteUpdateAsync(s => s
-                    .SetProperty(p => p.OfficialRecordId, (int?)null)
-                    .SetProperty(p => p.NationalId, (string?)null)
-                    .SetProperty(p => p.SeatNumber, (string?)null)
-                    .SetProperty(p => p.TotalScore, 0m)
-                    .SetProperty(p => p.Percentage, 0m)
-                    .SetProperty(p => p.EquivalentPercentage, 0m));
-
-            await LogAuditAsync("Reset verified applications",
-                $"تم فصل {resetCount} طالب عن النتائج الرسمية، وحذف {prefsDeleted} رغبة و {allocsDeleted} تنسيق");
-
-            await transaction.CommitAsync();
-
-            TempData["AdminSuccess"] =
-                $"تم فصل {resetCount} طالب عن النتائج الرسمية وحذف {prefsDeleted} رغبة و {allocsDeleted} تنسيق. " +
-                "يمكنك الآن حذف بيانات النتائج الرسمية.";
-        }
-        catch (Exception)
-        {
-            TempData["AdminError"] = "حدث خطأ أثناء إعادة الضبط. لم يتم تنفيذ أي تغيير.";
+            default:
+                TempData["AdminError"] = _l["ErrVerifiedApplicationsReset"].Value;
+                break;
         }
 
         return RedirectToAction(nameof(DeleteOfficialRecords));
@@ -1160,198 +1033,62 @@ public class AdminController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    [RequestSizeLimit(200_000_000)]
-    [RequestFormLimits(MultipartBodyLengthLimit = 200_000_000)]
+    [RequestSizeLimit(Services.OfficialRecordsFileLimits.MaxRequestSizeBytes)]
+    [RequestFormLimits(MultipartBodyLengthLimit = Services.OfficialRecordsFileLimits.MaxRequestSizeBytes)]
     public async Task<IActionResult> ImportOfficialRecords(ImportOfficialRecordsViewModel model)
     {
-        // GUARD (item 9): a results file is already imported. Block new uploads
-        // (server-side, not only UI) until the existing data is cleared.
-        if (await _context.OfficialStudentRecords.AnyAsync())
-        {
-            await PopulateImportStatsAsync();
-            TempData["AdminError"] = "يوجد ملف نتائج مستورد بالفعل. يجب حذف البيانات الحالية أولًا قبل رفع ملف جديد.";
-            return View(model);
-        }
-
         if (!ModelState.IsValid)
         {
             return View(model);
         }
 
-        var ext = Path.GetExtension(model.ExcelFile!.FileName).ToLowerInvariant();
-        if (ext != ".xlsx" && ext != ".xls")
+        var outcome = await _officialRecordsImportService.ImportAsync(
+            model.ExcelFile!,
+            model.MaxScore,
+            model.ImportBatch,
+            model.AbortOnAnyOverflow,
+            HttpContext.RequestAborted);
+
+        if (outcome.Status == Services.OfficialRecordsImportStatus.RecordsAlreadyExist)
         {
-            ModelState.AddModelError(nameof(model.ExcelFile), "الملف يجب أن يكون .xlsx أو .xls");
+            await PopulateImportStatsAsync();
+            TempData["AdminError"] = _l["ImportFileExists"].Value;
             return View(model);
         }
 
-        var sw = System.Diagnostics.Stopwatch.StartNew();
-        var result = new ImportOfficialRecordsResultViewModel
+        if (outcome.Status == Services.OfficialRecordsImportStatus.Busy)
         {
-            MaxScoreUsed = model.MaxScore,
-            ImportBatch = string.IsNullOrWhiteSpace(model.ImportBatch)
-                ? $"Import-{DateTime.UtcNow:yyyyMMdd-HHmmss}"
-                : model.ImportBatch
+            await PopulateImportStatsAsync();
+            TempData["AdminError"] = _l["OfficialMaintenanceBusy"].Value;
+            return View(model);
+        }
+
+        var fileValidationErrorKey = outcome.Status switch
+        {
+            Services.OfficialRecordsImportStatus.InvalidFileType => "InvalidExcelFileType",
+            Services.OfficialRecordsImportStatus.EmptyFile => "EmptyExcelFile",
+            Services.OfficialRecordsImportStatus.FileTooLarge => "ExcelFileTooLarge",
+            Services.OfficialRecordsImportStatus.InvalidFileContent => "InvalidExcelFileContent",
+            Services.OfficialRecordsImportStatus.UnsafeArchive => "UnsafeExcelArchive",
+            _ => null
         };
-
-        // Load existing seat numbers once so we can skip duplicates without
-        // round-tripping per row.
-        var existingSeats = new HashSet<string>(
-            await _context.OfficialStudentRecords.Select(o => o.SeatNumber).ToListAsync());
-        var seenInFile = new HashSet<string>();
-
-        var connectionString = _context.Database.GetConnectionString()
-            ?? throw new InvalidOperationException("Connection string not configured.");
-
-        await using var connection = new SqlConnection(connectionString);
-        await connection.OpenAsync();
-        await using var transaction = (SqlTransaction)await connection.BeginTransactionAsync();
-
-        try
+        if (fileValidationErrorKey != null)
         {
-            using var bulkCopy = new SqlBulkCopy(connection, SqlBulkCopyOptions.Default, transaction)
-            {
-                DestinationTableName = "OfficialStudentRecords",
-                BatchSize = 5000,
-                BulkCopyTimeout = 600
-            };
-            ConfigureBulkCopyMappings(bulkCopy);
+            ModelState.AddModelError(nameof(model.ExcelFile),
+                _l[fileValidationErrorKey].Value);
+            return View(model);
+        }
 
-            var batch = CreateOfficialRecordsTable();
-
-            using var stream = model.ExcelFile.OpenReadStream();
-            using var reader = ExcelReaderFactory.CreateReader(stream);
-
-            // Use first sheet (the file has one: "Stage_New_Search").
-            int rowNumber = 0;
-            bool isHeaderRowConsumed = false;
-
-            while (reader.Read())
-            {
-                rowNumber++;
-
-                // First row is the Arabic header — skip it.
-                if (!isHeaderRowConsumed)
-                {
-                    isHeaderRowConsumed = true;
-                    continue;
-                }
-
-                result.TotalRowsRead++;
-
-                // Column order in the file:
-                // 0: رقم الجلوس, 1: الاسم, 2: الدرجة,
-                // 3: student_case, 4: student_case_desc, 5: c_flage
-                var seatRaw = reader.GetValue(0);
-                var nameRaw = reader.GetValue(1);
-                var scoreRaw = reader.GetValue(2);
-                var statusRaw = reader.FieldCount > 4 ? reader.GetValue(4) : null;
-
-                var seatNumber = seatRaw?.ToString()?.Trim();
-                var fullName = nameRaw?.ToString()?.Trim();
-
-                if (string.IsNullOrEmpty(seatNumber) || string.IsNullOrEmpty(fullName))
-                {
-                    result.SkippedMissingData++;
-                    AddError(result, rowNumber, seatNumber, "رقم جلوس أو اسم مفقود");
-                    continue;
-                }
-
-                if (!TryParseDecimal(scoreRaw, out var totalScore) || totalScore < 0)
-                {
-                    result.SkippedMissingData++;
-                    AddError(result, rowNumber, seatNumber, "الدرجة مفقودة أو غير صحيحة");
-                    continue;
-                }
-
-                if (!seenInFile.Add(seatNumber))
-                {
-                    result.SkippedDuplicateInFile++;
-                    AddError(result, rowNumber, seatNumber, "رقم جلوس مكرر في نفس الملف");
-                    continue;
-                }
-
-                if (existingSeats.Contains(seatNumber))
-                {
-                    result.SkippedAlreadyInDb++;
-                    AddError(result, rowNumber, seatNumber, "رقم جلوس مسجّل من قبل في النظام");
-                    continue;
-                }
-
-                var percentage = Math.Round(totalScore / model.MaxScore * 100m, 2);
-
-                if (percentage > 100m)
-                {
-                    if (model.AbortOnAnyOverflow)
-                    {
-                        await transaction.RollbackAsync();
-                        result.Aborted = true;
-                        result.AbortReason =
-                            $"النهاية العظمى المُدخلة ({model.MaxScore}) غير مناسبة لهذا الملف. " +
-                            $"رقم الجلوس {seatNumber} درجته {totalScore} ونسبته {percentage}% (> 100%). " +
-                            "تم إلغاء الاستيراد بالكامل ولم تُحفظ أي بيانات.";
-                        result.Duration = sw.Elapsed;
-                        return ResultView(result);
-                    }
-
-                    result.SkippedOverMaxScore++;
-                    AddError(result, rowNumber, seatNumber,
-                        $"النسبة {percentage}% > 100% (MaxScore غير مناسب)");
-                    continue;
-                }
-
-                var statusDescription = statusRaw?.ToString()?.Trim();
-                var isEligible = !string.IsNullOrEmpty(statusDescription)
-                    && statusDescription.Contains("ناجح");
-
-                var row = batch.NewRow();
-                row["SeatNumber"] = seatNumber;
-                row["FullName"] = fullName;
-                row["TotalScore"] = totalScore;
-                row["MaxScore"] = model.MaxScore;
-                row["Percentage"] = percentage;
-                row["EquivalentPercentage"] = percentage; // Egyptian high school: same value
-                row["StatusDescription"] = (object?)statusDescription ?? DBNull.Value;
-                row["IsEligible"] = isEligible;
-                row["NationalId"] = DBNull.Value;
-                row["ImportedAt"] = DateTime.UtcNow;
-                row["ImportBatch"] = result.ImportBatch!;
-                batch.Rows.Add(row);
-
-                if (isEligible) result.Imported++;
-                else result.NotEligibleImported++;
-
-                if (batch.Rows.Count >= bulkCopy.BatchSize)
-                {
-                    await bulkCopy.WriteToServerAsync(batch);
-                    batch.Clear();
-                }
-            }
-
-            if (batch.Rows.Count > 0)
-            {
-                await bulkCopy.WriteToServerAsync(batch);
-            }
-
-            await transaction.CommitAsync();
-            result.Duration = sw.Elapsed;
-
+        var result = outcome.Result!;
+        if (!result.Aborted)
+        {
             await LogAuditAsync("Import Official Records",
                 $"Batch={result.ImportBatch}, MaxScore={model.MaxScore}, " +
                 $"Read={result.TotalRowsRead}, Imported={result.Imported + result.NotEligibleImported} " +
                 $"(eligible {result.Imported}, ineligible {result.NotEligibleImported})");
+        }
 
-            return ResultView(result);
-        }
-        catch (Exception ex)
-        {
-            try { await transaction.RollbackAsync(); } catch { /* connection already broken */ }
-            _logger.LogError(ex, "Failed to import official records");
-            result.Aborted = true;
-            result.AbortReason = "حدث خطأ أثناء تنفيذ العملية. يرجى المحاولة مرة أخرى.";
-            result.Duration = sw.Elapsed;
-            return ResultView(result);
-        }
+        return ResultView(result);
     }
 
     private IActionResult ResultView(ImportOfficialRecordsResultViewModel result)
@@ -1367,73 +1104,19 @@ public class AdminController : Controller
         });
     }
 
-    private static void AddError(ImportOfficialRecordsResultViewModel result,
-        int rowNumber, string? seatNumber, string reason)
-    {
-        if (result.FirstErrors.Count >= 50) return;
-        result.FirstErrors.Add(new ImportRowError
-        {
-            RowNumber = rowNumber,
-            SeatNumber = seatNumber,
-            Reason = reason
-        });
-    }
-
-    private static bool TryParseDecimal(object? value, out decimal result)
-    {
-        result = 0m;
-        if (value is null) return false;
-        if (value is decimal d) { result = d; return true; }
-        if (value is double dbl) { result = (decimal)dbl; return true; }
-        if (value is float f) { result = (decimal)f; return true; }
-        if (value is int i) { result = i; return true; }
-        if (value is long l) { result = l; return true; }
-        return decimal.TryParse(value.ToString(),
-            System.Globalization.NumberStyles.Any,
-            System.Globalization.CultureInfo.InvariantCulture,
-            out result);
-    }
-
-    private static DataTable CreateOfficialRecordsTable()
-    {
-        var dt = new DataTable();
-        dt.Columns.Add("SeatNumber", typeof(string));
-        dt.Columns.Add("FullName", typeof(string));
-        dt.Columns.Add("TotalScore", typeof(decimal));
-        dt.Columns.Add("MaxScore", typeof(decimal));
-        dt.Columns.Add("Percentage", typeof(decimal));
-        dt.Columns.Add("EquivalentPercentage", typeof(decimal));
-        dt.Columns.Add("StatusDescription", typeof(string));
-        dt.Columns.Add("IsEligible", typeof(bool));
-        dt.Columns.Add("NationalId", typeof(string));
-        dt.Columns.Add("ImportedAt", typeof(DateTime));
-        dt.Columns.Add("ImportBatch", typeof(string));
-        return dt;
-    }
-
-    private static void ConfigureBulkCopyMappings(SqlBulkCopy bulkCopy)
-    {
-        bulkCopy.ColumnMappings.Add("SeatNumber", "SeatNumber");
-        bulkCopy.ColumnMappings.Add("FullName", "FullName");
-        bulkCopy.ColumnMappings.Add("TotalScore", "TotalScore");
-        bulkCopy.ColumnMappings.Add("MaxScore", "MaxScore");
-        bulkCopy.ColumnMappings.Add("Percentage", "Percentage");
-        bulkCopy.ColumnMappings.Add("EquivalentPercentage", "EquivalentPercentage");
-        bulkCopy.ColumnMappings.Add("StatusDescription", "StatusDescription");
-        bulkCopy.ColumnMappings.Add("IsEligible", "IsEligible");
-        bulkCopy.ColumnMappings.Add("NationalId", "NationalId");
-        bulkCopy.ColumnMappings.Add("ImportedAt", "ImportedAt");
-        bulkCopy.ColumnMappings.Add("ImportBatch", "ImportBatch");
-    }
-
     // ================================
     // HELPER METHODS
     // ================================
 
+    private Services.OfficialRecordsMaintenanceActor GetOfficialRecordsMaintenanceActor()
+        => new(
+            User.Identity?.Name ?? "Admin",
+            HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown");
+
     private async Task LogAuditAsync(string action, string? details = null)
     {
         var ipAddress = HttpContext.Connection.RemoteIpAddress?.ToString() ?? "Unknown";
-        
+
         var log = new AuditLog
         {
             Action = action,

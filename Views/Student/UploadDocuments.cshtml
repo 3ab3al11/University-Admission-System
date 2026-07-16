@@ -104,7 +104,7 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     
-    <style>
+    <style nonce="@Context.Items[ContentSecurityPolicy.NonceItemKey]">
         .upload-area:hover {
             background-color: #f1f5f9 !important;
             cursor: pointer;

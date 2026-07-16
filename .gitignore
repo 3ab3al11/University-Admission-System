@@ -33,6 +33,7 @@ packages/
 # User secrets / environment files
 .env
 .env.*
+!.env.example
 secrets.json
 appsettings.Local.json
 

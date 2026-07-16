@@ -1,0 +1,58 @@
+name: anu-admissions
+
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: "${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in a local .env file}"
+    ports:
+      - "127.0.0.1:${MSSQL_PORT:-14333}:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa
+          -P "$$MSSQL_SA_PASSWORD" -Q "SELECT 1" || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_HTTP_PORTS: 8080
+      ConnectionStrings__DefaultConnection: >-
+        Server=sqlserver,1433;Database=ANU_Admissions;User ID=sa;
+        Password=${MSSQL_SA_PASSWORD};Encrypt=True;TrustServerCertificate=True;
+        MultipleActiveResultSets=True
+      ApplicationUrls__PublicBaseUrl: "${PUBLIC_BASE_URL:-http://localhost:8080}"
+      AllowedHosts: "${ALLOWED_HOSTS:-localhost;127.0.0.1}"
+      AdminSeed__Email: "${ADMIN_SEED_EMAIL:-}"
+      AdminSeed__Password: "${ADMIN_SEED_PASSWORD:-}"
+      AdminSeed__FullName: "${ADMIN_SEED_FULL_NAME:-System Administrator}"
+    ports:
+      - "127.0.0.1:${APP_PORT:-8080}:8080"
+    volumes:
+      - data-protection-keys:/home/app/.aspnet/DataProtection-Keys
+    init: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    restart: unless-stopped
+
+volumes:
+  sqlserver-data:
+  data-protection-keys:

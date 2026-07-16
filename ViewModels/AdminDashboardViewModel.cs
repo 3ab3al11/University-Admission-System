@@ -10,7 +10,7 @@ public class AdminDashboardViewModel
     public int PendingAllocation { get; set; }
     public int DocumentsUploadedCount { get; set; }
     public int TotalColleges { get; set; }
-    
+
     // Latest Activity
     public List<RecentProfileDto> LatestProfiles { get; set; } = new();
     public List<RecentAllocationDto> LatestAllocations { get; set; } = new();

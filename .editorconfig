@@ -1,0 +1,37 @@
+root = true
+
+[*]
+charset = utf-8
+indent_style = space
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{cs,cshtml}]
+indent_size = 4
+
+[*.cs]
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = false
+csharp_new_line_before_open_brace = all
+csharp_preserve_single_line_blocks = true
+csharp_preserve_single_line_statements = true
+
+# The repository's established assembly/root namespace contains an underscore;
+# renaming it would be a breaking change across every controller, view and test.
+dotnet_diagnostic.CA1707.severity = none
+
+# These recommendations are micro-optimizations that add generated logging
+# boilerplate or weaken intentional interface abstractions in a small MVC app.
+dotnet_diagnostic.CA1848.severity = none
+dotnet_diagnostic.CA1859.severity = none
+
+# Keep the descriptive EF override parameter already used throughout the model
+# configuration; matching the base class parameter name has no runtime effect.
+dotnet_diagnostic.CA1725.severity = none
+
+# EF migration Up/Down methods are generated once and call these arrays once;
+# moving their literals to fields would only hand-edit historical migrations.
+dotnet_diagnostic.CA1861.severity = none
+
+[*.{json,yml,yaml}]
+indent_size = 2

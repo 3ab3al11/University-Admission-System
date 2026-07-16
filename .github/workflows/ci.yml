@@ -1,0 +1,124 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_NOLOGO: true
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore local .NET tools
+        run: dotnet tool restore
+
+      - name: Restore
+        run: dotnet restore tests/ANU_Admissions.UnitTests/ANU_Admissions.UnitTests.csproj --locked-mode
+
+      - name: Verify code formatting
+        run: |
+          dotnet format ANU_Admissions.csproj --verify-no-changes --no-restore
+          dotnet format tests/ANU_Admissions.UnitTests/ANU_Admissions.UnitTests.csproj --verify-no-changes --no-restore
+
+      - name: Build
+        run: dotnet build tests/ANU_Admissions.UnitTests/ANU_Admissions.UnitTests.csproj --configuration Release --no-restore --warnaserror
+
+      - name: Verify EF Core model matches migrations
+        run: dotnet ef migrations has-pending-model-changes --no-build --configuration Release
+        env:
+          ASPNETCORE_ENVIRONMENT: Development
+
+      - name: Run tests with code coverage
+        run: >-
+          dotnet coverage collect
+          "dotnet run --project tests/ANU_Admissions.UnitTests/ANU_Admissions.UnitTests.csproj --configuration Release --no-build"
+          --settings coverage.settings.xml
+          --output-format cobertura
+          --output artifacts/coverage/coverage.cobertura.xml
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage
+          path: artifacts/coverage/coverage.cobertura.xml
+          if-no-files-found: error
+          retention-days: 14
+
+      - name: Add coverage to job summary and enforce baseline
+        shell: pwsh
+        run: >-
+          ./scripts/write-coverage-summary.ps1
+          -CoverageFile artifacts/coverage/coverage.cobertura.xml
+          -SummaryFile $env:GITHUB_STEP_SUMMARY
+          -MinimumLineRate 0.30
+          -MinimumBranchRate 0.22
+
+  sqlserver-integration:
+    name: SQL Server integration
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_PID: Developer
+          # Unique ephemeral credential; the isolated runner is destroyed afterward.
+          MSSQL_SA_PASSWORD: "ANU_CI_${{ github.run_id }}_Test!"
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd="/opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P 'ANU_CI_${{ github.run_id }}_Test!' -Q 'SELECT 1'"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=12
+          --health-start-period=20s
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@v5
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore
+        run: dotnet restore tests/ANU_Admissions.SqlServerTests/ANU_Admissions.SqlServerTests.csproj --locked-mode
+
+      - name: Verify code formatting
+        run: dotnet format tests/ANU_Admissions.SqlServerTests/ANU_Admissions.SqlServerTests.csproj --verify-no-changes --no-restore
+
+      - name: Build
+        run: dotnet build tests/ANU_Admissions.SqlServerTests/ANU_Admissions.SqlServerTests.csproj --configuration Release --no-restore --warnaserror
+
+      - name: Run SQL Server provider tests
+        run: dotnet run --project tests/ANU_Admissions.SqlServerTests/ANU_Admissions.SqlServerTests.csproj --configuration Release --no-build
+        env:
+          ANU_TEST_SQLSERVER: >-
+            Server=localhost,1433;Database=master;User ID=sa;
+            Password=ANU_CI_${{ github.run_id }}_Test!;Encrypt=True;TrustServerCertificate=True;
+            Connect Timeout=30

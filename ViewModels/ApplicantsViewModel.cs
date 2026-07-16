@@ -4,7 +4,7 @@ public class ApplicantsListViewModel
 {
     public string? SearchTerm { get; set; }
     public string? StatusFilter { get; set; }
-    
+
     public List<ApplicantRowDto> Applicants { get; set; } = new();
 }
 
@@ -20,7 +20,7 @@ public class ApplicantRowDto
     public bool HasAllocation { get; set; }
     public int DocumentsCount { get; set; }
     public DateTime ApplicationDate { get; set; }
-    
+
     // Status as a resource KEY (localized in the view), not pre-rendered HTML —
     // so the badge label flips with the current culture.
     public string StatusKey =>
@@ -50,7 +50,7 @@ public class ApplicantDetailsViewModel
     public string Address { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string Governorate { get; set; } = string.Empty;
-    
+
     // Academic Info
     public string HighSchoolName { get; set; } = string.Empty;
     public int GraduationYear { get; set; }
@@ -60,13 +60,13 @@ public class ApplicantDetailsViewModel
     public string Section { get; set; } = string.Empty;
     public string CertificateType { get; set; } = string.Empty;
     public DateTime ApplicationDate { get; set; }
-    
+
     // Preferences
     public List<PreferenceDetailDto> Preferences { get; set; } = new();
-    
+
     // Allocation
     public AllocationDetailDto? Allocation { get; set; }
-    
+
     // Documents
     public List<DocumentDetailDto> Documents { get; set; } = new();
 }
@@ -95,7 +95,7 @@ public class DocumentDetailDto
     public long FileSize { get; set; }
     public DateTime UploadedAt { get; set; }
     public bool IsVerified { get; set; }
-    
+
     public string GetFileSizeFormatted()
     {
         if (FileSize < 1024)

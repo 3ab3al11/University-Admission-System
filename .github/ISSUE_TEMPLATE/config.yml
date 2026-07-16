@@ -1,0 +1,6 @@
+blank_issues_enabled: false
+
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/3ab3al11/University-Admission-System/security/policy
+    about: Read the private-reporting policy instead of publishing exploit details.

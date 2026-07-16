@@ -7,7 +7,7 @@
     ViewData["Title"] = L["CollegeResults"].Value;
 }
 
-<style>
+<style nonce="@Context.Items[ContentSecurityPolicy.NonceItemKey]">
     /* The report sheet is always a white page (on screen and in print), so its
        text is pinned dark regardless of light/dark theme to stay readable. */
     .report-area { background:#fff; color:#111; }
@@ -75,7 +75,7 @@
     {
         var reportCollegeName = DisplayHelper.CollegeName(Model.CollegeName, Model.CollegeNameEn);
         <div class="d-flex justify-content-end mb-3 no-print">
-            <button type="button" class="btn btn-outline-gold" onclick="window.print()">
+            <button type="button" class="btn btn-outline-gold" data-print-page>
                 <i class="bi bi-printer ms-2"></i> @L["PrintSavePdf"]
             </button>
         </div>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+  <CodeCoverage>
+    <!-- Measure only the application assembly, never framework/test binaries. -->
+    <ModulePaths>
+      <Include>
+        <ModulePath>.*[/\\]ANU_Admissions\.dll$</ModulePath>
+      </Include>
+    </ModulePaths>
+
+    <!-- Generated Razor, EF migration, and obj sources distort useful coverage. -->
+    <Sources>
+      <Exclude>
+        <Source>.*[/\\]Migrations[/\\].*</Source>
+        <Source>.*[/\\]Views[/\\].*</Source>
+        <Source>.*[/\\]obj[/\\].*</Source>
+      </Exclude>
+    </Sources>
+
+    <Attributes>
+      <Exclude>
+        <Attribute>^System\.CodeDom\.Compiler\.GeneratedCodeAttribute$</Attribute>
+        <Attribute>^System\.Diagnostics\.CodeAnalysis\.ExcludeFromCodeCoverageAttribute$</Attribute>
+      </Exclude>
+    </Attributes>
+  </CodeCoverage>
+</Configuration>

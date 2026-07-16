@@ -1,6 +1,6 @@
 using System.Globalization;
-using Microsoft.Extensions.Localization;
 using ANU_Admissions.Resources;
+using Microsoft.Extensions.Localization;
 
 namespace ANU_Admissions.Helpers;
 

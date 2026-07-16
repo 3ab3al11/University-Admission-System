@@ -1,14 +1,14 @@
 using System.Text;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
 using ANU_Admissions.Models;
 using ANU_Admissions.Resources;
 using ANU_Admissions.Services;
 using ANU_Admissions.ViewModels;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Localization;
 
 namespace ANU_Admissions.Controllers;
 
@@ -17,17 +17,23 @@ public class AccountController : Controller
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly IAppEmailSender _emailSender;
+    private readonly IPasswordResetLinkFactory _passwordResetLinkFactory;
+    private readonly IRegistrationService _registrationService;
     private readonly IStringLocalizer<SharedResource> _l;
 
     public AccountController(
         UserManager<ApplicationUser> userManager,
         SignInManager<ApplicationUser> signInManager,
         IAppEmailSender emailSender,
+        IPasswordResetLinkFactory passwordResetLinkFactory,
+        IRegistrationService registrationService,
         IStringLocalizer<SharedResource> localizer)
     {
         _userManager = userManager;
         _signInManager = signInManager;
         _emailSender = emailSender;
+        _passwordResetLinkFactory = passwordResetLinkFactory;
+        _registrationService = registrationService;
         _l = localizer;
     }
 
@@ -45,49 +51,49 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
-            // Rule: a student mobile may belong to ONE account only.
-            var studentPhone = model.PhoneNumber?.Trim();
-            if (!string.IsNullOrEmpty(studentPhone) &&
-                await _userManager.Users.AnyAsync(u => u.PhoneNumber == studentPhone))
+            var result = await _registrationService.RegisterAsync(
+                new RegistrationRequest(
+                    model.FullName,
+                    model.Email,
+                    model.PhoneNumber,
+                    model.ParentPhoneNumber,
+                    model.Password),
+                HttpContext.RequestAborted);
+
+            switch (result.Status)
             {
-                ModelState.AddModelError(nameof(model.PhoneNumber),
-                    _l["Acc_StudentPhoneTaken"].Value);
-                return View(model);
-            }
+                case RegistrationStatus.Succeeded:
+                    await _signInManager.SignInAsync(result.User!, isPersistent: false);
+                    return RedirectToAction("Dashboard", "Student");
 
-            // Rule: a parent mobile may be shared by AT MOST 3 accounts (siblings).
-            var parentPhone = model.ParentPhoneNumber?.Trim();
-            if (!string.IsNullOrEmpty(parentPhone) &&
-                await _userManager.Users.CountAsync(u => u.ParentPhoneNumber == parentPhone) >= 3)
-            {
-                ModelState.AddModelError(nameof(model.ParentPhoneNumber),
-                    _l["Acc_ParentPhoneMaxed"].Value);
-                return View(model);
-            }
+                case RegistrationStatus.StudentPhoneTaken:
+                    ModelState.AddModelError(
+                        nameof(model.PhoneNumber),
+                        _l["Acc_StudentPhoneTaken"].Value);
+                    break;
 
-            var user = new ApplicationUser
-            {
-                UserName = model.Email,
-                Email = model.Email,
-                FullName = model.FullName,
-                PhoneNumber = model.PhoneNumber,
-                ParentPhoneNumber = model.ParentPhoneNumber
-            };
+                case RegistrationStatus.ParentPhoneLimitReached:
+                    ModelState.AddModelError(
+                        nameof(model.ParentPhoneNumber),
+                        _l["Acc_ParentPhoneMaxed"].Value);
+                    break;
 
-            var result = await _userManager.CreateAsync(user, model.Password);
+                case RegistrationStatus.IdentityFailed:
+                    foreach (var error in result.IdentityErrors ?? [])
+                    {
+                        ModelState.AddModelError(
+                            string.Empty,
+                            TranslateIdentityError(error.Code));
+                    }
+                    if (result.IdentityErrors == null || result.IdentityErrors.Count == 0)
+                    {
+                        ModelState.AddModelError(string.Empty, _l["Id_Generic"].Value);
+                    }
+                    break;
 
-            if (result.Succeeded)
-            {
-                // Assign Student role
-                await _userManager.AddToRoleAsync(user, "Student");
-
-                await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Dashboard", "Student");
-            }
-
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, TranslateIdentityError(error.Code));
+                default:
+                    ModelState.AddModelError(string.Empty, _l["Id_Generic"].Value);
+                    break;
             }
         }
 
@@ -105,6 +111,7 @@ public class AccountController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [EnableRateLimiting(AuthRateLimitPolicies.Login)]
     public async Task<IActionResult> Login(LoginViewModel model, string? returnUrl = null)
     {
         ViewData["ReturnUrl"] = returnUrl;
@@ -180,6 +187,7 @@ public class AccountController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [EnableRateLimiting(AuthRateLimitPolicies.ForgotPassword)]
     public async Task<IActionResult> ForgotPassword(ForgotPasswordViewModel model)
     {
         if (!ModelState.IsValid)
@@ -195,10 +203,9 @@ public class AccountController : Controller
             var rawToken = await _userManager.GeneratePasswordResetTokenAsync(user);
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(rawToken));
 
-            var resetLink = Url.Action(
-                "ResetPassword", "Account",
-                new { email = model.Email, token = encodedToken },
-                protocol: Request.Scheme);
+            var resetLink = _passwordResetLinkFactory.Create(
+                model.Email,
+                encodedToken);
 
             await _emailSender.SendEmailAsync(
                 model.Email,
@@ -230,6 +237,7 @@ public class AccountController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [EnableRateLimiting(AuthRateLimitPolicies.ResetPassword)]
     public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
     {
         if (!ModelState.IsValid)
@@ -282,7 +290,7 @@ public class AccountController : Controller
     private IActionResult? RedirectIfAuthenticated()
     {
         if (User.Identity?.IsAuthenticated != true) return null;
-        if (User.IsInRole("Admin"))   return RedirectToAction("Dashboard", "Admin");
+        if (User.IsInRole("Admin")) return RedirectToAction("Dashboard", "Admin");
         if (User.IsInRole("Student")) return RedirectToAction("Dashboard", "Student");
         return RedirectToAction("Index", "Home");
     }

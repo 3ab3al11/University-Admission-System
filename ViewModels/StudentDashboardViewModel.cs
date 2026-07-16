@@ -10,20 +10,20 @@ public class StudentDashboardViewModel
     public string Email { get; set; } = string.Empty;
     public string PhoneNumber { get; set; } = string.Empty;
     public string ParentPhoneNumber { get; set; } = string.Empty;
-    
+
     // Academic Information
     public decimal EquivalentPercentage { get; set; }
     public string Section { get; set; } = string.Empty;
-    
+
     // Status Flags
     public bool HasProfile { get; set; }
     public bool HasPreferences { get; set; }
     public bool HasAllocation { get; set; }
     public bool HasUploadedDocuments { get; set; }
-    
+
     // Application Status
     public ApplicationStatus Status { get; set; }
-    
+
     // Helper methods for view
     public string GetStatusText()
     {
@@ -38,7 +38,7 @@ public class StudentDashboardViewModel
             _ => "حالة غير معروفة"
         };
     }
-    
+
     public string GetStatusBadgeClass()
     {
         return Status switch
@@ -52,7 +52,7 @@ public class StudentDashboardViewModel
             _ => "bg-secondary"
         };
     }
-    
+
     public string GetNextActionUrl()
     {
         return Status switch
@@ -66,7 +66,7 @@ public class StudentDashboardViewModel
             _ => "/Student/Dashboard"
         };
     }
-    
+
     public string GetNextActionText()
     {
         return Status switch
